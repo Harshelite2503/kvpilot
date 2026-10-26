@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-27",
+  "timezone": "Asia/Kolkata",
+  "experiment_source_commit": "34414dd",
+  "local_test_command": ".venv/bin/python -m pytest -q",
+  "test_exit_code": 0,
+  "passed_tests": 130,
+  "passed_subtests": 89,
+  "test_timing": "Before source freeze and holdout generation",
+  "development_policy_run_records": 126,
+  "holdout_policy_run_records": 840,
+  "holdout_unique_traces": 140,
+  "holdout_sessions_per_trace": 240,
+  "holdout_total_input_sessions": 33600,
+  "independent_assistant_review": {
+    "frozen_source_and_config_hashes_match": true,
+    "all_trace_hashes_reproduced": true,
+    "full_scenario_seed_policy_cartesian_product_present": true,
+    "all_summary_means_and_deltas_recalculated": true,
+    "paired_whole_run_bootstrap_reviewed": true,
+    "legacy_baseline_metrics_preserved": true
+  },
+  "gpu_run": false,
+  "live_engine_run": false,
+  "model_quality_run": false,
+  "cloud_ci_run": false,
+  "paid_services_used": false
+}

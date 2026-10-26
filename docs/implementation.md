@@ -31,9 +31,11 @@ score = E + offload + p * resume + lambda * stored_MiB * T_seconds
 recompute score = p * full_recompute_ms
 ```
 
-This is an expected-cost heuristic in milliseconds, with a user-supplied occupancy penalty. It is not a calibrated monetary objective or queueing model. It does not price the harm of evicting another session's pages. That omission explains a failure in the checked-in demo.
+This is the original `adaptive` expected-cost heuristic in milliseconds, with a user-supplied occupancy penalty. It is not a calibrated monetary objective or queueing model. Its missing eviction cost explains a failure in the original checked-in demo. `adaptive_exact` applies exact per-page sizing with no externality penalty. `adaptive_eviction` additionally charges the expected lost full-cache benefit once per affected existing owner; see [the design](eviction-design.md). It plans exact LRU victims before scoring and executes the chosen plan.
 
 The policy first chooses the lowest estimated score satisfying the supplied resume target; if none satisfy it, it chooses the lowest predicted resume delay. A target is not an SLA guarantee. Fixed baselines force a representation if it fits; otherwise they recompute. On actual replayed resume, every policy may choose full recomputation if it is estimated faster than waiting for restoration.
+
+The new eviction-aware policy preserves incoming-session target priority and can still harm other owners if recomputation is not eligible. It is myopic: it does not price future arrivals, change LRU victim ordering, or credit an insertion for repairing an already incomplete owner. Its victim forecast uses resolved history and elapsed pause, not future terminal events.
 
 ## Modeled resources
 

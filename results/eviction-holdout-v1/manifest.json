@@ -1,0 +1,1639 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-26T20:05:16.919599+00:00",
+  "split": "holdout",
+  "evidence_type": "analytical_trace_replay",
+  "quality_validated": false,
+  "freeze_manifest": {
+    "schema_version": 1,
+    "status": "approved_for_holdout",
+    "approval_note": "Source reviewed before any evaluation-seed generation. 130 tests and 89 subtests pass. Development seeds 101-103 inspected; no policy coefficient tuned to these outcomes. Eviction helper independently reviewed. Exact-size zero-penalty control added before freeze. All evaluation seeds 1101-1120 remain unseen. Freeze approved by the executing agent within the user-authorized local experiment.",
+    "evidence_type": "analytical_trace_replay",
+    "quality_validated": false,
+    "component_sha256": {
+      "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+      "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+      "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+      "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+      "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+      "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50",
+      "scripts/evaluate_eviction.py": "487d16f68c4728609846d856b739f5feeaaf5a3bb52ab9a41ec4e7ba0990c1f8",
+      "examples/assumed-costs.json": "d320b71c2342256194313d3278a94d711a4cc7477307bd898ffddf41c87c5c20",
+      "experiment_protocol": "2e469493ac81e6c06cb863bc69886fadc5dd8677b18d1d513a7543f542d444c4"
+    },
+    "baseline": {
+      "policy": "group_int4",
+      "version": "fixed-codec-lru-v1"
+    },
+    "candidate_policy": "adaptive_eviction",
+    "attribution_baseline_policy": "adaptive_exact",
+    "policies": [
+      "adaptive",
+      "adaptive_exact",
+      "adaptive_eviction",
+      "group_int4",
+      "raw_fp16",
+      "recompute"
+    ],
+    "predeclared_metrics": {
+      "primary": [
+        "modeled_p95_resume_ms"
+      ],
+      "secondary": [
+        "modeled_mean_resume_ms",
+        "modeled_total_service_work_ms",
+        "host_reserved_byte_ms",
+        "peak_host_reserved_bytes",
+        "modeled_transferred_bytes",
+        "canceled_owner_encoding_ms_upper_bound",
+        "full_recomputes"
+      ]
+    },
+    "scenario_names": [
+      "sustained_pressure",
+      "branching_pressure",
+      "fast_return",
+      "cancel_heavy",
+      "low_pressure",
+      "heterogeneous",
+      "shifted_pause_mix"
+    ],
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95,
+      "seed": 71027
+    }
+  },
+  "source_declaration": {
+    "schema_version": 1,
+    "status": "awaiting_code_freeze_approval",
+    "approval_note": "",
+    "evidence_type": "analytical_trace_replay",
+    "quality_validated": false,
+    "component_sha256": {
+      "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+      "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+      "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+      "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+      "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+      "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50",
+      "scripts/evaluate_eviction.py": "487d16f68c4728609846d856b739f5feeaaf5a3bb52ab9a41ec4e7ba0990c1f8",
+      "examples/assumed-costs.json": "d320b71c2342256194313d3278a94d711a4cc7477307bd898ffddf41c87c5c20",
+      "experiment_protocol": "2e469493ac81e6c06cb863bc69886fadc5dd8677b18d1d513a7543f542d444c4"
+    },
+    "baseline": {
+      "policy": "group_int4",
+      "version": "fixed-codec-lru-v1"
+    },
+    "candidate_policy": "adaptive_eviction",
+    "attribution_baseline_policy": "adaptive_exact",
+    "policies": [
+      "adaptive",
+      "adaptive_exact",
+      "adaptive_eviction",
+      "group_int4",
+      "raw_fp16",
+      "recompute"
+    ],
+    "predeclared_metrics": {
+      "primary": [
+        "modeled_p95_resume_ms"
+      ],
+      "secondary": [
+        "modeled_mean_resume_ms",
+        "modeled_total_service_work_ms",
+        "host_reserved_byte_ms",
+        "peak_host_reserved_bytes",
+        "modeled_transferred_bytes",
+        "canceled_owner_encoding_ms_upper_bound",
+        "full_recomputes"
+      ]
+    },
+    "scenario_names": [
+      "sustained_pressure",
+      "branching_pressure",
+      "fast_return",
+      "cancel_heavy",
+      "low_pressure",
+      "heterogeneous",
+      "shifted_pause_mix"
+    ],
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95,
+      "seed": 71027
+    }
+  },
+  "protocol": {
+    "schema_version": 1,
+    "protocol_version": "1.0",
+    "status": "predeclared_before_holdout_execution",
+    "evidence_type": "analytical_assumptions",
+    "description": "Deterministic synthetic workloads for local analytical policy comparisons. Costs, distributions, and correlations are assumptions, not measurements of a GPU, production traffic, or model quality.",
+    "development_seeds": [
+      101,
+      102,
+      103
+    ],
+    "evaluation_seeds": [
+      1101,
+      1102,
+      1103,
+      1104,
+      1105,
+      1106,
+      1107,
+      1108,
+      1109,
+      1110,
+      1111,
+      1112,
+      1113,
+      1114,
+      1115,
+      1116,
+      1117,
+      1118,
+      1119,
+      1120
+    ],
+    "sessions_per_run": 240,
+    "policies": [
+      "adaptive",
+      "adaptive_exact",
+      "adaptive_eviction",
+      "group_int4",
+      "raw_fp16",
+      "recompute"
+    ],
+    "candidate_policy": "adaptive_eviction",
+    "attribution_baseline_policy": "adaptive_exact",
+    "baseline_policy": "group_int4",
+    "baseline_version": "fixed-codec-lru-v1",
+    "primary_metrics": [
+      "modeled_p95_resume_ms"
+    ],
+    "secondary_metrics": [
+      "modeled_mean_resume_ms",
+      "modeled_total_service_work_ms",
+      "host_reserved_byte_ms",
+      "peak_host_reserved_bytes",
+      "modeled_transferred_bytes",
+      "canceled_owner_encoding_ms_upper_bound",
+      "full_recomputes"
+    ],
+    "resource_cost_definition": "modeled_encoding_ms + modeled_decoding_ms + modeled_recompute_ms + modeled_transferred_bytes / bandwidth_bytes_per_ms; resource work, not wall-clock latency, with no assumed queue or overlap credit",
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95,
+      "seed": 71027
+    },
+    "analysis": {
+      "unit": "One complete scenario/seed run. Run every policy on identical trace events and cost configuration.",
+      "paired_effect": "fixed group_int4 baseline metric minus candidate metric; positive denotes candidate improvement for latency, work, and bytes",
+      "ablation": "adaptive is the legacy aggregate-size policy. adaptive_exact uses the same exact per-page sizing and victim planning as adaptive_eviction but charges zero eviction penalty. Compare adaptive_eviction with adaptive_exact to isolate the charged externality; do not attribute all differences from legacy adaptive to eviction pricing.",
+      "primary_aggregation": "For each scenario, compute p95 among resumed sessions within each run, then summarize paired per-run p95 differences over evaluation seeds. Do not pool all requests into one percentile.",
+      "overall_summary": "Report every scenario's paired summary separately. Do not pool or blend scenarios into an overall winner; no across-scenario aggregate is computed.",
+      "correlation": "Branches share a family prefix and correlated latent wait/cancellation draws. Shared physical state also couples otherwise unrelated sessions through capacity. Bootstrap whole runs, never individual requests or branches.",
+      "regressions": "Report scenario-specific p95 differences and secondary memory, transfer, recomputation, and canceled-owner encoding changes, including adverse outcomes. Do not select scenarios or seeds after viewing evaluation results.",
+      "multiplicity": "Scenario confidence intervals are descriptive, unadjusted intervals; do not turn seven scenario comparisons into a claim of universal significance.",
+      "quality": "Lossy actions are enabled only for sensitivity analysis. No language-model quality or GPU throughput claim is permitted.",
+      "holdout_rule": "Do not generate or execute evaluation seeds until policy, workload, cost, and evaluator definitions are frozen. Record hashes before unlocking. If policy is changed afterward, this evaluation set becomes development data and a new predeclared holdout is required.",
+      "forecast_inputs": "Pause events contain only current size, compatibility namespace, estimated recomputation cost, pause kind, and time. Actual future duration and cancellation appear only as later terminal events.",
+      "family_identity": "Family and branch indices appear only within ordinary session IDs and shared block hashes; there is no additional family_id, future_probability, or outcome field in pause events. These identifiers do not determine future outcomes."
+    },
+    "base_cost_config": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 33554432,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "workload_defaults": {
+      "family_size": 1,
+      "branch_gap_ms": 1.0,
+      "interarrival_ms": 12.0,
+      "raw_mib_values": [
+        8,
+        16,
+        24
+      ],
+      "recompute_ms_per_mib_values": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "human_fraction": 0.2,
+      "wait_ms_by_kind": {
+        "tool": [
+          100,
+          300,
+          800
+        ],
+        "human": [
+          1000,
+          3000,
+          8000
+        ]
+      },
+      "resume_probability_by_kind": {
+        "tool": 0.9,
+        "human": 0.7
+      },
+      "time_jitter_fraction": 0.15,
+      "shared_fraction": 0.0,
+      "family_outcome_correlation": 0.0,
+      "cancel_wait_scale": 1.0
+    },
+    "scenarios": {
+      "sustained_pressure": {
+        "description": "Many long-lived independent caches exceed even compressed capacity; eviction externalities dominate the test conditions.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 100663296
+        },
+        "workload": {
+          "interarrival_ms": 8.0,
+          "wait_ms_by_kind": {
+            "tool": [
+              400,
+              1000,
+              2400
+            ],
+            "human": [
+              2000,
+              5000,
+              10000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.96,
+            "human": 0.85
+          }
+        }
+      },
+      "branching_pressure": {
+        "description": "Four correlated sibling sessions share 75 percent of a family cache in two prefix blocks, plus private suffixes. Cancellation must not free siblings' shared state.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 67108864,
+          "bandwidth_bytes_per_ms": 8388608
+        },
+        "workload": {
+          "family_size": 4,
+          "interarrival_ms": 6.0,
+          "raw_mib_values": [
+            16,
+            24,
+            32
+          ],
+          "shared_fraction": 0.75,
+          "family_outcome_correlation": 0.6,
+          "wait_ms_by_kind": {
+            "tool": [
+              300,
+              900,
+              1800
+            ],
+            "human": [
+              1500,
+              4000,
+              8000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.8,
+            "human": 0.65
+          }
+        }
+      },
+      "fast_return": {
+        "description": "Most sessions return before a typical assumed lossy encoding completes; copying/computing on the pause path can be wasted.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 134217728,
+          "bandwidth_bytes_per_ms": 8388608
+        },
+        "workload": {
+          "interarrival_ms": 0.6,
+          "raw_mib_values": [
+            4,
+            16,
+            32
+          ],
+          "human_fraction": 0.0,
+          "wait_ms_by_kind": {
+            "tool": [
+              0.2,
+              0.5,
+              1.0,
+              2.0
+            ],
+            "human": [
+              0.2,
+              0.5,
+              1.0,
+              2.0
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.97,
+            "human": 0.97
+          }
+        }
+      },
+      "cancel_heavy": {
+        "description": "Frequent early cancellations test admission and useless encoding work; a small resumed subset still determines latency.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 67108864,
+          "storage_penalty_ms_per_mib_second": 0.1
+        },
+        "workload": {
+          "interarrival_ms": 6.0,
+          "human_fraction": 0.5,
+          "resume_probability_by_kind": {
+            "tool": 0.25,
+            "human": 0.12
+          },
+          "cancel_wait_scale": 0.08
+        }
+      },
+      "low_pressure": {
+        "description": "Widely spaced pauses and abundant storage make aggressive compression unnecessary; explicitly tests for regressions when eviction is absent.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 536870912,
+          "storage_penalty_ms_per_mib_second": 0.0
+        },
+        "workload": {
+          "interarrival_ms": 300.0,
+          "raw_mib_values": [
+            4,
+            16,
+            32
+          ],
+          "human_fraction": 0.1,
+          "wait_ms_by_kind": {
+            "tool": [
+              20,
+              60,
+              120
+            ],
+            "human": [
+              80,
+              120,
+              150
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.98,
+            "human": 0.95
+          }
+        }
+      },
+      "heterogeneous": {
+        "description": "Independent cache size and recomputation estimates span cheap/expensive victims and a slower link; large bytes do not automatically imply high reuse value.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 100663296,
+          "bandwidth_bytes_per_ms": 4194304
+        },
+        "workload": {
+          "interarrival_ms": 10.0,
+          "raw_mib_values": [
+            2,
+            4,
+            8,
+            16,
+            32,
+            64
+          ],
+          "recompute_ms_per_mib_values": [
+            0.15,
+            0.5,
+            2.0,
+            8.0
+          ],
+          "wait_ms_by_kind": {
+            "tool": [
+              80,
+              400,
+              1500
+            ],
+            "human": [
+              800,
+              3000,
+              6000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.92,
+            "human": 0.75
+          }
+        }
+      },
+      "shifted_pause_mix": {
+        "description": "Halfway through arrivals, human-kind pauses become common but shorter and more cancellation-prone, testing stale historical forecasts without telling the policy about the shift.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 83886080
+        },
+        "workload": {
+          "interarrival_ms": 10.0,
+          "human_fraction": 0.1,
+          "resume_probability_by_kind": {
+            "tool": 0.95,
+            "human": 0.8
+          },
+          "phases": [
+            {
+              "start_fraction": 0.5,
+              "human_fraction": 0.8,
+              "wait_scale": 0.12,
+              "resume_probability_by_kind": {
+                "tool": 0.65,
+                "human": 0.35
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "scenario_assumptions": {
+    "sustained_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 100663296,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "branching_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 8388608,
+        "host_budget_bytes": 67108864,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "fast_return": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 8388608,
+        "host_budget_bytes": 134217728,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "cancel_heavy": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 67108864,
+        "storage_penalty_ms_per_mib_second": 0.1,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "low_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 536870912,
+        "storage_penalty_ms_per_mib_second": 0.0,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "heterogeneous": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 4194304,
+        "host_budget_bytes": 100663296,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "shifted_pause_mix": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 83886080,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    }
+  },
+  "input_traces": [
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1101,
+      "trace_sha256": "d1831f18416e3b5fe42f927e04742a5536f784434466009193d11a81a3e94470",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1102,
+      "trace_sha256": "312e0f7d0fde1f81920e1c748ca74c8c448887d5ee7087606c99268cc7754f5a",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1103,
+      "trace_sha256": "24afb70cb9140e33c18f68587b60b75645c44d207d6d87c8bee7ee63ac01b7af",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1104,
+      "trace_sha256": "b4626d4cd639474e3f4694495cf8fbb262d8fcccb7a8dd1463d5e1262c34ef79",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1105,
+      "trace_sha256": "9f663b55884a215dbba50dd47fb4cea01f3bb886b417b89dfebdd22a0a587116",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1106,
+      "trace_sha256": "271931be8f5102b6f9ba0410e81d0671233562b7a54b5743402206352b8b7e18",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1107,
+      "trace_sha256": "4c1a8440cb4089ee2bc54713413531e5cb0dbf67479115b2fdf50404554ac3d3",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1108,
+      "trace_sha256": "35b44468222c7c94578784f97818fe5511e53497b3a7e66cefca25110bfdbd54",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1109,
+      "trace_sha256": "96d10417b4203eb0fd9bdaea231969cffa6aca145952914d20316d144101b37f",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1110,
+      "trace_sha256": "7e7252dd1486e711703f8328ec624633bf7684920a31db2c6370723c86fef5db",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1111,
+      "trace_sha256": "49ce0a793d00b3db5e0a0eca2929563fc694a174ef805ea1d032ff51424d9dbc",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1112,
+      "trace_sha256": "5600cee7e680fb025dc5485435c0d6bde7e00d955ce36b4e1c34fc65a2a99ef7",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1113,
+      "trace_sha256": "4674c1d171d6d7a28cba0d995b45370ce8c18c75afff7909e970f1aee4d52671",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1114,
+      "trace_sha256": "6a01ca1e38d70c268c06983bd83d97339706209abbbbcc34fecbd6acae858b9e",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1115,
+      "trace_sha256": "05e798859a8fd92973464d51fdbe308b8ed87c61913cac7491acbb8a7ca52a89",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1116,
+      "trace_sha256": "95e5966531fcdb836775ab9aedb57dadaf5cfc1decb68d09dcc891977f6dbae4",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1117,
+      "trace_sha256": "ae769dcffc7594f518eae799704b59f29e48d143334ea9c23850e0fe2bea559d",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1118,
+      "trace_sha256": "307865ea43cc4ab9030983e1ebe3129f545989d9d6e725fd7fcb25e2382028c2",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1119,
+      "trace_sha256": "224b64e91b2b4f65556c9b145812f02b8a8502b23c838e8c8ee9ecc6aed21be6",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 1120,
+      "trace_sha256": "25bbf4609d18569a1abd8f5b8321ad589856c8345a4b970630a0920ad3a9c5f9",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1101,
+      "trace_sha256": "2ef60f35ad5ef95944836b953878113ed5732d10429db391c64cb39311711d93",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1102,
+      "trace_sha256": "d8e32080ac7389afc582d067cc7021a7bd9c6daf0de325c6e7133ef16d508232",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1103,
+      "trace_sha256": "5473fdeb360b049eab3183d5c0cb24751f985f16284b7d6f9810a5a173a36642",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1104,
+      "trace_sha256": "deffa567011e78f96b42cdc5e049847478d028229dcf7e9551a668bef2031c36",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1105,
+      "trace_sha256": "691e0595cf2ad411ec5eac629eaa2fa3afdc8b081f9a2c2ef3d060b89c5dfa87",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1106,
+      "trace_sha256": "278893cf56f069eec374724745948a8c9ac178e693e3d388ee31eedb73eeb06a",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1107,
+      "trace_sha256": "d3f0b7ee5a4517557a16207ea869424a71fdea5789532a43ea9af4c0bf3e1eaf",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1108,
+      "trace_sha256": "81ab9b1d17e59c13d820f4cf18dddf0e044e9961b0a682b56d0d1ebb797b9586",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1109,
+      "trace_sha256": "50be4c6af163b13abae7372de01709ee753d0e45fc882b3b672305d303139682",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1110,
+      "trace_sha256": "eb9a705081064b9502ce504bdef6a87ceb1c489b65ac5fb29b3f6cfdcdb33118",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1111,
+      "trace_sha256": "91a987cdf8e41f9920589e90068c50ec7007bdf54059939d28ef824432aefd65",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1112,
+      "trace_sha256": "31444cf185665e040b7b4f4d1c73680ac1b53827bae3e31dfc7a3e093e08b82f",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1113,
+      "trace_sha256": "6a3468b1f86152f7b63a70bda1a3eef5dce3990208e6ed03c3323b228c3e06eb",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1114,
+      "trace_sha256": "1ae01d4e95d8e70fe73797b0f6b1ec15af4764f17bf9b9d93c3eea54d6bf13fb",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1115,
+      "trace_sha256": "1f51b1a4380a63851418175ff13f3ec4e284b5e069d15ee57d27c173846c4125",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1116,
+      "trace_sha256": "176ce89f952092fdfe8717695831e65e42e6661be1d508335cedc28137308f68",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1117,
+      "trace_sha256": "03a46fddbd9887c10496367ea535f972b20e513395464e3ea3b6c1c81b05a76a",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1118,
+      "trace_sha256": "a7cca37136f9e13aed829be935df579e7087bd81c61fd3598e3aa4d5345daeff",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1119,
+      "trace_sha256": "72f1624b17f630536c41a7c8eff21090ea8a02a32cea8d73b105a57decf309f3",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 1120,
+      "trace_sha256": "000b69e37c4d19fe92606519bb7a66e13892a256ab09585a550334424d888c20",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1101,
+      "trace_sha256": "9d126d79211d8e0fc0e247afc11e8239649af3a1d339ba6c5e0871f664ef83b4",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1102,
+      "trace_sha256": "8df7877e217063142c63e15641ee12c9494978564b5bbe14c4d0a4080efef62b",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1103,
+      "trace_sha256": "5fa697c85e30a60c333aea73927ecd6b9fc4b0e6591dd700b41f0c9e19fb5de0",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1104,
+      "trace_sha256": "e37ecb6dadcf413a68d17b42f098802900286e76b6e024f9aa50d6a767a58601",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1105,
+      "trace_sha256": "0c7806fb1fe11b421962ba7811ce97801d0ba03dba6ba01d3b3a1e81bca14c2e",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1106,
+      "trace_sha256": "16ebd04374c99378243734c9799cc0f20650343d44df385d7f22fd140626a510",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1107,
+      "trace_sha256": "073e85a7510602d3c97771dadd251b67f6dd10f810561af95fe62f784a7ee1b2",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1108,
+      "trace_sha256": "c3024bef3ebfb9d002112f3a0290ace9877aebb98bc7aaf4b943b6163bb7598e",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1109,
+      "trace_sha256": "59abe67169ef938c6facea5346fca528ced6c0ea51866d9dd783cf7617eb258c",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1110,
+      "trace_sha256": "360e5a51e0226147c67db27393c4fad8257e64589b419e2dfd9898ac78a00860",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1111,
+      "trace_sha256": "ddef633060c004567267c88da5b6eaf487e804c26c7f2a3e8acc32aebcafbe09",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1112,
+      "trace_sha256": "391aa640d5d4d94b5f10827321e30fa2e5b7bbf34b811d336442c3958a60718d",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1113,
+      "trace_sha256": "3e3b225b813b28a4a7065168e7d0026d0cd6e3278a5d473a24eaff13176ffb52",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1114,
+      "trace_sha256": "3f39614043e5f4df32b67cd939ee3c1411eb846ff97a6f1b6bd3d1e54b0f0fe2",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1115,
+      "trace_sha256": "69dd2a280fec552b9ceedb634bb9199c5e6fea8634654431f85d6cf50aca16cc",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1116,
+      "trace_sha256": "a0fc7f1b05fe3b3fa33302bf8adc82c131129dab4244eeb937ee15cd56d79a99",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1117,
+      "trace_sha256": "21b9ef09a2c6eaee15bcb280862eb7aeb5e5c6046602054a9ca0a0a767977be0",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1118,
+      "trace_sha256": "a649e5bfd4044879f06393e49d1ce4943b3878230a30a739aa3438cf8e523384",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1119,
+      "trace_sha256": "5ac9d10995226330bb797ce589595acd74a17ed7257c1bf723525595e4bf4b66",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 1120,
+      "trace_sha256": "4150f6b1d08a66b2e2718f0accd87aaa8e5b4031062e9c6d2767f77d22353219",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1101,
+      "trace_sha256": "1656d546736efa32a6a9fa3bac570ecb507fd2753d1e80bd1b89e842f9835051",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1102,
+      "trace_sha256": "3081487b28c49c9c657667dcfdea3f0ddfedfbf52f69ddf77dad69e05fc7aae9",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1103,
+      "trace_sha256": "507c7942dfd73f0a6ba8aadaba67fe986c2555019ac51a7ddf590227f00b5861",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1104,
+      "trace_sha256": "c42dd8a955f6177679437e81f343eb0c191a17641136d5b975c1ce3338bc8f87",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1105,
+      "trace_sha256": "529110ae489d0b0fa6bb818ae8480e2d93bafa7ee64dd94261cf4b2bf170d041",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1106,
+      "trace_sha256": "44a652daf6e32c8ede3837cd47e3bf74826f3ef7f3c3f53a8179d3c69d7a9243",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1107,
+      "trace_sha256": "178a13fe3c026e66b403920752b03f24b491b120f86cf696ca45ed4c9cca4e19",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1108,
+      "trace_sha256": "4740be206df45c918cc552959b66c8ffe2304e7e4b7f7c61b5eca77e306fdb03",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1109,
+      "trace_sha256": "1bc969bf87a8fb216465156fb1391e1b6903a3f6d45c76a6b08fc1bdcc17f686",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1110,
+      "trace_sha256": "6a6ffd8bfb105a8f86cc68848e64ae992a60c9efda48348aa4cb6980cfb28052",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1111,
+      "trace_sha256": "4c1cbd041946bba62aea536509ebdf836c6cd171210df9715eb9e8e97bce130e",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1112,
+      "trace_sha256": "cb2eab798a5f5f82d017224ec2356af2f7dccde05457bca061a930f7307e58c3",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1113,
+      "trace_sha256": "2e628afa13fa793c24fda9b115907ca0edcaad7cf0fb87997bcf33695a282b2f",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1114,
+      "trace_sha256": "51550d2f61286302222a8deb3933b98bad3e235b9f2f37a01d8c79a201b96e99",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1115,
+      "trace_sha256": "d4fd6a2eda522a01c1284d86e0dc5199850db5a60bbe6268b86b02d22746bb16",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1116,
+      "trace_sha256": "d51da594cae92da556d14cb7846c16c4b70b3915dcf1f21a68cd4462b125ad5f",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1117,
+      "trace_sha256": "493d4c41d2a707b65561e5d6983a59ff26d105b6e51206d89a73d761bd5ad0eb",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1118,
+      "trace_sha256": "4e0948e9660601b8dc0d3d219a8d562e151aaae57cf57c713cf173d779d57696",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1119,
+      "trace_sha256": "441f3c34965258d0688650422e32614fea24d352ddd5de26f31fc87afdb95ffa",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 1120,
+      "trace_sha256": "3fef9a8180506a11c7c15d8ef5dbcc2ede3ff1e5156ce94ca862fdb3d5f24b93",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1101,
+      "trace_sha256": "b95f5e927feca93b7be3bbcee7682893318d65db3c31e0c56a970fa0b3d6b80b",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1102,
+      "trace_sha256": "89816af86cb9e0da54100216583efe18d89484f32719977cd45f947a13cc4d67",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1103,
+      "trace_sha256": "2b6aeb76b517762033cb9ca1608c75767672decf2f282696f8e39f343f05d9a8",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1104,
+      "trace_sha256": "3e8dda52decff9ce4524c3e6d038f82da99eb836d27c1c570b6c8941c24aa13e",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1105,
+      "trace_sha256": "3ce7487bf18c1e9af52aa3f6e228ccbcd434718952f1539518081721568d85a0",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1106,
+      "trace_sha256": "6e8e2705381edbbe26c8487b90b67e990c4ed5f0b69a18bfb72865299616df3d",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1107,
+      "trace_sha256": "f8727a8ee099703a768d01e2aefe00fe50f38f8cb030c8058e6fc61589f73707",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1108,
+      "trace_sha256": "b4a6ce1eb36d685710571381a8c6fa127e6c5e78300eb49cc3bcad2c48b48b19",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1109,
+      "trace_sha256": "18a0c5752c654c72e2f915dd5af46c2cf4ba897951d8bad973f076b7130b46e7",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1110,
+      "trace_sha256": "b4206e6e09a760743d7bacc6b4c25c833e56629219fb8065609307b6b1e31b24",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1111,
+      "trace_sha256": "0a221da98fc6927810d3d7bb27611d0b96e1e873b3055da994992fdd6e7bcb16",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1112,
+      "trace_sha256": "052fe657513e7186d24ad4cb939173057201cae60134c6d3765490f2029b6032",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1113,
+      "trace_sha256": "43a370d9c3d622932158d09a30e170993e68f3501aa785e1d35ceed5bc22dd75",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1114,
+      "trace_sha256": "95bdcef9bf683669b5c3cba0a924f7a13de4ae5c0a2ecf084f18a224c0a112cf",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1115,
+      "trace_sha256": "4d2db8fa8bf46be4acd6c02d5646990c590631ad29d2bb7b53235b639477bd1b",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1116,
+      "trace_sha256": "c12347df77641cc3a098aea179bc53d1706ba75df38db2d6b0a0bcde6953a92c",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1117,
+      "trace_sha256": "94078999c3e65458f7ac055ed88cc6b2da002b6e19f198b7f97670f7a9eaf1cc",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1118,
+      "trace_sha256": "94c345f83b8fc23eab78c784326b24b4c2fe0ec4c0fe77ad519297d615dcbb87",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1119,
+      "trace_sha256": "ae3e6d433cdcf931ae13c4702c5decc6255bd78b0dd8ff119845d2f3e2cc8470",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 1120,
+      "trace_sha256": "af6e79462a5e8313f31ac48aca9f6ab041884da3bb2aa1697638c78eb76df1cf",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1101,
+      "trace_sha256": "5caa4084300f6c6c11cc3c01a6f30b03add9c2c2341044361c58522086e3d893",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1102,
+      "trace_sha256": "43e160dbc86b0d3d76f9cc9c4c9d81e75e9e0bf820852e6921cf0f01e9fd8cb6",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1103,
+      "trace_sha256": "297763126361c5a71dfbe70fc9723d1fdbd678c263ff1b24c85a8d85f7cd316b",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1104,
+      "trace_sha256": "6a7071d034d4431f93f4980ce9e3fa1f351d218bc535ffd4d147c10ab09a8264",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1105,
+      "trace_sha256": "6eba27e21fc61f09838e75215868c38d1cfead79f61707fc1e1e8c64b1aa422d",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1106,
+      "trace_sha256": "010ca9a834ba311f11658a44a61243ca59a55f650482b8e8f91509145cd83641",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1107,
+      "trace_sha256": "e8852cf9a5c77ce99a75ae96efeeea99d1f13a0efbb411613260a5c1ed8e9a10",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1108,
+      "trace_sha256": "d5b7cc4050fbe63efa69897b002cee85667bfcc127d3f6b41e8d09a096a03c64",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1109,
+      "trace_sha256": "92c5bb281ccd2da9f6e773d0038742beb655d19ef1f4d0d811e9fdbea20b4c91",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1110,
+      "trace_sha256": "b1b6bf3aafaf611fd6939699443d55a1d11d4411ac727c0503f076d7285cffa9",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1111,
+      "trace_sha256": "08615ef0bdf7c31cfbc366f13d4c319a1f015248707b7ac5e9b84edf71d7358d",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1112,
+      "trace_sha256": "2f36371328dc6e3499c438d8008eed111b262ac343caf096207abb2e1fc0fbec",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1113,
+      "trace_sha256": "aa6ff169f3a14c5c0c89d2cfe76fa7edce3cb3a118b939f712c20ec5252dcbee",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1114,
+      "trace_sha256": "9c29852c44eff7e389781c786a5539c66d97e29a26032b6974d1db4073dac429",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1115,
+      "trace_sha256": "1c7e3114b87c20f0fee1daa3fde661dce1c252520fa50800a2145026ca73c984",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1116,
+      "trace_sha256": "68637dd2024d3930368d1b270c4334ba21775cdb18dc6505ef9519c6e4a5792b",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1117,
+      "trace_sha256": "603dbc29f66dc85e9dcaf09feec219550c0cba6435d968210547363569ab1d80",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1118,
+      "trace_sha256": "991f907a4b2cc65ab030ac6aa228ae4b226e15197b9f22d64364ec08bc04d28d",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1119,
+      "trace_sha256": "3bfa8312afe1f4c4973533696c0da04988def4aaa7408b43538bc1a00ba66242",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 1120,
+      "trace_sha256": "ded78c7d76b1753200d4339a43c5956c4b382f816eddb5f438dc8e5e063e6d56",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1101,
+      "trace_sha256": "247adb627367f347367dd6d1574bdd8b42e45220d0bec10fbda773a5d2900cf9",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1102,
+      "trace_sha256": "52ea2f9ab24a5a3fe637173e5f8099326bb9470ffb824d2d52784fb529825de3",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1103,
+      "trace_sha256": "bf6555fae8032931b64f6a0155f55b497e361848ef31cd2c5074bb496eab6df5",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1104,
+      "trace_sha256": "6b9e6ba1584d2ffeb1460ee4e7ef453aaeeb068e66fb3902c1ed39499b6aab8f",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1105,
+      "trace_sha256": "a93bc97ade631f161c407dfab90f07c0295d8d0b02059b62ecc7c419545c802a",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1106,
+      "trace_sha256": "f2a1ac7c5413fb457f9f79d4280ff6a3004994aae431b7b73607f6a950973faa",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1107,
+      "trace_sha256": "701fc87018cac0561cc5b27c5a0879bf951a03fccd5b56b07ca3f564c6b0696e",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1108,
+      "trace_sha256": "d2dfa3c287a4cf4689cd9c2674c80312c315a33c6154414dbdacb1090a72a854",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1109,
+      "trace_sha256": "c92d6aae1d64faabcee95ae06e7dbfbff962b0ca79e38e134ce7d21c72f628f6",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1110,
+      "trace_sha256": "a404ff31ac8d0770f95bdfeb4d5b62322e632922ce9beaaa0c73871219f6aef4",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1111,
+      "trace_sha256": "5149a2537ab8a0e77e9c2fc22381027c1caa701794d8da22edf5870e77efcd2a",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1112,
+      "trace_sha256": "f2990f0b441b1b6a12df833cb11b7e8de9f914061d66f6c87b1a12ff485a32c2",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1113,
+      "trace_sha256": "1c841b9b1ba35c7bfaab34ea2f85e3ab9283786ee98e49d609b411013cbaca68",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1114,
+      "trace_sha256": "4c80f61277edc870efd19a19c34942d19bb03e606804c86b8398a6a55a4cd878",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1115,
+      "trace_sha256": "2b1c9bb919912d4daae3e2525a4447a10db16c3cf3830d3313d92e8eb860433f",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1116,
+      "trace_sha256": "4e06aefbe0826baf2f81db58b926ec3fd99005b71be1c74de48d60d021868591",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1117,
+      "trace_sha256": "df1ebaccfed12e68740b984ecc34454f8212d98cd9ad25ca997c0403cc538ea7",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1118,
+      "trace_sha256": "8e450970d44b1a1eee910332ec308ad62815faff06b426253802ba42ce8408b1",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1119,
+      "trace_sha256": "9805c41e76e2d620194e93f42211f82bc798235bd80a091c4fb0c2a98a290fdf",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 1120,
+      "trace_sha256": "7e1fbac3e1a4c4abc523ccd2c993e80faa67110ba46b9bff5e90db16dfdbf375",
+      "event_count": 480
+    }
+  ],
+  "python": "3.13.0 (main, Oct  7 2024, 05:02:14) [Clang 16.0.0 (clang-1600.0.26.4)]"
+}
