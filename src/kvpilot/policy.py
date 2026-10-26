@@ -6,6 +6,7 @@ Profiles must be calibrated on the intended hardware before deployment.
 
 from dataclasses import dataclass
 import math
+from typing import Mapping
 
 MIB = 1024 * 1024
 
@@ -24,7 +25,7 @@ class CodecProfile:
     lossless: bool = True
 
     def __post_init__(self):
-        if not isinstance(self.name, str) or not self.name or self.name in {"recompute", "adaptive"}:
+        if not isinstance(self.name, str) or not self.name or self.name in {"recompute", "adaptive", "adaptive_exact", "adaptive_eviction"}:
             raise ValueError("codec name must be a nonempty string and not a reserved policy name")
         if not isinstance(self.lossless, bool):
             raise ValueError("lossless must be a Boolean")
@@ -72,6 +73,26 @@ class Candidate:
     predicted_resume_ms: float
     expected_cost_ms: float
     within_resume_slo: bool
+    eviction_cost_ms: float = 0.0
+
+
+@dataclass(frozen=True)
+class AdmissionImpact:
+    """Exact physical size and estimated external cost of this admission.
+
+    The caller plans against current residency without changing it. The external
+    cost is an expected lost-restoration benefit for affected existing owners.
+    """
+    stored_bytes: int
+    eviction_cost_ms: float = 0.0
+    feasible: bool = True
+
+    def __post_init__(self):
+        if not isinstance(self.stored_bytes, int) or isinstance(self.stored_bytes, bool) or self.stored_bytes <= 0:
+            raise ValueError("stored_bytes must be a positive integer")
+        positive(self.eviction_cost_ms, "eviction_cost_ms", zero=True)
+        if not isinstance(self.feasible, bool):
+            raise ValueError("admission feasibility must be a Boolean")
 
 
 @dataclass(frozen=True)
@@ -83,7 +104,8 @@ class Decision:
 
 def choose_action(raw_bytes: int, recompute_ms: float, profiles: list[CodecProfile],
                   model: CostModel, forecast: Forecast, *, force_codec: str | None = None,
-                  shared_restore_ms: float = 0.0, shared_wait_ms: float = 0.0) -> Decision:
+                  shared_restore_ms: float = 0.0, shared_wait_ms: float = 0.0,
+                  admission_impacts: Mapping[str, AdmissionImpact] | None = None) -> Decision:
     if not isinstance(raw_bytes, int) or raw_bytes <= 0:
         raise ValueError("raw_bytes must be a positive integer")
     positive(recompute_ms, "recompute_ms", zero=True)
@@ -91,13 +113,19 @@ def choose_action(raw_bytes: int, recompute_ms: float, profiles: list[CodecProfi
     positive(shared_wait_ms, "shared_wait_ms", zero=True)
     if len({p.name for p in profiles}) != len(profiles):
         raise ValueError("duplicate codec profile")
+    if admission_impacts is not None and set(admission_impacts) - {p.name for p in profiles}:
+        raise ValueError("admission impact names must match codec profiles")
     p = forecast.resume_probability
     candidates = [Candidate("recompute", 0, 0, 0, recompute_ms, recompute_ms,
                             p * recompute_ms, recompute_ms <= model.resume_slo_ms)]
     for profile in profiles:
         if not profile.lossless and not model.allow_unvalidated_lossy:
             continue
-        size = math.ceil(raw_bytes / profile.ratio)
+        impact = admission_impacts.get(profile.name) if admission_impacts is not None else None
+        if impact is not None and not impact.feasible:
+            continue
+        size = impact.stored_bytes if impact is not None else math.ceil(raw_bytes / profile.ratio)
+        eviction_cost = impact.eviction_cost_ms if impact is not None else 0.0
         if size > model.host_budget_bytes:
             continue
         encode = raw_bytes / MIB * profile.encode_ms_per_mib
@@ -107,9 +135,9 @@ def choose_action(raw_bytes: int, recompute_ms: float, profiles: list[CodecProfi
         early_wait = max(0.0, encode + offload - forecast.pause_ms)
         predicted_resume = shared_restore_ms + restore + max(early_wait, shared_wait_ms)
         residency_cost = size / MIB * forecast.pause_ms / 1000 * model.storage_penalty_ms_per_mib_second
-        score = encode + offload + p * predicted_resume + residency_cost
+        score = encode + offload + p * predicted_resume + residency_cost + eviction_cost
         candidates.append(Candidate(profile.name, size, encode, offload, restore, predicted_resume, score,
-                                    predicted_resume <= model.resume_slo_ms))
+                                    predicted_resume <= model.resume_slo_ms, eviction_cost))
     if force_codec == "recompute":
         selected = candidates[0]
         reason = "fixed recompute baseline"
@@ -128,6 +156,8 @@ def choose_action(raw_bytes: int, recompute_ms: float, profiles: list[CodecProfi
         feasible = [c for c in candidates if c.within_resume_slo]
         selected = min(feasible, key=lambda c: c.expected_cost_ms) if feasible else min(candidates, key=lambda c: c.predicted_resume_ms)
         reason = "minimum estimated expected cost within resume target" if feasible else "no action satisfies estimated resume target; fastest fallback"
+        if admission_impacts is not None:
+            reason += "; includes estimated loss imposed on evicted owners"
     return Decision(selected, tuple(candidates), reason)
 
 

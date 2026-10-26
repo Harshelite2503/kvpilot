@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "approved_for_holdout",
+  "approval_note": "Source reviewed before any evaluation-seed generation. 130 tests and 89 subtests pass. Development seeds 101-103 inspected; no policy coefficient tuned to these outcomes. Eviction helper independently reviewed. Exact-size zero-penalty control added before freeze. All evaluation seeds 1101-1120 remain unseen. Freeze approved by the executing agent within the user-authorized local experiment.",
+  "evidence_type": "analytical_trace_replay",
+  "quality_validated": false,
+  "component_sha256": {
+    "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+    "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+    "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+    "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+    "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+    "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50",
+    "scripts/evaluate_eviction.py": "487d16f68c4728609846d856b739f5feeaaf5a3bb52ab9a41ec4e7ba0990c1f8",
+    "examples/assumed-costs.json": "d320b71c2342256194313d3278a94d711a4cc7477307bd898ffddf41c87c5c20",
+    "experiment_protocol": "2e469493ac81e6c06cb863bc69886fadc5dd8677b18d1d513a7543f542d444c4"
+  },
+  "baseline": {
+    "policy": "group_int4",
+    "version": "fixed-codec-lru-v1"
+  },
+  "candidate_policy": "adaptive_eviction",
+  "attribution_baseline_policy": "adaptive_exact",
+  "policies": [
+    "adaptive",
+    "adaptive_exact",
+    "adaptive_eviction",
+    "group_int4",
+    "raw_fp16",
+    "recompute"
+  ],
+  "predeclared_metrics": {
+    "primary": [
+      "modeled_p95_resume_ms"
+    ],
+    "secondary": [
+      "modeled_mean_resume_ms",
+      "modeled_total_service_work_ms",
+      "host_reserved_byte_ms",
+      "peak_host_reserved_bytes",
+      "modeled_transferred_bytes",
+      "canceled_owner_encoding_ms_upper_bound",
+      "full_recomputes"
+    ]
+  },
+  "scenario_names": [
+    "sustained_pressure",
+    "branching_pressure",
+    "fast_return",
+    "cancel_heavy",
+    "low_pressure",
+    "heterogeneous",
+    "shifted_pause_mix"
+  ],
+  "bootstrap": {
+    "resamples": 2000,
+    "confidence": 0.95,
+    "seed": 71027
+  }
+}

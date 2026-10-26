@@ -1,0 +1,866 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-26T20:04:13.366134+00:00",
+  "split": "development",
+  "evidence_type": "analytical_trace_replay",
+  "quality_validated": false,
+  "freeze_manifest": null,
+  "source_declaration": {
+    "schema_version": 1,
+    "status": "awaiting_code_freeze_approval",
+    "approval_note": "",
+    "evidence_type": "analytical_trace_replay",
+    "quality_validated": false,
+    "component_sha256": {
+      "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+      "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+      "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+      "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+      "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+      "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50",
+      "scripts/evaluate_eviction.py": "487d16f68c4728609846d856b739f5feeaaf5a3bb52ab9a41ec4e7ba0990c1f8",
+      "examples/assumed-costs.json": "d320b71c2342256194313d3278a94d711a4cc7477307bd898ffddf41c87c5c20",
+      "experiment_protocol": "2e469493ac81e6c06cb863bc69886fadc5dd8677b18d1d513a7543f542d444c4"
+    },
+    "baseline": {
+      "policy": "group_int4",
+      "version": "fixed-codec-lru-v1"
+    },
+    "candidate_policy": "adaptive_eviction",
+    "attribution_baseline_policy": "adaptive_exact",
+    "policies": [
+      "adaptive",
+      "adaptive_exact",
+      "adaptive_eviction",
+      "group_int4",
+      "raw_fp16",
+      "recompute"
+    ],
+    "predeclared_metrics": {
+      "primary": [
+        "modeled_p95_resume_ms"
+      ],
+      "secondary": [
+        "modeled_mean_resume_ms",
+        "modeled_total_service_work_ms",
+        "host_reserved_byte_ms",
+        "peak_host_reserved_bytes",
+        "modeled_transferred_bytes",
+        "canceled_owner_encoding_ms_upper_bound",
+        "full_recomputes"
+      ]
+    },
+    "scenario_names": [
+      "sustained_pressure",
+      "branching_pressure",
+      "fast_return",
+      "cancel_heavy",
+      "low_pressure",
+      "heterogeneous",
+      "shifted_pause_mix"
+    ],
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95,
+      "seed": 71027
+    }
+  },
+  "protocol": {
+    "schema_version": 1,
+    "protocol_version": "1.0",
+    "status": "predeclared_before_holdout_execution",
+    "evidence_type": "analytical_assumptions",
+    "description": "Deterministic synthetic workloads for local analytical policy comparisons. Costs, distributions, and correlations are assumptions, not measurements of a GPU, production traffic, or model quality.",
+    "development_seeds": [
+      101,
+      102,
+      103
+    ],
+    "evaluation_seeds": [
+      1101,
+      1102,
+      1103,
+      1104,
+      1105,
+      1106,
+      1107,
+      1108,
+      1109,
+      1110,
+      1111,
+      1112,
+      1113,
+      1114,
+      1115,
+      1116,
+      1117,
+      1118,
+      1119,
+      1120
+    ],
+    "sessions_per_run": 240,
+    "policies": [
+      "adaptive",
+      "adaptive_exact",
+      "adaptive_eviction",
+      "group_int4",
+      "raw_fp16",
+      "recompute"
+    ],
+    "candidate_policy": "adaptive_eviction",
+    "attribution_baseline_policy": "adaptive_exact",
+    "baseline_policy": "group_int4",
+    "baseline_version": "fixed-codec-lru-v1",
+    "primary_metrics": [
+      "modeled_p95_resume_ms"
+    ],
+    "secondary_metrics": [
+      "modeled_mean_resume_ms",
+      "modeled_total_service_work_ms",
+      "host_reserved_byte_ms",
+      "peak_host_reserved_bytes",
+      "modeled_transferred_bytes",
+      "canceled_owner_encoding_ms_upper_bound",
+      "full_recomputes"
+    ],
+    "resource_cost_definition": "modeled_encoding_ms + modeled_decoding_ms + modeled_recompute_ms + modeled_transferred_bytes / bandwidth_bytes_per_ms; resource work, not wall-clock latency, with no assumed queue or overlap credit",
+    "bootstrap": {
+      "resamples": 2000,
+      "confidence": 0.95,
+      "seed": 71027
+    },
+    "analysis": {
+      "unit": "One complete scenario/seed run. Run every policy on identical trace events and cost configuration.",
+      "paired_effect": "fixed group_int4 baseline metric minus candidate metric; positive denotes candidate improvement for latency, work, and bytes",
+      "ablation": "adaptive is the legacy aggregate-size policy. adaptive_exact uses the same exact per-page sizing and victim planning as adaptive_eviction but charges zero eviction penalty. Compare adaptive_eviction with adaptive_exact to isolate the charged externality; do not attribute all differences from legacy adaptive to eviction pricing.",
+      "primary_aggregation": "For each scenario, compute p95 among resumed sessions within each run, then summarize paired per-run p95 differences over evaluation seeds. Do not pool all requests into one percentile.",
+      "overall_summary": "Report every scenario's paired summary separately. Do not pool or blend scenarios into an overall winner; no across-scenario aggregate is computed.",
+      "correlation": "Branches share a family prefix and correlated latent wait/cancellation draws. Shared physical state also couples otherwise unrelated sessions through capacity. Bootstrap whole runs, never individual requests or branches.",
+      "regressions": "Report scenario-specific p95 differences and secondary memory, transfer, recomputation, and canceled-owner encoding changes, including adverse outcomes. Do not select scenarios or seeds after viewing evaluation results.",
+      "multiplicity": "Scenario confidence intervals are descriptive, unadjusted intervals; do not turn seven scenario comparisons into a claim of universal significance.",
+      "quality": "Lossy actions are enabled only for sensitivity analysis. No language-model quality or GPU throughput claim is permitted.",
+      "holdout_rule": "Do not generate or execute evaluation seeds until policy, workload, cost, and evaluator definitions are frozen. Record hashes before unlocking. If policy is changed afterward, this evaluation set becomes development data and a new predeclared holdout is required.",
+      "forecast_inputs": "Pause events contain only current size, compatibility namespace, estimated recomputation cost, pause kind, and time. Actual future duration and cancellation appear only as later terminal events.",
+      "family_identity": "Family and branch indices appear only within ordinary session IDs and shared block hashes; there is no additional family_id, future_probability, or outcome field in pause events. These identifiers do not determine future outcomes."
+    },
+    "base_cost_config": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 33554432,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "workload_defaults": {
+      "family_size": 1,
+      "branch_gap_ms": 1.0,
+      "interarrival_ms": 12.0,
+      "raw_mib_values": [
+        8,
+        16,
+        24
+      ],
+      "recompute_ms_per_mib_values": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "human_fraction": 0.2,
+      "wait_ms_by_kind": {
+        "tool": [
+          100,
+          300,
+          800
+        ],
+        "human": [
+          1000,
+          3000,
+          8000
+        ]
+      },
+      "resume_probability_by_kind": {
+        "tool": 0.9,
+        "human": 0.7
+      },
+      "time_jitter_fraction": 0.15,
+      "shared_fraction": 0.0,
+      "family_outcome_correlation": 0.0,
+      "cancel_wait_scale": 1.0
+    },
+    "scenarios": {
+      "sustained_pressure": {
+        "description": "Many long-lived independent caches exceed even compressed capacity; eviction externalities dominate the test conditions.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 100663296
+        },
+        "workload": {
+          "interarrival_ms": 8.0,
+          "wait_ms_by_kind": {
+            "tool": [
+              400,
+              1000,
+              2400
+            ],
+            "human": [
+              2000,
+              5000,
+              10000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.96,
+            "human": 0.85
+          }
+        }
+      },
+      "branching_pressure": {
+        "description": "Four correlated sibling sessions share 75 percent of a family cache in two prefix blocks, plus private suffixes. Cancellation must not free siblings' shared state.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 67108864,
+          "bandwidth_bytes_per_ms": 8388608
+        },
+        "workload": {
+          "family_size": 4,
+          "interarrival_ms": 6.0,
+          "raw_mib_values": [
+            16,
+            24,
+            32
+          ],
+          "shared_fraction": 0.75,
+          "family_outcome_correlation": 0.6,
+          "wait_ms_by_kind": {
+            "tool": [
+              300,
+              900,
+              1800
+            ],
+            "human": [
+              1500,
+              4000,
+              8000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.8,
+            "human": 0.65
+          }
+        }
+      },
+      "fast_return": {
+        "description": "Most sessions return before a typical assumed lossy encoding completes; copying/computing on the pause path can be wasted.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 134217728,
+          "bandwidth_bytes_per_ms": 8388608
+        },
+        "workload": {
+          "interarrival_ms": 0.6,
+          "raw_mib_values": [
+            4,
+            16,
+            32
+          ],
+          "human_fraction": 0.0,
+          "wait_ms_by_kind": {
+            "tool": [
+              0.2,
+              0.5,
+              1.0,
+              2.0
+            ],
+            "human": [
+              0.2,
+              0.5,
+              1.0,
+              2.0
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.97,
+            "human": 0.97
+          }
+        }
+      },
+      "cancel_heavy": {
+        "description": "Frequent early cancellations test admission and useless encoding work; a small resumed subset still determines latency.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 67108864,
+          "storage_penalty_ms_per_mib_second": 0.1
+        },
+        "workload": {
+          "interarrival_ms": 6.0,
+          "human_fraction": 0.5,
+          "resume_probability_by_kind": {
+            "tool": 0.25,
+            "human": 0.12
+          },
+          "cancel_wait_scale": 0.08
+        }
+      },
+      "low_pressure": {
+        "description": "Widely spaced pauses and abundant storage make aggressive compression unnecessary; explicitly tests for regressions when eviction is absent.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 536870912,
+          "storage_penalty_ms_per_mib_second": 0.0
+        },
+        "workload": {
+          "interarrival_ms": 300.0,
+          "raw_mib_values": [
+            4,
+            16,
+            32
+          ],
+          "human_fraction": 0.1,
+          "wait_ms_by_kind": {
+            "tool": [
+              20,
+              60,
+              120
+            ],
+            "human": [
+              80,
+              120,
+              150
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.98,
+            "human": 0.95
+          }
+        }
+      },
+      "heterogeneous": {
+        "description": "Independent cache size and recomputation estimates span cheap/expensive victims and a slower link; large bytes do not automatically imply high reuse value.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 100663296,
+          "bandwidth_bytes_per_ms": 4194304
+        },
+        "workload": {
+          "interarrival_ms": 10.0,
+          "raw_mib_values": [
+            2,
+            4,
+            8,
+            16,
+            32,
+            64
+          ],
+          "recompute_ms_per_mib_values": [
+            0.15,
+            0.5,
+            2.0,
+            8.0
+          ],
+          "wait_ms_by_kind": {
+            "tool": [
+              80,
+              400,
+              1500
+            ],
+            "human": [
+              800,
+              3000,
+              6000
+            ]
+          },
+          "resume_probability_by_kind": {
+            "tool": 0.92,
+            "human": 0.75
+          }
+        }
+      },
+      "shifted_pause_mix": {
+        "description": "Halfway through arrivals, human-kind pauses become common but shorter and more cancellation-prone, testing stale historical forecasts without telling the policy about the shift.",
+        "cost_model_overrides": {
+          "host_budget_bytes": 83886080
+        },
+        "workload": {
+          "interarrival_ms": 10.0,
+          "human_fraction": 0.1,
+          "resume_probability_by_kind": {
+            "tool": 0.95,
+            "human": 0.8
+          },
+          "phases": [
+            {
+              "start_fraction": 0.5,
+              "human_fraction": 0.8,
+              "wait_scale": 0.12,
+              "resume_probability_by_kind": {
+                "tool": 0.65,
+                "human": 0.35
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "scenario_assumptions": {
+    "sustained_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 100663296,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "branching_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 8388608,
+        "host_budget_bytes": 67108864,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "fast_return": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 8388608,
+        "host_budget_bytes": 134217728,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "cancel_heavy": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 67108864,
+        "storage_penalty_ms_per_mib_second": 0.1,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "low_pressure": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 536870912,
+        "storage_penalty_ms_per_mib_second": 0.0,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "heterogeneous": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 4194304,
+        "host_budget_bytes": 100663296,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    },
+    "shifted_pause_mix": {
+      "evidence_type": "analytical_assumptions",
+      "source": "examples/assumed-costs.json",
+      "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+      "default_pause_ms": 500,
+      "cost_model": {
+        "bandwidth_bytes_per_ms": 16777216,
+        "host_budget_bytes": 83886080,
+        "storage_penalty_ms_per_mib_second": 0.05,
+        "resume_slo_ms": 50,
+        "allow_unvalidated_lossy": true
+      },
+      "codecs": [
+        {
+          "name": "raw_fp16",
+          "ratio": 1,
+          "encode_ms_per_mib": 0,
+          "decode_ms_per_mib": 0,
+          "lossless": true
+        },
+        {
+          "name": "zlib_fp16",
+          "ratio": 1.08,
+          "encode_ms_per_mib": 20,
+          "decode_ms_per_mib": 4,
+          "lossless": true
+        },
+        {
+          "name": "group_int8",
+          "ratio": 1.94,
+          "encode_ms_per_mib": 0.15,
+          "decode_ms_per_mib": 0.08,
+          "lossless": false
+        },
+        {
+          "name": "group_int4",
+          "ratio": 3.76,
+          "encode_ms_per_mib": 0.25,
+          "decode_ms_per_mib": 0.15,
+          "lossless": false
+        }
+      ]
+    }
+  },
+  "input_traces": [
+    {
+      "scenario": "sustained_pressure",
+      "seed": 101,
+      "trace_sha256": "e35363921144561dd9bacc8f879cc9fa8e1de5c219eb111bc4f2993782733bf4",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 102,
+      "trace_sha256": "ccbad315432788a98934d7fc6afabf0fd612aa98a0fe04e50157cc8367a755d2",
+      "event_count": 480
+    },
+    {
+      "scenario": "sustained_pressure",
+      "seed": 103,
+      "trace_sha256": "d164b4a49f8f108056613b15a79a2d3f5984879e8d90d71c2605e5f8cd1a0f2a",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 101,
+      "trace_sha256": "7d468548bb53ca59f7e90d99920d9b06e708f6ce6d17db48263bc51416bd4946",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 102,
+      "trace_sha256": "6873ae110de21e51398d0d94d1e40b9754840ef2599e41713399dfdce3f4be31",
+      "event_count": 480
+    },
+    {
+      "scenario": "branching_pressure",
+      "seed": 103,
+      "trace_sha256": "62c4b18d22dde00517a164e3963e3e8f4302a0613e9a9582c97510b5b4d259d0",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 101,
+      "trace_sha256": "950e4fb29c3126ea553db66c841d22ad3059996c8d795b6088f1bb01cdc88489",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 102,
+      "trace_sha256": "8103bdd4f9f901c948831c47cf1e87210c41452d6e9b426a4ca27de22f59db34",
+      "event_count": 480
+    },
+    {
+      "scenario": "fast_return",
+      "seed": 103,
+      "trace_sha256": "59d29e0e0b77f80e58d952cc56df76b959b7ac56765519ef7775ccef10a68b4a",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 101,
+      "trace_sha256": "c7bd411d65ddaa4522c7f477018484c0e69794e52cd56ffa86e111ccbaff2e08",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 102,
+      "trace_sha256": "ce432964829c33c5124529da09e857842b02b073e9b86c5b7bb1166e77d5aa85",
+      "event_count": 480
+    },
+    {
+      "scenario": "cancel_heavy",
+      "seed": 103,
+      "trace_sha256": "9cc034322961b8818a24c0c80dc4668a74c226009b6f10497a18d6df9ffe2243",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 101,
+      "trace_sha256": "75bf48e8f86295a597d4e3aadda0da8ef5f1e13d8996ca416243939627722bc8",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 102,
+      "trace_sha256": "33c41929895fb0a70b8dd88f23fc7a0d6f558d61446e21022759c5f3f06fcbe5",
+      "event_count": 480
+    },
+    {
+      "scenario": "low_pressure",
+      "seed": 103,
+      "trace_sha256": "1f3f01b3bd2691e4d07254cdc7c5611dd9f9781ae18dc14f8d42d2139a632696",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 101,
+      "trace_sha256": "aa3eb88039750968855d07a25ec2f781d3b71298c93dd3197db236235b01a9c6",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 102,
+      "trace_sha256": "97a0907c764be87460486c662b39ce0079d0f880025eb2d8861c9657aec30729",
+      "event_count": 480
+    },
+    {
+      "scenario": "heterogeneous",
+      "seed": 103,
+      "trace_sha256": "8fac4e39d570bf675fc10401b588c47d74319d80c1c3a158829c1a93e66d66da",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 101,
+      "trace_sha256": "fb42919c2c0acd7a761b6f43cd8f9456fe89a58d7cef09f22507540c7add646e",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 102,
+      "trace_sha256": "283d399417f24269aed03ff7bbeff3506032d4b58e6b4fb6a21581b620f9f797",
+      "event_count": 480
+    },
+    {
+      "scenario": "shifted_pause_mix",
+      "seed": 103,
+      "trace_sha256": "736c764302561b31824671a0a0c7ec3e4935fe535bba2fca1452e2022cb9142a",
+      "event_count": 480
+    }
+  ],
+  "python": "3.13.0 (main, Oct  7 2024, 05:02:14) [Clang 16.0.0 (clang-1600.0.26.4)]"
+}

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "protocol_version": "1.0",
+  "status": "predeclared_before_holdout_execution",
+  "evidence_type": "analytical_assumptions",
+  "description": "Deterministic synthetic workloads for local analytical policy comparisons. Costs, distributions, and correlations are assumptions, not measurements of a GPU, production traffic, or model quality.",
+  "development_seeds": [101, 102, 103],
+  "evaluation_seeds": [1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1119, 1120],
+  "sessions_per_run": 240,
+  "policies": ["adaptive", "adaptive_exact", "adaptive_eviction", "group_int4", "raw_fp16", "recompute"],
+  "candidate_policy": "adaptive_eviction",
+  "attribution_baseline_policy": "adaptive_exact",
+  "baseline_policy": "group_int4",
+  "baseline_version": "fixed-codec-lru-v1",
+  "primary_metrics": ["modeled_p95_resume_ms"],
+  "secondary_metrics": ["modeled_mean_resume_ms", "modeled_total_service_work_ms", "host_reserved_byte_ms", "peak_host_reserved_bytes", "modeled_transferred_bytes", "canceled_owner_encoding_ms_upper_bound", "full_recomputes"],
+  "resource_cost_definition": "modeled_encoding_ms + modeled_decoding_ms + modeled_recompute_ms + modeled_transferred_bytes / bandwidth_bytes_per_ms; resource work, not wall-clock latency, with no assumed queue or overlap credit",
+  "bootstrap": {"resamples": 2000, "confidence": 0.95, "seed": 71027},
+  "analysis": {
+    "unit": "One complete scenario/seed run. Run every policy on identical trace events and cost configuration.",
+    "paired_effect": "fixed group_int4 baseline metric minus candidate metric; positive denotes candidate improvement for latency, work, and bytes",
+    "ablation": "adaptive is the legacy aggregate-size policy. adaptive_exact uses the same exact per-page sizing and victim planning as adaptive_eviction but charges zero eviction penalty. Compare adaptive_eviction with adaptive_exact to isolate the charged externality; do not attribute all differences from legacy adaptive to eviction pricing.",
+    "primary_aggregation": "For each scenario, compute p95 among resumed sessions within each run, then summarize paired per-run p95 differences over evaluation seeds. Do not pool all requests into one percentile.",
+    "overall_summary": "Report every scenario's paired summary separately. Do not pool or blend scenarios into an overall winner; no across-scenario aggregate is computed.",
+    "correlation": "Branches share a family prefix and correlated latent wait/cancellation draws. Shared physical state also couples otherwise unrelated sessions through capacity. Bootstrap whole runs, never individual requests or branches.",
+    "regressions": "Report scenario-specific p95 differences and secondary memory, transfer, recomputation, and canceled-owner encoding changes, including adverse outcomes. Do not select scenarios or seeds after viewing evaluation results.",
+    "multiplicity": "Scenario confidence intervals are descriptive, unadjusted intervals; do not turn seven scenario comparisons into a claim of universal significance.",
+    "quality": "Lossy actions are enabled only for sensitivity analysis. No language-model quality or GPU throughput claim is permitted.",
+    "holdout_rule": "Do not generate or execute evaluation seeds until policy, workload, cost, and evaluator definitions are frozen. Record hashes before unlocking. If policy is changed afterward, this evaluation set becomes development data and a new predeclared holdout is required.",
+    "forecast_inputs": "Pause events contain only current size, compatibility namespace, estimated recomputation cost, pause kind, and time. Actual future duration and cancellation appear only as later terminal events.",
+    "family_identity": "Family and branch indices appear only within ordinary session IDs and shared block hashes; there is no additional family_id, future_probability, or outcome field in pause events. These identifiers do not determine future outcomes."
+  },
+  "base_cost_config": {
+    "evidence_type": "analytical_assumptions",
+    "source": "examples/assumed-costs.json",
+    "description": "Same illustrative codec profile as the existing example. Ratios include assumed metadata overhead; times are supplied assumptions. Scenario overrides below use only valid CostModel fields.",
+    "default_pause_ms": 500,
+    "cost_model": {
+      "bandwidth_bytes_per_ms": 16777216,
+      "host_budget_bytes": 33554432,
+      "storage_penalty_ms_per_mib_second": 0.05,
+      "resume_slo_ms": 50,
+      "allow_unvalidated_lossy": true
+    },
+    "codecs": [
+      {"name": "raw_fp16", "ratio": 1, "encode_ms_per_mib": 0, "decode_ms_per_mib": 0, "lossless": true},
+      {"name": "zlib_fp16", "ratio": 1.08, "encode_ms_per_mib": 20, "decode_ms_per_mib": 4, "lossless": true},
+      {"name": "group_int8", "ratio": 1.94, "encode_ms_per_mib": 0.15, "decode_ms_per_mib": 0.08, "lossless": false},
+      {"name": "group_int4", "ratio": 3.76, "encode_ms_per_mib": 0.25, "decode_ms_per_mib": 0.15, "lossless": false}
+    ]
+  },
+  "workload_defaults": {
+    "family_size": 1,
+    "branch_gap_ms": 1.0,
+    "interarrival_ms": 12.0,
+    "raw_mib_values": [8, 16, 24],
+    "recompute_ms_per_mib_values": [1.0, 2.0, 4.0],
+    "human_fraction": 0.2,
+    "wait_ms_by_kind": {"tool": [100, 300, 800], "human": [1000, 3000, 8000]},
+    "resume_probability_by_kind": {"tool": 0.9, "human": 0.7},
+    "time_jitter_fraction": 0.15,
+    "shared_fraction": 0.0,
+    "family_outcome_correlation": 0.0,
+    "cancel_wait_scale": 1.0
+  },
+  "scenarios": {
+    "sustained_pressure": {
+      "description": "Many long-lived independent caches exceed even compressed capacity; eviction externalities dominate the test conditions.",
+      "cost_model_overrides": {"host_budget_bytes": 100663296},
+      "workload": {
+        "interarrival_ms": 8.0,
+        "wait_ms_by_kind": {"tool": [400, 1000, 2400], "human": [2000, 5000, 10000]},
+        "resume_probability_by_kind": {"tool": 0.96, "human": 0.85}
+      }
+    },
+    "branching_pressure": {
+      "description": "Four correlated sibling sessions share 75 percent of a family cache in two prefix blocks, plus private suffixes. Cancellation must not free siblings' shared state.",
+      "cost_model_overrides": {"host_budget_bytes": 67108864, "bandwidth_bytes_per_ms": 8388608},
+      "workload": {
+        "family_size": 4,
+        "interarrival_ms": 6.0,
+        "raw_mib_values": [16, 24, 32],
+        "shared_fraction": 0.75,
+        "family_outcome_correlation": 0.6,
+        "wait_ms_by_kind": {"tool": [300, 900, 1800], "human": [1500, 4000, 8000]},
+        "resume_probability_by_kind": {"tool": 0.8, "human": 0.65}
+      }
+    },
+    "fast_return": {
+      "description": "Most sessions return before a typical assumed lossy encoding completes; copying/computing on the pause path can be wasted.",
+      "cost_model_overrides": {"host_budget_bytes": 134217728, "bandwidth_bytes_per_ms": 8388608},
+      "workload": {
+        "interarrival_ms": 0.6,
+        "raw_mib_values": [4, 16, 32],
+        "human_fraction": 0.0,
+        "wait_ms_by_kind": {"tool": [0.2, 0.5, 1.0, 2.0], "human": [0.2, 0.5, 1.0, 2.0]},
+        "resume_probability_by_kind": {"tool": 0.97, "human": 0.97}
+      }
+    },
+    "cancel_heavy": {
+      "description": "Frequent early cancellations test admission and useless encoding work; a small resumed subset still determines latency.",
+      "cost_model_overrides": {"host_budget_bytes": 67108864, "storage_penalty_ms_per_mib_second": 0.1},
+      "workload": {
+        "interarrival_ms": 6.0,
+        "human_fraction": 0.5,
+        "resume_probability_by_kind": {"tool": 0.25, "human": 0.12},
+        "cancel_wait_scale": 0.08
+      }
+    },
+    "low_pressure": {
+      "description": "Widely spaced pauses and abundant storage make aggressive compression unnecessary; explicitly tests for regressions when eviction is absent.",
+      "cost_model_overrides": {"host_budget_bytes": 536870912, "storage_penalty_ms_per_mib_second": 0.0},
+      "workload": {
+        "interarrival_ms": 300.0,
+        "raw_mib_values": [4, 16, 32],
+        "human_fraction": 0.1,
+        "wait_ms_by_kind": {"tool": [20, 60, 120], "human": [80, 120, 150]},
+        "resume_probability_by_kind": {"tool": 0.98, "human": 0.95}
+      }
+    },
+    "heterogeneous": {
+      "description": "Independent cache size and recomputation estimates span cheap/expensive victims and a slower link; large bytes do not automatically imply high reuse value.",
+      "cost_model_overrides": {"host_budget_bytes": 100663296, "bandwidth_bytes_per_ms": 4194304},
+      "workload": {
+        "interarrival_ms": 10.0,
+        "raw_mib_values": [2, 4, 8, 16, 32, 64],
+        "recompute_ms_per_mib_values": [0.15, 0.5, 2.0, 8.0],
+        "wait_ms_by_kind": {"tool": [80, 400, 1500], "human": [800, 3000, 6000]},
+        "resume_probability_by_kind": {"tool": 0.92, "human": 0.75}
+      }
+    },
+    "shifted_pause_mix": {
+      "description": "Halfway through arrivals, human-kind pauses become common but shorter and more cancellation-prone, testing stale historical forecasts without telling the policy about the shift.",
+      "cost_model_overrides": {"host_budget_bytes": 83886080},
+      "workload": {
+        "interarrival_ms": 10.0,
+        "human_fraction": 0.1,
+        "resume_probability_by_kind": {"tool": 0.95, "human": 0.8},
+        "phases": [
+          {"start_fraction": 0.5, "human_fraction": 0.8, "wait_scale": 0.12, "resume_probability_by_kind": {"tool": 0.65, "human": 0.35}}
+        ]
+      }
+    }
+  }
+}
