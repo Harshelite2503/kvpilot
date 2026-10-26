@@ -1,0 +1,9 @@
+# Exact local environment used on Python 3.13, macOS arm64.
+# This is a version snapshot, not a hash-locked cross-platform resolution.
+numpy==2.5.4
+pytest==9.1.1
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0
+Pygments==2.21.0
+setuptools==84.2.1

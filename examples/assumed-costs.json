@@ -1,0 +1,18 @@
+{
+  "evidence_type": "analytical_assumptions",
+  "description": "Illustrative costs, NOT GPU measurements. Lossy actions explicitly enabled only for policy sensitivity experiments; no model quality validated. Ratios include assumed metadata overhead.",
+  "default_pause_ms": 500,
+  "cost_model": {
+    "bandwidth_bytes_per_ms": 16777216,
+    "host_budget_bytes": 33554432,
+    "storage_penalty_ms_per_mib_second": 0.05,
+    "resume_slo_ms": 50,
+    "allow_unvalidated_lossy": true
+  },
+  "codecs": [
+    {"name": "raw_fp16", "ratio": 1, "encode_ms_per_mib": 0, "decode_ms_per_mib": 0, "lossless": true},
+    {"name": "zlib_fp16", "ratio": 1.08, "encode_ms_per_mib": 20, "decode_ms_per_mib": 4, "lossless": true},
+    {"name": "group_int8", "ratio": 1.94, "encode_ms_per_mib": 0.15, "decode_ms_per_mib": 0.08, "lossless": false},
+    {"name": "group_int4", "ratio": 3.76, "encode_ms_per_mib": 0.25, "decode_ms_per_mib": 0.15, "lossless": false}
+  ]
+}

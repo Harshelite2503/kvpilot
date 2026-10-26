@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "evidence_type": "cpu_codec_microbenchmark",
+  "benchmark": "kvpilot_numpy_cpu_reference_codecs",
+  "device": "CPU",
+  "timings": "measured wall-clock; includes Python serialization and validation",
+  "python_version": "3.13.0",
+  "numpy_version": "2.5.4",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "fixture_type": "synthetic_correlated",
+  "input_path": null,
+  "seed": 42,
+  "shape": [
+    2,
+    8,
+    1024,
+    128
+  ],
+  "source_dtype": "float16",
+  "reference_dtype": "float16",
+  "group_size": 64,
+  "repeats": 30,
+  "warmup": 2,
+  "limitations": [
+    "Original illustrative codecs; not CacheGen, TurboQuant, or a production KV-cache implementation.",
+    "All error metrics compare against FP16-converted input, not original higher-precision data.",
+    "No real-model accuracy, perplexity, GPU timing, transfer overlap, or end-to-end serving claims.",
+    "Attention proxy uses synthetic queries/values and only the first 256 flattened key rows.",
+    "CPU timing depends on this host and includes format overhead; compression ratios include all serialized bytes."
+  ],
+  "results": [
+    {
+      "codec": "raw_fp16",
+      "serialized_bytes": 4194381,
+      "payload_includes": "format header, shape metadata, scales where applicable, packed data",
+      "fp16_reference_bytes": 4194304,
+      "fp16_bytes_divided_by_serialized_bytes": 0.9999816421064276,
+      "size_reduction_fraction_vs_unframed_fp16": -1.8358230590820312e-05,
+      "encode": {
+        "mean_ms": 17.26456112616385,
+        "median_ms": 12.997812533285469,
+        "p95_ms": 36.518308293307186
+      },
+      "decode": {
+        "mean_ms": 5.1144806008475525,
+        "median_ms": 2.509312005713582,
+        "p95_ms": 6.237256422173222
+      },
+      "mse_vs_fp16_reference": 0.0,
+      "max_absolute_error_vs_fp16_reference": 0.0,
+      "bit_exact_fp16_roundtrip": true,
+      "attention_proxy": {
+        "label": "synthetic single-head key-only attention proxy; not LLM quality",
+        "key_rows": 256,
+        "synthetic_queries": 8,
+        "mean_attention_total_variation": 0.0,
+        "output_mse": 0.0
+      }
+    },
+    {
+      "codec": "zlib_fp16",
+      "serialized_bytes": 3787767,
+      "payload_includes": "format header, shape metadata, scales where applicable, packed data",
+      "fp16_reference_bytes": 4194304,
+      "fp16_bytes_divided_by_serialized_bytes": 1.1073289354915443,
+      "size_reduction_fraction_vs_unframed_fp16": 0.09692597389221191,
+      "encode": {
+        "mean_ms": 230.0012513413094,
+        "median_ms": 168.42254204675555,
+        "p95_ms": 530.3836456325369
+      },
+      "decode": {
+        "mean_ms": 34.86544995879134,
+        "median_ms": 13.48849997157231,
+        "p95_ms": 131.8036046344785
+      },
+      "mse_vs_fp16_reference": 0.0,
+      "max_absolute_error_vs_fp16_reference": 0.0,
+      "bit_exact_fp16_roundtrip": true,
+      "attention_proxy": {
+        "label": "synthetic single-head key-only attention proxy; not LLM quality",
+        "key_rows": 256,
+        "synthetic_queries": 8,
+        "mean_attention_total_variation": 0.0,
+        "output_mse": 0.0
+      }
+    },
+    {
+      "codec": "group_int8",
+      "serialized_bytes": 2162783,
+      "payload_includes": "format header, shape metadata, scales where applicable, packed data",
+      "fp16_reference_bytes": 4194304,
+      "fp16_bytes_divided_by_serialized_bytes": 1.9393087517332992,
+      "size_reduction_fraction_vs_unframed_fp16": 0.48435235023498535,
+      "encode": {
+        "mean_ms": 17.496093067650992,
+        "median_ms": 17.143083445262164,
+        "p95_ms": 19.965914386557415
+      },
+      "decode": {
+        "mean_ms": 4.0612680721096694,
+        "median_ms": 3.569292020983994,
+        "p95_ms": 6.717460439540445
+      },
+      "mse_vs_fp16_reference": 1.9304315055187048e-05,
+      "max_absolute_error_vs_fp16_reference": 0.0087890625,
+      "bit_exact_fp16_roundtrip": false,
+      "attention_proxy": {
+        "label": "synthetic single-head key-only attention proxy; not LLM quality",
+        "key_rows": 256,
+        "synthetic_queries": 8,
+        "mean_attention_total_variation": 0.0016999544028298977,
+        "output_mse": 7.816924571953853e-08
+      }
+    },
+    {
+      "codec": "group_int4",
+      "serialized_bytes": 1114207,
+      "payload_includes": "format header, shape metadata, scales where applicable, packed data",
+      "fp16_reference_bytes": 4194304,
+      "fp16_bytes_divided_by_serialized_bytes": 3.76438489436882,
+      "size_reduction_fraction_vs_unframed_fp16": 0.7343523502349854,
+      "encode": {
+        "mean_ms": 18.669048611385126,
+        "median_ms": 17.86714553600177,
+        "p95_ms": 21.631785656791177
+      },
+      "decode": {
+        "mean_ms": 13.045799891309192,
+        "median_ms": 12.709479022305459,
+        "p95_ms": 14.372500200988725
+      },
+      "mse_vs_fp16_reference": 0.006066816880288246,
+      "max_absolute_error_vs_fp16_reference": 0.15869140625,
+      "bit_exact_fp16_roundtrip": false,
+      "attention_proxy": {
+        "label": "synthetic single-head key-only attention proxy; not LLM quality",
+        "key_rows": 256,
+        "synthetic_queries": 8,
+        "mean_attention_total_variation": 0.021086686728935027,
+        "output_mse": 8.915357410324019e-06
+      }
+    }
+  ]
+}

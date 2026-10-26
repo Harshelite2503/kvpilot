@@ -1,0 +1,504 @@
+{
+  "schema_version": "1.0",
+  "as_of": "2026-10-27",
+  "scope": "Primary-source review of cold KV compression, tiered retention, paused agent sessions, and integration prior art. Sources are grouped by project or research method.",
+  "conclusion": "Substantial direct prior art exists. A causal policy/evaluation experiment is justified; unique technical novelty, customer demand, and end-to-end performance advantage are not established.",
+  "verification": {
+    "method": "Read primary papers and abstracts, official documentation, public RFCs, author repositories, and selected raw LMCache source through web tools.",
+    "upstream_commit_pins": false,
+    "gpu_reproduction": false,
+    "full_model_quality_reproduction": false,
+    "complete_source_audit": false,
+    "upstream_implementation_copied": false,
+    "date_convention": "publication_date is the first paper submission or issue opening date when verified. Null denotes an undated rolling source; accessed_at is not its release date.",
+    "license_convention": "Code licenses are distinct from paper licenses. Null means unverified in this review, not absent or unavailable. Repository-level evidence does not settle every dependency or file license.",
+    "maturity_convention": "Documented implementation, experimental implementation, research paper, open RFC, and small prototype are separate evidence categories. None means independently benchmarked here.",
+    "limitations": [
+      "Rolling documentation and dev/main branches can change. Pin immutable revisions before integration or benchmark comparisons.",
+      "Reported results belong to the cited authors and vendors and cannot be used as measured KVpilot performance.",
+      "This is not an exhaustive novelty, patent, or freedom-to-operate search."
+    ]
+  },
+  "sources": [
+    {
+      "id": "lmcache",
+      "title": "LMCache MP storage, serde, lazy offload, and policy extension surfaces",
+      "publication_date": null,
+      "accessed_at": "2026-10-27",
+      "status": "documented_implementation_with_partial_source_inspection",
+      "primary_url": "https://github.com/LMCache/LMCache",
+      "evidence_urls": [
+        "https://docs.lmcache.ai/mp/l2_storage/index.html",
+        "https://docs.lmcache.ai/mp/serde.html",
+        "https://docs.lmcache.ai/mp/lazy_offload.html",
+        "https://docs.lmcache.ai/developer_guide/extending_lmcache/runtime_plugins.html",
+        "https://docs.lmcache.ai/legacy/kv_cache/caching_policies.html",
+        "https://raw.githubusercontent.com/LMCache/LMCache/dev/lmcache/v1/distributed/storage_controllers/store_policy.py",
+        "https://raw.githubusercontent.com/LMCache/LMCache/dev/lmcache/v1/distributed/storage_controllers/prefetch_policy.py",
+        "https://raw.githubusercontent.com/LMCache/LMCache/dev/lmcache/v1/distributed/serde/__init__.py",
+        "https://raw.githubusercontent.com/LMCache/LMCache/dev/lmcache/v1/distributed/serde/factory.py"
+      ],
+      "code": {
+        "url": "https://github.com/LMCache/LMCache",
+        "license": "Apache-2.0",
+        "license_evidence": "Repository license declaration and SPDX headers in inspected raw source.",
+        "revision": "dev (rolling, no commit pinned)",
+        "inspection": "Store/prefetch policies and serde exports/factory inspected; complete TurboQuant kernels and concurrency behavior not audited."
+      },
+      "findings": [
+        "MP exposes custom store/prefetch policies, configurable L1/L2 eviction, FP8 and TurboQuant L2 serde, and eviction-aware lazy offload.",
+        "Store target selection can omit keys; default and skip_l1 store policies and default/retain prefetch policies already exist.",
+        "MP policy choices differ from legacy policy choices; runtime subprocess plugins are distinct from synchronous serde hooks."
+      ],
+      "limits": [
+        "Documented L2 serde does not itself establish compression before GPU-to-host transfer.",
+        "Exact released engine/connector compatibility and actual codec performance remain unverified."
+      ],
+      "relevance": "Existing integration platform and mandatory baseline, not evidence of an empty codec/policy market."
+    },
+    {
+      "id": "cachegen",
+      "title": "CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving",
+      "publication_date": "2023-10-11",
+      "latest_paper_revision_date": "2024-07-19",
+      "venue": "SIGCOMM 2024",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research_with_documented_lmcache_integration",
+      "primary_url": "https://arxiv.org/abs/2310.07240",
+      "evidence_urls": [
+        "https://doi.org/10.1145/3651890.3672274",
+        "https://docs.lmcache.ai/dev/kv_cache_optimizations/compression/cachegen.html",
+        "https://docs.lmcache.ai/kv_cache_optimizations/compression/index.html"
+      ],
+      "code": {
+        "url": "https://github.com/UChi-JCL/CacheGen",
+        "license": null,
+        "license_evidence": "Author-linked repository; standalone repository license not verified. LMCache integration has separate project license evidence.",
+        "inspection": "Paper and integration documentation; implementation not reproduced."
+      },
+      "findings": [
+        "Combines distribution-aware KV encoding and streaming with bandwidth-adaptive compression choices."
+      ],
+      "limits": [
+        "Paper results depend on its models, network conditions, and quality criteria.",
+        "Legacy remote_serde configuration is not automatically the current MP integration API."
+      ],
+      "relevance": "Direct prior art against claiming bandwidth-adaptive KV compression is new."
+    },
+    {
+      "id": "cacheblend",
+      "title": "CacheBlend: Fast Large Language Model Serving for RAG with Cached Knowledge Fusion",
+      "publication_date": "2024-05",
+      "date_precision": "month",
+      "venue": "EuroSys 2025",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research_with_version_specific_integration_uncertainty",
+      "primary_url": "https://arxiv.org/abs/2405.16444",
+      "evidence_urls": [
+        "https://github.com/YaoJiayi/CacheBlend",
+        "https://docs.lmcache.ai/community/faq.html"
+      ],
+      "code": {
+        "url": "https://github.com/YaoJiayi/CacheBlend",
+        "license": null,
+        "license_evidence": "Code linked by authors; license not verified in this review.",
+        "inspection": "Paper and LMCache FAQ; target-engine implementation not run."
+      },
+      "findings": [
+        "Selectively recomputes attention dependencies when reusing non-prefix context chunks."
+      ],
+      "limits": [
+        "Context fusion is different from exact prefix persistence.",
+        "LMCache FAQ qualifies latest-vLLM availability; verify a concrete compatible release with maintainers."
+      ],
+      "relevance": "Adjacent reuse baseline; prevents treating arbitrary concatenated cached contexts as semantically equivalent."
+    },
+    {
+      "id": "cachefocus",
+      "title": "CacheFocus",
+      "publication_date": "2025-02-16",
+      "accessed_at": "2026-10-27",
+      "status": "research_paper",
+      "primary_url": "https://arxiv.org/abs/2502.11101",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author-maintained implementation and license not verified.",
+        "inspection": "Primary paper."
+      },
+      "findings": [
+        "Uses offline RAG caching, positional adjustment, and adaptive pruning/allocation."
+      ],
+      "limits": [
+        "RAG benchmark results do not establish arbitrary multi-turn branch replay safety."
+      ],
+      "relevance": "Adjacent RAG/context reuse work, not a general reversible cold-cache codec."
+    },
+    {
+      "id": "cacheflow_restoration",
+      "title": "CacheFlow: Efficient LLM Serving with 3D-Parallel KV Cache Restoration",
+      "publication_date": "2026-04-28",
+      "accessed_at": "2026-10-27",
+      "status": "research_paper",
+      "primary_url": "https://arxiv.org/abs/2604.25080",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author-maintained code and license not verified.",
+        "inspection": "Primary paper."
+      },
+      "findings": [
+        "Schedules restoration and recomputation across token, layer, and GPU dimensions with batch-aware contention considerations."
+      ],
+      "limits": [
+        "Must reproduce scheduling and resource overlap before transferring results to another engine.",
+        "Distinct from the video-generation CacheFlow paper and historical company naming."
+      ],
+      "relevance": "Prior art for treating cache restoration as a scheduling problem, beyond compression ratio."
+    },
+    {
+      "id": "attention_matching",
+      "title": "Fast KV Compaction via Attention Matching",
+      "publication_date": "2026-02-18",
+      "accessed_at": "2026-10-27",
+      "status": "research_paper_with_author_code",
+      "primary_url": "https://arxiv.org/abs/2602.16284",
+      "evidence_urls": [
+        "https://arxiv.org/html/2602.16284v1",
+        "https://github.com/adamzweiger/compaction",
+        "https://labs.baseten.co/articles/repeated-kv-cache-for-long-running-agents"
+      ],
+      "code": {
+        "url": "https://github.com/adamzweiger/compaction",
+        "license": "MIT",
+        "license_evidence": "Repository license declaration inspected.",
+        "inspection": "Paper, author repository, and separate Baseten experiment; no reproduction here."
+      },
+      "findings": [
+        "Fits compact K/V and attention-mass biases to reference queries; it changes the attended representation rather than merely encoding bytes.",
+        "Baseten separately reports repeated-compaction degradation in its tested setting, with differences from the original implementation."
+      ],
+      "limits": [
+        "Quality and fitting cost depend on task/method; extreme reported compression is not universal.",
+        "Does not establish 128k coding-agent correctness, ready-made vLLM integration, or proportional concurrency gains."
+      ],
+      "relevance": "Potential later semantic-compression comparator; too complex to use as a first CPU storage-codec baseline."
+    },
+    {
+      "id": "turboquant",
+      "title": "TurboQuant",
+      "publication_date": "2025-04-28",
+      "venue": "ICLR 2026",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research_with_downstream_implementations",
+      "primary_url": "https://arxiv.org/abs/2504.19874",
+      "evidence_urls": [
+        "https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/",
+        "https://docs.lmcache.ai/mp/serde.html"
+      ],
+      "code": {
+        "url": "https://github.com/LMCache/LMCache",
+        "license": "Apache-2.0 (LMCache downstream implementation)",
+        "license_evidence": "LMCache repository/license headers; this is not a verified license for an original Google implementation.",
+        "inspection": "Paper, Google Research article dated 2026-03-24, and LMCache serde documentation/exports."
+      },
+      "findings": [
+        "Low-bit rotation-based quantization is already available as an LMCache storage option."
+      ],
+      "limits": [
+        "Effective bit rate must include metadata and alignment.",
+        "Attention-logit kernel results cannot be read as end-to-end server throughput or multi-agent concurrency."
+      ],
+      "relevance": "Mandatory practical low-bit comparator; not a novel codec contribution of KVpilot."
+    },
+    {
+      "id": "kvtc",
+      "title": "KV Cache Transform Coding for Compact Storage in LLM Inference",
+      "publication_date": "2025-11-03",
+      "latest_paper_revision_date": "2026-03-11",
+      "venue": "ICLR 2026",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research",
+      "primary_url": "https://arxiv.org/abs/2511.01815",
+      "evidence_urls": [
+        "https://openreview.net/pdf?id=aNVKROYpLB",
+        "https://github.com/sgl-project/sglang/issues/36522"
+      ],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "An official author-maintained implementation/license was not verified; similarly named third-party repositories are not treated as author evidence.",
+        "inspection": "Paper and author-associated SGLang API proposal."
+      },
+      "findings": [
+        "Combines PCA feature decorrelation, adaptive quantization, and entropy coding with initial calibration.",
+        "Explicitly targets reusable chat and iterative-code caches, including cold storage and restoration."
+      ],
+      "limits": [
+        "Reconstructed full KV still consumes active cache space.",
+        "Reported high compression varies by use case and is not a measured controller benefit."
+      ],
+      "relevance": "Very close prior art to the original latent/low-rank cold-cache pitch."
+    },
+    {
+      "id": "kvcodec",
+      "title": "KVCodec: Efficient Remote KV Cache Reuse with GPU-native Video Codec",
+      "publication_date": "2026-02-10",
+      "latest_paper_revision_date": "2026-05-12",
+      "venue": "SIGCOMM 2026",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research",
+      "primary_url": "https://arxiv.org/abs/2602.09725",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author-maintained implementation and license not verified.",
+        "inspection": "Latest primary paper metadata and method."
+      },
+      "findings": [
+        "Uses codec-friendly layouts and GPU video codec engines with transfer/decode/restoration pipelining."
+      ],
+      "limits": [
+        "Hardware availability and simultaneous model execution affect any advantage.",
+        "CPU synthetic codec measurements cannot validate this implementation's hardware overlap."
+      ],
+      "relevance": "Prior art for reducing codec compute contention while compressing remote caches."
+    },
+    {
+      "id": "kvzip",
+      "title": "KVzip: Query-Agnostic KV Cache Compression with Context Reconstruction",
+      "publication_date": "2025-05-29",
+      "venue": "NeurIPS 2025",
+      "accessed_at": "2026-10-27",
+      "status": "peer_reviewed_research_with_author_code",
+      "primary_url": "https://arxiv.org/abs/2505.23416",
+      "evidence_urls": [
+        "https://github.com/snu-mllab/kvzip",
+        "https://janghyun1230.github.io/kvzip/",
+        "https://janghyun1230.github.io/fastkvzip/"
+      ],
+      "code": {
+        "url": "https://github.com/snu-mllab/kvzip",
+        "license": "MIT",
+        "license_evidence": "Repository license declaration inspected.",
+        "inspection": "Paper, project page, and repository documentation; no model execution."
+      },
+      "findings": [
+        "Uses context reconstruction to score KV for query-agnostic pruning and multi-query reuse.",
+        "The authors also list a later FastKVzip project."
+      ],
+      "limits": [
+        "Scoring work adds prefill cost; optimized kernel support varies by model.",
+        "Logical token savings alone do not prove runtime acceleration."
+      ],
+      "relevance": "Strong comparator when proposing reusable semantic cache reduction."
+    },
+    {
+      "id": "pyramidkv",
+      "title": "PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling",
+      "publication_date": "2024-06-04",
+      "accessed_at": "2026-10-27",
+      "status": "research_paper_with_author_code",
+      "primary_url": "https://arxiv.org/abs/2406.02069",
+      "evidence_urls": [
+        "https://github.com/Linking-ai/PyramidKV"
+      ],
+      "code": {
+        "url": "https://github.com/Linking-ai/PyramidKV",
+        "license": null,
+        "license_evidence": "Repository inspected but license not verified.",
+        "inspection": "Paper and repository documentation; original Zefan-Cai URL redirects to this repository."
+      },
+      "findings": [
+        "Allocates different KV token budgets across model layers."
+      ],
+      "limits": [
+        "Token eviction is irreversible information removal.",
+        "Long-context benchmark quality does not establish repeated paused-session reliability."
+      ],
+      "relevance": "Established token-selection baseline rather than a reversible storage codec."
+    },
+    {
+      "id": "varrate",
+      "title": "VarRate: Training-Free Variable-Rate KV Cache Compression for Long-Context LLMs",
+      "publication_date": "2026-07-16",
+      "accessed_at": "2026-10-27",
+      "status": "preprint",
+      "primary_url": "https://arxiv.org/abs/2607.15498",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author code and license not verified.",
+        "inspection": "Primary paper."
+      },
+      "findings": [
+        "Allocates variable nonzero low-rank budgets using query salience, with query-agnostic reuse comparisons."
+      ],
+      "limits": [
+        "Retaining a representation of every token is not lossless preservation.",
+        "Model/task coverage and production kernels need independent validation."
+      ],
+      "relevance": "Adaptive representation allocation already has direct contemporary research prior art."
+    },
+    {
+      "id": "readkv",
+      "title": "Read What Matters: Query-Adaptive Quantization for KV Caches",
+      "publication_date": "2026-10-08",
+      "accessed_at": "2026-10-27",
+      "status": "preprint",
+      "primary_url": "https://arxiv.org/abs/2610.11245",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author code and license not verified.",
+        "inspection": "Primary paper."
+      },
+      "findings": [
+        "Stores immutable progressive codes and varies key/value precision fetched per query.",
+        "Separates retained-capacity budget from per-query read budget."
+      ],
+      "limits": [
+        "The reported latency experiment uses an 8K-token, batch-one, single-layer A10G workload.",
+        "This is not proof of full-engine serving or paused-session transfer performance."
+      ],
+      "relevance": "Useful precision/provenance design comparator; not a demonstrated replacement for a cold-store controller."
+    },
+    {
+      "id": "tensorrt_cold_page",
+      "title": "KV Cache Compression in TensorRT-LLM: cold-page NVFP4",
+      "publication_date": null,
+      "accessed_at": "2026-10-27",
+      "status": "documented_implementation_with_vendor_benchmarks",
+      "primary_url": "https://nvidia.github.io/TensorRT-LLM/blogs/tech_blog/blog30_KV_Cache_Compression_in_TensorRT-LLM.html",
+      "evidence_urls": [
+        "https://github.com/NVIDIA/TensorRT-LLM",
+        "https://github.com/NVIDIA/TensorRT-LLM/blob/main/LICENSE"
+      ],
+      "code": {
+        "url": "https://github.com/NVIDIA/TensorRT-LLM",
+        "license": null,
+        "license_evidence": "Repository LICENSE includes multiple component licenses; exact cold-page file license not independently resolved in this review.",
+        "revision": "rolling documentation; release and commit unpinned",
+        "inspection": "Official technical article with implementation paths; kernels not independently audited or run."
+      },
+      "findings": [
+        "Fuses cold-page NVFP4 quantization/offload and dequantization/reload.",
+        "Documents idempotent round trips for its specific representation after initial quantization, with vendor quality/performance tests."
+      ],
+      "limits": [
+        "Representation-specific idempotence is not a guarantee for Attention Matching or arbitrary codecs.",
+        "Hardware, supported cache kinds, release compatibility, and real workload results require reproduction."
+      ],
+      "relevance": "Direct implemented overlap with compress-before-offload; mandatory competitor for product positioning."
+    },
+    {
+      "id": "adaptive_retention",
+      "title": "Adaptive KV Retention for LLM Agents at Human-Approval Timescales",
+      "publication_date": "2026-08-31",
+      "accessed_at": "2026-10-27",
+      "status": "preprint",
+      "primary_url": "https://arxiv.org/abs/2608.30830",
+      "evidence_urls": [],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Author implementation and license not verified.",
+        "inspection": "Primary paper."
+      },
+      "findings": [
+        "Studies long human-approval waits with opportunity-cost-aware retention and load-dependent expiration.",
+        "Uses aggregate wait calibration rather than requiring exact per-request future wait predictions."
+      ],
+      "limits": [
+        "No independent reproduction or customer deployment verification in this review."
+      ],
+      "relevance": "Closest policy/economics prior art; a proposed KVpilot policy must compare against it or clearly state why it cannot."
+    },
+    {
+      "id": "engine_policy_rfcs",
+      "title": "vLLM Programmable KV Cache RFC and SGLang KV Cache Compression API RFC",
+      "publication_date": "2026-09-16",
+      "related_publication_date": "2026-08-26",
+      "date_basis": "vLLM issue opening and SGLang issue opening, respectively",
+      "accessed_at": "2026-10-27",
+      "status": "open_rfcs_not_verified_merged_features",
+      "primary_url": "https://github.com/vllm-project/vllm/issues/57103",
+      "evidence_urls": [
+        "https://github.com/sgl-project/sglang/issues/36522",
+        "https://docs.vllm.ai/en/latest/design/prefix_caching/"
+      ],
+      "code": {
+        "url": null,
+        "license": null,
+        "license_evidence": "Issues are design proposals. No specific merged implementation or proposal-derived code is bundled here.",
+        "inspection": "RFC text and issue status; SGLang proposal names v0.5.18 as its base."
+      },
+      "findings": [
+        "vLLM proposal distinguishes lifecycle associations, physical residency, references, and completed operations for branching agents.",
+        "SGLang proposes extensible HostKVCache codecs, positional metadata, page state, and streaming layer loads."
+      ],
+      "limits": [
+        "Open issue text does not establish supported released APIs.",
+        "Detailed compatibility, cancellation, synchronization, and resource approval must be implemented and tested."
+      ],
+      "relevance": "Avoid inventing a parallel lifecycle protocol before checking upstream direction and concrete merged interfaces."
+    },
+    {
+      "id": "dynamo_thunderagent",
+      "title": "Dynamo ThunderAgent Program Scheduler",
+      "publication_date": null,
+      "accessed_at": "2026-10-27",
+      "status": "experimental_documented_implementation",
+      "primary_url": "https://docs.nvidia.com/dynamo/dev/agents/thunder-agent-program-scheduler",
+      "evidence_urls": [
+        "https://github.com/ai-dynamo/dynamo",
+        "https://github.com/ai-dynamo/dynamo/blob/main/LICENSE"
+      ],
+      "code": {
+        "url": "https://github.com/ai-dynamo/dynamo",
+        "license": "Apache-2.0 with listed third-party/test-data exceptions",
+        "license_evidence": "Official repository LICENSE inspected.",
+        "revision": "development docs; no commit pinned",
+        "inspection": "Official experimental feature documentation and repository license; not run."
+      },
+      "findings": [
+        "Program-aware admission and placement model acting/reasoning and active/paused states.",
+        "Logical pauses occur at tool boundaries and use guaranteed GPU/host capacity in scheduling."
+      ],
+      "limits": [
+        "Experimental status; pause is not arbitrary decode preemption.",
+        "Scheduling capability is distinct from a measured adaptive codec selector."
+      ],
+      "relevance": "Existing agent lifecycle scheduling work and potential integration context."
+    },
+    {
+      "id": "kvpolicy",
+      "title": "kvpolicy: quantized KV-cache persistence for local LLM agents",
+      "publication_date": null,
+      "accessed_at": "2026-10-27",
+      "status": "small_public_prototype",
+      "primary_url": "https://github.com/abidedavana/kvpolicy",
+      "evidence_urls": [],
+      "code": {
+        "url": "https://github.com/abidedavana/kvpolicy",
+        "license": "MIT",
+        "license_evidence": "Repository license declaration inspected.",
+        "revision": "rolling repository; no commit pinned",
+        "inspection": "Repository description/license; detailed code and claimed benchmarks not reproduced."
+      },
+      "findings": [
+        "A small public project already targets quantized local-agent session persistence and resumption."
+      ],
+      "limits": [
+        "README performance claims are self-reported and not treated as verified results.",
+        "Production compatibility, workload coverage, and policy behavior were not audited."
+      ],
+      "relevance": "Direct small-prototype prior art; prevents presenting local quantized session save/resume as an untouched niche."
+    }
+  ]
+}
