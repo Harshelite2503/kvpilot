@@ -1,0 +1,24 @@
+{
+  "client_wall_ms": 598.1748340418562,
+  "client_ttft_ms": 547.7638751035556,
+  "answer": "READY",
+  "thinking_chars": 0,
+  "done_reason": "stop",
+  "server_metrics": {
+    "total_duration": 593610750,
+    "load_duration": 526000,
+    "prompt_eval_count": 16,
+    "prompt_eval_cached_count": 12,
+    "prompt_eval_duration": 425152833,
+    "eval_count": 1,
+    "eval_duration": 126299208
+  },
+  "memory_after": {
+    "name": "qwen3.5:4b",
+    "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+    "size": 4994373136,
+    "size_vram": 4994373136,
+    "context_length": 4096,
+    "runner": "mlx"
+  }
+}

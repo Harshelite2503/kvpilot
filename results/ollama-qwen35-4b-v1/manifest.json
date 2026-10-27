@@ -1,0 +1,410 @@
+{
+  "schema_version": 1,
+  "evidence_type": "measured_local_ollama_native_prefix_cache",
+  "status": "failed",
+  "started_at": "2026-10-27T04:45:50.815363+00:00",
+  "run_id": "ac4634a9ffb4433ea2684a4b20e3024d",
+  "python": "3.13.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "ollama": {
+    "version": "0.40.11"
+  },
+  "model": {
+    "name": "qwen3.5:4b",
+    "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+    "size": 3973305013,
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "",
+      "families": null,
+      "parameter_size": "",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    }
+  },
+  "show": {
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "qwen3_5",
+      "families": null,
+      "parameter_size": "4.5B",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    },
+    "model_info": {
+      "general.architecture": "qwen3_5",
+      "general.parameter_count": 4538986496,
+      "qwen3_5.block_count": 32,
+      "qwen3_5.context_length": 262144,
+      "qwen3_5.embedding_length": 2560
+    },
+    "capabilities": [
+      "completion",
+      "vision",
+      "thinking",
+      "tools"
+    ],
+    "thinking": {
+      "values": [
+        false,
+        true
+      ],
+      "default": true
+    }
+  },
+  "memory_initial": {
+    "name": "qwen3.5:4b",
+    "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+    "size": 4928968208,
+    "size_vram": 4928968208,
+    "context_length": 4096,
+    "runner": "mlx"
+  },
+  "request_defaults": {
+    "model": "qwen3.5:4b",
+    "think": false,
+    "stream": true,
+    "truncate": false,
+    "shift": false,
+    "keep_alive": "5m",
+    "options": {
+      "temperature": 0,
+      "seed": 20261027,
+      "num_ctx": 4096,
+      "num_predict": 64,
+      "presence_penalty": 0,
+      "repeat_penalty": 1
+    }
+  },
+  "fixture_sha256": "c82628f11b16650b3296a9f1b8df2ff43ee10a48ea664646c78915a220461011",
+  "harness_sha256": "203ec3aebb4d868cdfebd396cf60dc4d7742146a214527b02a64301ded8ce7cf",
+  "plan": [
+    {
+      "trial_id": "r1-classifier-exception-order",
+      "case_id": "classifier-exception-order",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "7eccc7302ba0f39daab6800970c7bf654109811aa7c27fa24967f83036afabb8",
+        "branch_block": "56d8928905b5d28e313f59dace63550997d0284f4f684bc35f1a7f23ed4d7425"
+      }
+    },
+    {
+      "trial_id": "r1-region-audit-multihop",
+      "case_id": "region-audit-multihop",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "46cbc3a90aed5c53f03bf17040971508c246c8a9ac11b9f6b1519c6ca7f9bcf3",
+        "branch_block": "a74f8438aeaa50de7cf6ab607bbe7af02ef98641383fd8237276f83bf6b534da"
+      }
+    },
+    {
+      "trial_id": "r1-explicit-false-inheritance",
+      "case_id": "explicit-false-inheritance",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "504b77a028087080952569708397f2d3f4e411f5ba34dab5a6c9a103b5da3ed8",
+        "repeat_block": "dcd919bf292b3f97b5b7b9ca6cc8580aa7279cb1130bfdd93da5708bfed51276"
+      }
+    },
+    {
+      "trial_id": "r1-plan-concurrency-multihop",
+      "case_id": "plan-concurrency-multihop",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "7464a2d9389de4f5586ca14e0554acdc935c07af9da325d1d1f2c71531b4faab",
+        "repeat_block": "4230dfa421f2ac36d3c2089dd95d297d803a557c2777c443994fb6a4088f4206"
+      }
+    },
+    {
+      "trial_id": "r1-literal-priority-queue",
+      "case_id": "literal-priority-queue",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "7898b5359c412d58ba6c3e73875b348d050d4cb5781a0f125806d9eb600b4084",
+        "branch_block": "c7aa733d32cc952242ec425a7d198285710079cf7c00808e6f7ab432244297a2"
+      }
+    },
+    {
+      "trial_id": "r1-canonical-trailing-slashes",
+      "case_id": "canonical-trailing-slashes",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "5b43bd6d6e5de022f9482e572691b79f31d26decc57b3f9fd6f0c60a3865b768",
+        "repeat_block": "5ccce3a02d3e225c67de7a75a1e6073fb1be86657ac732d2656d9dea55af6021"
+      }
+    },
+    {
+      "trial_id": "r1-tenant-retry-wait-calculation",
+      "case_id": "tenant-retry-wait-calculation",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "d5aea1fc6c8c1ac95d469675e5eec8b2792eb4c605b8b1918f09f62c887fc9da",
+        "branch_block": "e63f15077f5bb1456fdf00e5071e9b4dfd78828ec0be7ce754fab4835e138ab8"
+      }
+    },
+    {
+      "trial_id": "r1-partial-batch-calculation",
+      "case_id": "partial-batch-calculation",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "dfab5180302f69d5dcdfce9380e740041e1c01a9f37d91fa5739e800efb2c19e",
+        "repeat_block": "1e1bedb775c8e8424246a844c7be5d5eae83cb1c53e00e4a624ae5942b3886a9"
+      }
+    },
+    {
+      "trial_id": "r1-tenant-retention-override",
+      "case_id": "tenant-retention-override",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "10f45808646171c467762deb74b20360f780d19b74a2914a21ca0ba02e178b8c",
+        "branch_block": "f7defa9c62d4330d95d90456f9634d965857a8d5e450e6516c2980bd14812f34"
+      }
+    },
+    {
+      "trial_id": "r1-health-timeout-exception",
+      "case_id": "health-timeout-exception",
+      "repetition": 1,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "ed318362dcc166a4c0ed5d3eebc7e460c79068ac03957e644789a571d75d6f2e",
+        "branch_block": "9c0b74108e52379c972c20e74926cf0a71141ebfe8ac323a012b7e3d91ce3fd3"
+      }
+    },
+    {
+      "trial_id": "r1-literal-heartbeat",
+      "case_id": "literal-heartbeat",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "9805fb47cd2b74e338c28ff9530b2bfe08f5ca83d500218d86686ef9905f9757",
+        "repeat_block": "7235a3665a36327d7d251295351c47ef6477c4ac7baf743c9c57d66e5e7151a8"
+      }
+    },
+    {
+      "trial_id": "r1-production-port-override",
+      "case_id": "production-port-override",
+      "repetition": 1,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "e36acfe9877cf7a7f6f819940f88387e618e03bd690e86e61a831fc5d3932b83",
+        "repeat_block": "e22492b496df23c6698edb95a8b344ca015b9421c9b0f3e7cbaf0539670c6fd2"
+      }
+    },
+    {
+      "trial_id": "r2-literal-priority-queue",
+      "case_id": "literal-priority-queue",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "bab08dd4472acfcfb50be963b0aab3e2315b3400128198f097f75bb5bf2c4381",
+        "branch_block": "53022302fd59cb41cd6e5b666ffbbb399d458ff61bca64eec30ce20cfbe572fb"
+      }
+    },
+    {
+      "trial_id": "r2-canonical-trailing-slashes",
+      "case_id": "canonical-trailing-slashes",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "6bce0ea5c41a265fb4e71b6445a4750057641e3edef3e5690cddfc68ccf22fba",
+        "branch_block": "82be9545e60d52a45da32483fac8d10ad0c3cb45b5be855d6d4d87e68a8ff01b"
+      }
+    },
+    {
+      "trial_id": "r2-tenant-retention-override",
+      "case_id": "tenant-retention-override",
+      "repetition": 2,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "3d9b2ab0c0fb4a13e9a656be6c0614f4f8192953efbcbb4d5d4ff184d73c104d",
+        "repeat_block": "b7fc1c494e726f126da4613937b83f7fdd95f284a6aa2a3dfc30a87cf4f1dd65"
+      }
+    },
+    {
+      "trial_id": "r2-health-timeout-exception",
+      "case_id": "health-timeout-exception",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "742e56a907522b061262680097bc2aeadb63d47b6b705452bec4a8ed6452e27a",
+        "branch_block": "fa73147d3b809ca3b09373baa2414e9b54fa309b7412822b659f962ad27f6bac"
+      }
+    },
+    {
+      "trial_id": "r2-literal-heartbeat",
+      "case_id": "literal-heartbeat",
+      "repetition": 2,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "7e1bb359e8c403cbf2516de47f2e51094c15f374d3d6d568ef9a4c43c9ff2f88",
+        "repeat_block": "1834bba9e35222e5d47828937052ceb2ddbad6e01fe21c60a312d62caaea9026"
+      }
+    },
+    {
+      "trial_id": "r2-classifier-exception-order",
+      "case_id": "classifier-exception-order",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "55a9f967fdd178e79ac862d765453ae1da989a1642fae4f3ead77ad2695bf832",
+        "branch_block": "c93dfab8e12927b098d32c738a6ce66e9fcd1fb2abbd77d02c15781a98229483"
+      }
+    },
+    {
+      "trial_id": "r2-partial-batch-calculation",
+      "case_id": "partial-batch-calculation",
+      "repetition": 2,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "b5680b58a50bd2a9c281642ba3fc88a900c6b0c062247898b226a8e83874ce80",
+        "repeat_block": "f9e613734dbac4baa6074f9086e1ffc27e478ad93625f76399df25b48c4ec741"
+      }
+    },
+    {
+      "trial_id": "r2-region-audit-multihop",
+      "case_id": "region-audit-multihop",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "cd77c7f8e442a2e3e74874ac348708561a79cfd4ee61bcbb7743e592d2acc21d",
+        "branch_block": "60b7483ca4858814428594c87a5648d9a7d117142923eda5a211f92e93fecdf4"
+      }
+    },
+    {
+      "trial_id": "r2-production-port-override",
+      "case_id": "production-port-override",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "01c18642f1cd7f3e5f6297b34b92a56418ee0760f01debb0ae75a147cbdbae60",
+        "branch_block": "b89204de58ff086feaf127114cadfb7f1dc3937362e476ab85d377587406b2fb"
+      }
+    },
+    {
+      "trial_id": "r2-explicit-false-inheritance",
+      "case_id": "explicit-false-inheritance",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "2413abb0232f5f3c7f72aea9f5dfc9c066e99aa3821a2410c91c5e06a281db4e",
+        "branch_block": "56b54cdc199b2f6c33ec1aea0b03fe9a6b9164ea6eb3a81859da2be2f1afabdd"
+      }
+    },
+    {
+      "trial_id": "r2-plan-concurrency-multihop",
+      "case_id": "plan-concurrency-multihop",
+      "repetition": 2,
+      "blocks": [
+        "branch_block",
+        "repeat_block"
+      ],
+      "nonces": {
+        "branch_block": "e60fc77247ca778c832c52cd137216dfaaea12e6ab4788fd3b79385b9f62ce93",
+        "repeat_block": "d72dc01f161f2799aa89811dcd58f9592462309900cece2373eaa4fb8fe6d374"
+      }
+    },
+    {
+      "trial_id": "r2-tenant-retry-wait-calculation",
+      "case_id": "tenant-retry-wait-calculation",
+      "repetition": 2,
+      "blocks": [
+        "repeat_block",
+        "branch_block"
+      ],
+      "nonces": {
+        "repeat_block": "f7cfdd0cecb31c218f2e4049e9166cd6bca25ab95b2a345fde5ccb9f1b873645",
+        "branch_block": "f8a3b5e74357573d6ae14b9a9ef834f8fecd2d0cc3a4848cd9b458495733b63d"
+      }
+    }
+  ],
+  "protocol": {
+    "fresh_prefix": "Unique leading content nonce; model weights warmed first. Common template may still be cached.",
+    "exact_repeat": "Immediately repeat identical full prompt after fresh_prefix. Always second; an upper-bound reuse case.",
+    "shared_prefix": "Use another fresh nonce; prime document with a different question, then ask target question. Block order randomized against fresh+repeat.",
+    "prime_question": "For this document-loading check, reply with the literal READY.",
+    "quality": "Exact match after whitespace normalization only; 12 synthetic tasks, repeated trials are not independent tasks.",
+    "valid_timing_pair": "fresh cached <=5%, warm cached >=80%, both load_duration <250ms, both TTFT present; invalid pairs retained.",
+    "memory": "Before/after /api/ps model size and size_vram snapshots; not KV-only, peak, or separate CPU+GPU totals.",
+    "priming_cost": "Prime requests included in raw rows and separate summary. Warm latency assumes earlier useful prefill; priming from scratch costs work."
+  },
+  "error": "KeyboardInterrupt: ",
+  "finished_at": "2026-10-27T04:47:44.606843+00:00",
+  "completed_requests": 21
+}
