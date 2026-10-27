@@ -1,0 +1,51 @@
+{
+  "evidence_type": "live_measured_calibration",
+  "description": "Real codecs.encode/decode timing on a real captured vLLM KV cache slice (Qwen2.5-0.5B-Instruct, RTX 3090, Vast.ai). CPU/host timing only, not GPU kernel timing. Compare against examples/assumed-costs.json.",
+  "source_array_shape": [
+    153,
+    2,
+    16,
+    128
+  ],
+  "source_array_dtype": "float32",
+  "gpu": "RTX 3090",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "codecs": {
+    "raw_fp16": {
+      "raw_bytes": 1253376,
+      "stored_bytes": 1253453,
+      "ratio": 0.9999385696950743,
+      "encode_ms_per_mib": 6.452036601509533,
+      "decode_ms_per_mib": 2.747398691580576,
+      "lossless": true,
+      "max_absolute_error": 0.0
+    },
+    "zlib_fp16": {
+      "raw_bytes": 1253376,
+      "stored_bytes": 385691,
+      "ratio": 3.2496895182931413,
+      "encode_ms_per_mib": 28.245584314896,
+      "decode_ms_per_mib": 5.623884967777854,
+      "lossless": true,
+      "max_absolute_error": 0.0
+    },
+    "group_int8": {
+      "raw_bytes": 1253376,
+      "stored_bytes": 646367,
+      "ratio": 1.9391088963390768,
+      "encode_ms_per_mib": 15.782232682397163,
+      "decode_ms_per_mib": 8.116789542601195,
+      "lossless": false,
+      "max_absolute_error": 0.51171875
+    },
+    "group_int4": {
+      "raw_bytes": 1253376,
+      "stored_bytes": 333023,
+      "ratio": 3.763631941337385,
+      "encode_ms_per_mib": 17.059053592627343,
+      "decode_ms_per_mib": 13.505254902578647,
+      "lossless": false,
+      "max_absolute_error": 9.28125
+    }
+  }
+}
