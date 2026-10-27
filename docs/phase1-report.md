@@ -317,7 +317,69 @@ tensor, 7 repeats per codec, median timing. Full machine-readable output:
    rejects lossy codecs by default and why Phase 3's task-quality
    exact-answer check matters before trusting any int4/int8 result.
 
-## 7. Cost accounting
+## 7. Feeding the measured costs into the real policy (closes the loop)
+
+Calibration alone doesn't say whether the gap between assumed and measured
+numbers actually *matters* to a decision. Tested directly, at zero
+additional GPU cost (the existing `replay()` simulator is pure CPU, run on
+this dev machine): built
+[`examples/measured-costs.json`](../examples/measured-costs.json) — same
+`cost_model` (bandwidth/budget/SLO/pause assumptions, unchanged) as
+`examples/assumed-costs.json`, but with the four codec entries replaced by
+the real measured numbers from §6.3. Ran every policy against the existing
+`examples/synthetic-sessions.jsonl` trace under both configs:
+
+```
+kvpilot replay --trace examples/synthetic-sessions.jsonl --config examples/assumed-costs.json  --policy <p> --output results/phase1-comparison/assumed-costs-<p>.json
+kvpilot replay --trace examples/synthetic-sessions.jsonl --config examples/measured-costs.json --policy <p> --output results/phase1-comparison/measured-costs-<p>.json
+```
+
+| Config | Policy | p95 resume (ms) | Transferred (bytes) | Peak host (bytes) | Total service (ms) |
+|---|---|---:|---:|---:|---:|
+| assumed | recompute | 35.00 | 0 | 0 | 1610.00 |
+| assumed | raw_fp16 | 35.00 | 549,453,824 | 33,554,432 | 452.75 |
+| assumed | zlib_fp16 | 35.00 | 361,176,195 | 31,068,920 | 6626.53 |
+| assumed | group_int8 | 35.00 | 317,815,911 | 32,430,195 | 223.62 |
+| assumed | group_int4 | 1.40 | 172,903,585 | 30,118,689 | 128.51 |
+| assumed | **adaptive** | 35.00 | 549,453,824 | 33,554,432 | 452.75 |
+| measured | recompute | 35.00 | 0 | 0 | 1610.00 |
+| measured | raw_fp16 | 35.00 | 448,818,134 | 29,361,934 | 2976.21 |
+| measured | zlib_fp16 | 35.00 | 81,312,777 | 32,266,975 | 8732.73 |
+| measured | group_int8 | 35.00 | 136,269,378 | 32,445,090 | 5595.25 |
+| measured | group_int4 | 35.00 | 70,209,090 | 30,089,610 | 5913.07 |
+| measured | **adaptive** | 35.00 | **0** | **0** | **1610.00** |
+
+**Finding: under assumed costs, `adaptive` picked exactly what `raw_fp16`
+(keep everything, never compress) would have picked — its behavior was
+indistinguishable from the simplest fixed baseline. Under measured costs,
+`adaptive`'s behavior flips completely and becomes indistinguishable from
+`recompute` (cache nothing, ever).**
+
+Verified this is correct policy behavior, not a bug, by inspecting the
+actual per-decision scoring
+(`results/phase1-comparison/measured-costs-adaptive.json`): all 60/60
+pause events in the trace selected `recompute`, every time, because
+`choose_action`'s cost model correctly weights `recompute`'s cost by
+resume probability (`p * recompute_ms`) while every cached option must pay
+its full encode/offload cost unconditionally, whether or not the session
+ever actually returns. One representative decision: forecast
+`resume_probability=0.5`, `recompute_ms=35` → `recompute` scored
+`17.5` (`0.5 × 35`); `raw_fp16` scored `63.56` (`6.45 ms/MiB` encode now
+dominates, paid regardless of return); `group_int4` scored `190.75`. This
+is `kvpilot.policy.choose_action` — completely unmodified — responding
+honestly to real overhead instead of the near-zero overhead the assumed
+file had been feeding it.
+
+This closes the open question from §8 of the earlier draft of this report
+("would measured costs actually change the policy's behavior?") — yes,
+completely, for this trace and this codec implementation. It also means
+the repo's own existing eviction-experiment headline result (`docs/eviction-results.md`:
+"modeled p95 improves in five of seven families") was produced entirely
+under the assumed, ~100x-too-fast codec timings; it has not been rerun
+under measured costs, and based on the result above, doing so would very
+likely change its conclusions substantially.
+
+## 8. Cost accounting
 
 - Instance: Vast.ai contract 57943305, RTX 3090, $0.1489/hr all-in (compute
   + disk).
@@ -327,25 +389,37 @@ tensor, 7 repeats per codec, median timing. Full machine-readable output:
 - Nothing was wasted on dead ends that required re-paying for setup: every
   failure in §4 was fixed in place on the same running instance.
 
-## 8. What is proven and what is not
+## 9. What is proven and what is not
 
-**Proven, with real measurements on real hardware:**
+**Proven, with real measurements on real hardware (or, for §7, the
+existing tested simulator fed real measurements):**
 - vLLM's own native prefix caching gives a real, substantial speedup on
   a real small model (2.47x in this one scenario).
 - The real captured KV tensor's value distribution and the real codec
   round-trip errors/timings on it.
 - The specific internal attribute path to reach real KV tensors in vLLM
-  0.32.0 (§5), reusable for Phase 2's connector implementation.
+  0.32.0 (§5), reusable for a future connector implementation.
+- `kvpilot.policy.choose_action`, fed the measured numbers instead of the
+  assumed ones, chooses completely differently: every decision in the
+  trace flips from "keep everything raw" to "recompute everything,
+  cache nothing" (§7). This also means the repo's existing published
+  eviction-experiment results were produced entirely under costs now
+  shown to be ~100x too optimistic on the timing axis, and have not yet
+  been rerun under measured ones.
 
 **Not proven, still pending:**
-- Whether `kvpilot.policy.choose_action`, fed the *measured* numbers above
-  instead of the assumed ones, would actually choose differently or
-  better than it does today — this requires plugging the measured
-  `CodecProfile`s into the policy and comparing, not yet done.
 - Whether a real `KVConnectorBase_V1` subclass can apply a KVPilot
-  decision to a live cache end-to-end (Phase 2, not started as of this
-  report).
+  decision to a live cache end-to-end. Deliberately not attempted as a
+  shortcut (e.g. mutating `kv_caches` in place and hoping `generate()`
+  picks it back up) — that bypasses vLLM's scheduler and risks silently
+  wrong results; doing it correctly is the actual multi-day connector
+  engineering effort described in the approved plan, not something to
+  hack around in one sitting.
 - Any task-quality (exact-answer) comparison between lossless and lossy
-  restore (Phase 3, not started).
+  restore on live generations (only the raw byte-level quantization error
+  in §6.3/§6.4 has been measured so far).
+- Whether reruning the repo's existing eviction-experiment holdout under
+  measured costs changes its headline results, given §7's finding that it
+  very likely would.
 
 No external implementation code was copied for any of the above.
