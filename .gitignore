@@ -13,3 +13,4 @@ dist/
 *.npz
 data/
 results/local-*
+.venv-local/

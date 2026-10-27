@@ -2,7 +2,7 @@
 
 **We are building software that decides what to do with an AI agent's saved calculations while it waits.**
 
-**Today: a working local research prototype.** It contains CPU compression experiments, a separate simulation of cache-management decisions, and a real-model benchmark using local Ollama. The Ollama benchmark measures its existing cache behavior; our adaptive policy and codecs are not integrated into the model runner. The diagrams below separate what exists from the intended product.
+**Today: a working local research prototype with a direct Qwen runner.** KVPilot can now save, compress, discard and restore real inference state, then continue generating. MLX performs tensor math; KVPilot owns the live state, codecs, paused storage and eviction decisions. The runner reads the existing local model files without calling Ollama or an external cache manager. See the [local runner and reproduction guide](docs/local-runner.md) and [measured results](docs/local-results.md).
 
 ## The problem, in plain English
 
@@ -12,7 +12,7 @@ Now imagine hundreds of agents waiting at once. Their saved calculations compete
 
 **KVPilot's job would be to choose which saved calculations deserve space, and in which format.** The goal is to make agents cheaper to run and quicker to resume within a memory budget. Those benefits still need to be demonstrated on a real serving system.
 
-This is the intended decision flow. Today's simulator models these choices; connecting this decision policy to a model runner is future work.
+The simulator and the local Qwen experiment exercise this decision flow. Integration into a production serving system remains future work.
 
 ```mermaid
 flowchart TD
@@ -26,7 +26,7 @@ flowchart TD
     S --> W["Continue generating"]
 ```
 
-On return, use a complete cached copy if restoring it is worthwhile; otherwise recompute from the input. Compressed copies need decoding first. Shared pages can remain for other agents, so discarding one session does not necessarily free all of its logical cache bytes.
+On return, use a complete saved copy or recompute from the input. Compressed copies need decoding first. The simulator supports shared pages; the direct local runner currently stores a separate complete snapshot for each session.
 
 The choice uses estimates of return likelihood, encoding/transfer work, memory pressure and the cost of recomputation. It does not know the future. Approximate compression can also change model outputs, so quality must be tested before live use.
 
@@ -34,7 +34,7 @@ This manages **reusable calculations**, not lasting knowledge about a user. It d
 
 ## What we have actually built
 
-There are three separate experiments:
+There are four separate experiments:
 
 ```mermaid
 flowchart TB
@@ -58,11 +58,20 @@ flowchart TB
         L --> M["Measure response time and check answers"]
         L --> N["Record aggregate memory, not KV-only bytes"]
     end
+    subgraph OWNED["Built: direct KVPilot + Qwen experiment"]
+        direction TB
+        O["Own Qwen forward pass using MLX math"] --> P["Own live attention and recurrent tensors"]
+        P --> Q["KVPilot chooses a format or discards"]
+        Q --> R["Store real bytes; enforce a memory budget"]
+        R --> S["Restore or recompute; generate and score answers"]
+    end
 ```
 
 The CPU experiments really execute compression code. The simulation moves descriptions of cache pages through a model of storage; it does not run a language model or transfer real KV tensors. Its cost assumptions are supplied separately, so the CPU timings are not presented as GPU performance.
 
 The Ollama experiment runs real inference on the existing `qwen3.5:4b` model using the Mac's GPU. It measures native caching, not the simulated controller or our codecs. See the [backend capabilities and limits](docs/ollama-backend.md).
+
+The newer direct runner uses those model files independently. Its timings are actual local measurements of KVPilot's own cache path. It uses FP16 activations and FP32 recurrent state, so it does not claim numerical equivalence to Ollama's native runner. The attention and recurrent math follows attributed MIT reference implementations; no external cache classes are imported.
 
 | Built piece | What it means in everyday terms |
 |---|---|
@@ -73,8 +82,42 @@ The Ollama experiment runs real inference on the existing `qwen3.5:4b` model usi
 | Eviction-cost calculation | Before accepting a new cache, estimate the harm caused by removing existing caches to make room. |
 | Evaluation harness | Freeze the code, test previously unexecuted synthetic sequences, and retain wins and losses. |
 | Local real-model benchmark | Send synthetic repository questions to Ollama, time the first answer text, verify cache-hit counters and score exact answers. |
+| Direct local state hooks | Export real Qwen state, encode attention tensors with our codecs, retain recurrent state exactly, delete live tensors, and restore a validated complete snapshot. |
+| Owned paused-state store | Retain actual byte payloads within a capacity limit, choose formats using measured codec costs, and evict complete sessions. |
 
 The current controller does not learn an expiry timer. Stored data leaves this replay through resume, cancellation or eviction when space is needed.
+
+## How the real local test works
+
+```mermaid
+flowchart TD
+    A["Read repository prefix with Qwen"] --> B["Live state owned by KVPilot"]
+    B --> C["Policy sees sizes, measured costs and resolved history"]
+    C --> D["Exact snapshot, INT8, INT4 or discard"]
+    D --> E["Release live state and temporary raw copies"]
+    E --> F["Only selected bytes remain in paused storage"]
+    F --> G{"Session returns"}
+    G -->|"Snapshot present"| H["Our decoder restores tensors and token position"]
+    G -->|"Discarded or evicted"| I["Recompute the prefix"]
+    H --> J["Process remaining tokens and generate answer"]
+    I --> J
+    J --> K["Measure time, exact stored bytes and answer quality"]
+```
+
+Qwen3.5 is a hybrid: eight layers have growing attention K/V tensors; 24 have recurrent and convolution state. **Fixed INT4 here means INT4 attention plus exact native recurrent state.** Both count toward stored bytes. Restored tensors return to their full active size; this prototype compresses paused state, not the attention computation itself.
+
+We compare recomputation, serialized exact state, fixed INT4, adaptive selection without eviction pricing, and adaptive selection with eviction pricing. The two adaptive policies can select exact state, INT8, INT4 or recomputation. The [protocol](results/qwen-kvpilot-v1/protocol.json) fixes the code, calibrated costs, cases, arm order and two capacity limits before evaluating the cases. These are controlled synthetic checks on one Mac, not an unseen production workload or a GPU-server throughput claim.
+
+**Measured verdict: the real integration works; adaptive does not win on both time and memory.** The full run contains 160 responses from eight distinct questions. Mean pause-and-resume time includes compression, restoration/recomputation and answer generation, but excludes the original prefix computation:
+
+| Condition | Policy | Mean pause + resume | Peak paused payload |
+| --- | --- | ---: | ---: |
+| Roomy store | Fixed INT4 | 0.934 s | 245.14 MiB |
+| Roomy store | Adaptive with eviction pricing | 0.388 s | 379.50 MiB |
+| Tight store | Fixed INT4 | 1.908 s | 183.94 MiB |
+| Tight store | Adaptive with eviction pricing | 2.419 s | 167.39 MiB |
+
+All five arms got the same **7/8 unique questions correct**. INT4 changed the already-wrong arithmetic answer, so unchanged accuracy does not mean unchanged output. Full snapshots shrank about **35%** with INT4; MLX peak active allocation stayed unchanged. Exact save/restore produced byte-identical continuation logits. **351 tests plus 89 subtests pass**, and a separate validator checked all recorded rows and accounting. See [all controls, full-session timings, failures and limitations](docs/local-results.md).
 
 ## The eviction problem we fixed
 
@@ -184,9 +227,9 @@ An optional `--input your-capture.npy` argument to the codec benchmark accepts a
 
 ## Initial evidence
 
-The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Pre-eviction-freeze verification passed **130 tests plus 89 subtests**; verification after adding the local-model harnesses passed **174 tests plus 89 subtests**. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds that experiment. Cloud CI has not run.
+The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Pre-eviction-freeze verification passed **130 tests plus 89 subtests**; the earlier native Ollama harness version passed **174 tests plus 89 subtests**. Current direct-runner validation is reported above. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds that experiment. Cloud CI has not run.
 
-All policy timings are **modeled from assumptions** in [assumed-costs.json](examples/assumed-costs.json). They do not use the CPU benchmark timings as invented GPU timings. `measured_gpu_itl_ms` and `measured_llm_task_success` remain null in those replay results; the separate Ollama archive contains measured native-model timings and answer checks. Fully restoring a compressed cache to FP16 does not reduce its active attention footprint.
+The analytical replay's policy timings are **modeled from assumptions** in [assumed-costs.json](examples/assumed-costs.json). They do not use CPU benchmark timings as invented GPU timings. `measured_gpu_itl_ms` and `measured_llm_task_success` remain null in those replay results. The separate Ollama and direct KVPilot archives contain measured model timings and answer checks. Fully restoring a compressed cache to FP16 does not reduce its active attention footprint.
 
 ## Eviction-aware experiment
 
@@ -207,11 +250,11 @@ Output directories must not already exist. The holdout command refuses source/co
 
 Follow the [14-day prototype plan](docs/prototype-plan.md), [evaluation contract](docs/evaluation.md), and [implemented trace contract](docs/implementation.md). The plan separates local preparation from later GPU validation.
 
-1. Validate accounting and profile codecs on a wider range of inputs, including actual KV captures when available.
+1. Extend the real-state checks to longer contexts, more models and independent task suites, and measure transient process memory as well as stored payload bytes.
 2. Add bounded movement/codec queues, refine eviction forecasts and compare simple TTL/static-threshold policies. Any new algorithm needs a new declared holdout after tuning on the revealed results.
 3. Inspect and pin one compatible vLLM/LMCache integration, then prepare the live measurement and coding-quality protocol.
 4. Publish negative cases and decide whether a GPU experiment is justified.
 
 Later live target: at least 20% lower p95 resume first-token latency and 15% lower time-weighted stored bytes versus a strong compatible baseline, with ITL and task-quality guardrails. These are decision thresholds, not forecasts or achieved results. If a simple static policy wins, the controller has not earned its complexity.
 
-No external implementation code was copied. This private prototype has no open-source license selected yet.
+The local numerical runner adapts MIT-licensed Apple MLX-LM mathematics; see [third-party notices](experiments/local/THIRD_PARTY_NOTICES.md). Model weights and tokenizer remain in the user's existing local installation and are not included here. This private prototype has no project-wide open-source license selected yet.

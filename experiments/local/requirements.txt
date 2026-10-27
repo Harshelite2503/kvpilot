@@ -1,0 +1,6 @@
+# Tested local tensor engine and tokenizer. No external model/cache manager.
+# Requires Apple silicon / Metal. Core KVPilot is installed separately with -e .
+mlx==0.32.4
+mlx-metal==0.32.4
+tokenizers==0.23.3
+numpy==2.5.4

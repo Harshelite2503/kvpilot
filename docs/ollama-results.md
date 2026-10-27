@@ -1,5 +1,7 @@
 # Local Qwen experiment: native cache reuse, not KVPilot compression
 
+For the subsequent experiment using KVPilot's own cache hooks and codecs, see [direct local results](local-results.md). The native Ollama measurements below remain a separate reference.
+
 We used the already installed `qwen3.5:4b` on an Apple M1 Pro MacBook Pro with 16 GB unified memory. Ollama 0.40.11 selected its MLX runner and the Mac's GPU. No rented GPU, model download, backend replacement, global setting change or new runtime dependency was needed.
 
 The model's manifest identifies 4.5B parameters and NVFP4 **weights**. This does not describe KV-cache precision. Qwen3.5 also mixes attention KV with recurrent state, so treating every layer as an ordinary KV cache would be incorrect. The [version-pinned backend review](ollama-backend.md) explains these boundaries.

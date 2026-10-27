@@ -1,0 +1,89 @@
+{
+  "valid_source_freeze": true,
+  "summaries": [
+    {
+      "scenario": "roomy",
+      "policy": "recompute",
+      "responses": 2,
+      "correct": 2,
+      "token_identical_to_recompute": 2,
+      "quality_pairs": 2,
+      "hits": 0,
+      "actions": {
+        "recompute": 2
+      },
+      "total_pause_ms": 18.112873792648315,
+      "total_resume_wall_ms": 8666.171501040459,
+      "pause_plus_resume_ms": 8684.284374833107,
+      "total_including_initial_prefill_ms": 16828.059790849686,
+      "median_resume_ttft_ms": 4276.51102054771,
+      "peak_paused_payload_bytes": 0,
+      "mean_paused_payload_bytes_after_event": 0.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "raw_native",
+      "responses": 2,
+      "correct": 2,
+      "token_identical_to_recompute": 2,
+      "quality_pairs": 2,
+      "hits": 2,
+      "actions": {
+        "raw_native": 2
+      },
+      "total_pause_ms": 118.7720011472702,
+      "total_resume_wall_ms": 579.9709160327911,
+      "pause_plus_resume_ms": 698.7429171800613,
+      "total_including_initial_prefill_ms": 8752.39087510109,
+      "median_resume_ttft_ms": 236.3711244915612,
+      "peak_paused_payload_bytes": 198427694,
+      "mean_paused_payload_bytes_after_event": 99213847.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "group_int4",
+      "responses": 2,
+      "correct": 2,
+      "token_identical_to_recompute": 2,
+      "quality_pairs": 2,
+      "hits": 2,
+      "actions": {
+        "group_int4": 2
+      },
+      "total_pause_ms": 746.4653340578079,
+      "total_resume_wall_ms": 1049.0595840215683,
+      "pause_plus_resume_ms": 1795.5249180793762,
+      "total_including_initial_prefill_ms": 9932.087084174156,
+      "median_resume_ttft_ms": 473.9411040460691,
+      "peak_paused_payload_bytes": 128380522,
+      "mean_paused_payload_bytes_after_event": 64190261.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "adaptive_eviction",
+      "responses": 2,
+      "correct": 2,
+      "token_identical_to_recompute": 2,
+      "quality_pairs": 2,
+      "hits": 2,
+      "actions": {
+        "raw_native": 2
+      },
+      "total_pause_ms": 175.1580001115799,
+      "total_resume_wall_ms": 647.2214159965515,
+      "pause_plus_resume_ms": 822.3794161081314,
+      "total_including_initial_prefill_ms": 8998.248125076294,
+      "median_resume_ttft_ms": 250.71358346752822,
+      "peak_paused_payload_bytes": 198427694,
+      "mean_paused_payload_bytes_after_event": 99213847.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    }
+  ]
+}

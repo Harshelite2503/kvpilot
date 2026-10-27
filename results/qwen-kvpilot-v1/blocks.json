@@ -1,0 +1,302 @@
+[
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "group_int4",
+    "block_wall_ms": 40012.71325004101,
+    "peak_paused_payload_bytes": 257048276,
+    "byte_event_sum": 2055245984,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "roomy",
+    "policy": "adaptive_exact",
+    "block_wall_ms": 35560.04658293724,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "pressure",
+    "policy": "adaptive_eviction",
+    "block_wall_ms": 51931.3498749733,
+    "peak_paused_payload_bytes": 175524444,
+    "byte_event_sum": 1555937642,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "roomy",
+    "policy": "group_int4",
+    "block_wall_ms": 39769.6277500391,
+    "peak_paused_payload_bytes": 257048276,
+    "byte_event_sum": 2055245984,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "pressure",
+    "policy": "recompute",
+    "block_wall_ms": 67746.60108292103,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "roomy",
+    "policy": "recompute",
+    "block_wall_ms": 67478.30695903301,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "pressure",
+    "policy": "group_int4",
+    "block_wall_ms": 48544.746832966805,
+    "peak_paused_payload_bytes": 192879775,
+    "byte_event_sum": 1926882870,
+    "event_count": 16,
+    "evicted_states": 2,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "pressure",
+    "policy": "adaptive_exact",
+    "block_wall_ms": 59892.69687497616,
+    "peak_paused_payload_bytes": 99754519,
+    "byte_event_sum": 1390730562,
+    "event_count": 16,
+    "evicted_states": 6,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "roomy",
+    "policy": "adaptive_eviction",
+    "block_wall_ms": 35380.88037502766,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "pressure",
+    "policy": "group_int4",
+    "block_wall_ms": 47427.70612502098,
+    "peak_paused_payload_bytes": 192879775,
+    "byte_event_sum": 1926882870,
+    "event_count": 16,
+    "evicted_states": 2,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "roomy",
+    "policy": "raw_native",
+    "block_wall_ms": 35564.62745797634,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "recompute",
+    "block_wall_ms": 68190.69558310509,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "adaptive_exact",
+    "block_wall_ms": 35670.17679095268,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "pressure",
+    "policy": "adaptive_exact",
+    "block_wall_ms": 60363.56933295727,
+    "peak_paused_payload_bytes": 99754519,
+    "byte_event_sum": 1390730562,
+    "event_count": 16,
+    "evicted_states": 6,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "pressure",
+    "policy": "recompute",
+    "block_wall_ms": 65926.50687515736,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "pressure",
+    "policy": "raw_native",
+    "block_wall_ms": 58583.17687499523,
+    "peak_paused_payload_bytes": 99754519,
+    "byte_event_sum": 1390730562,
+    "event_count": 16,
+    "evicted_states": 6,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "pressure",
+    "policy": "raw_native",
+    "block_wall_ms": 58611.10587489605,
+    "peak_paused_payload_bytes": 99754519,
+    "byte_event_sum": 1390730562,
+    "event_count": 16,
+    "evicted_states": 6,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 1,
+    "scenario": "pressure",
+    "policy": "adaptive_eviction",
+    "block_wall_ms": 51031.769291996956,
+    "peak_paused_payload_bytes": 175524444,
+    "byte_event_sum": 1555937642,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "raw_native",
+    "block_wall_ms": 34874.48633289337,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "adaptive_eviction",
+    "block_wall_ms": 35496.93149995804,
+    "peak_paused_payload_bytes": 397936732,
+    "byte_event_sum": 3179201248,
+    "event_count": 16,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  }
+]

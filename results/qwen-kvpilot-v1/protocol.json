@@ -1,0 +1,205 @@
+{
+  "evidence": "measured_real_local_kvpilot_state",
+  "created_utc": "2026-10-27T05:30:40.530713+00:00",
+  "source_sha256": {
+    "examples/local_kvpilot_cases.json": "f06c50e1c50a73871e8c90574f04f163ee8c674ea61883e1cc76aecae18f4cd2",
+    "experiments/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "experiments/local/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "experiments/local/gated_delta.py": "11fb79db1490d3927e9ca07085b83e614768dd2d1c30961fcfa171b5d60332c3",
+    "experiments/local/qwen_runner.py": "97f378447ee0bc4b0c595a3cbc33901927d9a323e98169999f62146e0c99ad39",
+    "experiments/local/state_codec.py": "58b2162da0c99d7cbf0c45181003a245d162dd48c851e4ad736cc3e10b638256",
+    "experiments/local/store.py": "ea4953c1079bd94dcf06e238413a06400f696910bd131e747a36a59e85d4093d",
+    "experiments/local/weights.py": "3323b9c578e1f8335f9a14da5731e13580bf857ea51db00dd3b8b89fcb5fa504",
+    "scripts/benchmark_local_kvpilot.py": "2a1718441bb937a4b6e91bfb9a4405cc0171528707eea387ae894d11a2b6fcd7",
+    "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+    "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+    "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+    "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+    "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+    "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50"
+  },
+  "fixture_sha256": "f06c50e1c50a73871e8c90574f04f163ee8c674ea61883e1cc76aecae18f4cd2",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "versions": {
+    "mlx": "0.32.4",
+    "mlx-metal": "0.32.4",
+    "numpy": "2.5.4",
+    "tokenizers": "0.23.3"
+  },
+  "cases": [
+    "relay-poll-interval",
+    "relay-production-parallelism",
+    "relay-team-release-ttl",
+    "relay-repository-delivery-queue",
+    "relay-repository-artifact-bucket",
+    "relay-retry-total-wait",
+    "relay-hold-branch-order",
+    "relay-release-tag"
+  ],
+  "jobs": [
+    [
+      0,
+      "roomy",
+      "group_int4"
+    ],
+    [
+      1,
+      "roomy",
+      "adaptive_exact"
+    ],
+    [
+      0,
+      "pressure",
+      "adaptive_eviction"
+    ],
+    [
+      1,
+      "roomy",
+      "group_int4"
+    ],
+    [
+      0,
+      "pressure",
+      "recompute"
+    ],
+    [
+      1,
+      "roomy",
+      "recompute"
+    ],
+    [
+      1,
+      "pressure",
+      "group_int4"
+    ],
+    [
+      0,
+      "pressure",
+      "adaptive_exact"
+    ],
+    [
+      1,
+      "roomy",
+      "adaptive_eviction"
+    ],
+    [
+      0,
+      "pressure",
+      "group_int4"
+    ],
+    [
+      1,
+      "roomy",
+      "raw_native"
+    ],
+    [
+      0,
+      "roomy",
+      "recompute"
+    ],
+    [
+      0,
+      "roomy",
+      "adaptive_exact"
+    ],
+    [
+      1,
+      "pressure",
+      "adaptive_exact"
+    ],
+    [
+      1,
+      "pressure",
+      "recompute"
+    ],
+    [
+      1,
+      "pressure",
+      "raw_native"
+    ],
+    [
+      0,
+      "pressure",
+      "raw_native"
+    ],
+    [
+      1,
+      "pressure",
+      "adaptive_eviction"
+    ],
+    [
+      0,
+      "roomy",
+      "raw_native"
+    ],
+    [
+      0,
+      "roomy",
+      "adaptive_eviction"
+    ]
+  ],
+  "budgets_bytes": {
+    "roomy": 400066652,
+    "pressure": 194050207
+  },
+  "profiles": [
+    {
+      "name": "raw_native",
+      "ratio": 0.9999109055951623,
+      "encode_ms_per_mib": 0.40603723969496225,
+      "decode_ms_per_mib": 0.41159452359865406,
+      "lossless": true
+    },
+    {
+      "name": "group_int8",
+      "ratio": 1.2978975709722074,
+      "encode_ms_per_mib": 3.2522176944838592,
+      "decode_ms_per_mib": 0.8102629627420497,
+      "lossless": false
+    },
+    {
+      "name": "group_int4",
+      "ratio": 1.533839342059718,
+      "encode_ms_per_mib": 3.3893694579302167,
+      "decode_ms_per_mib": 2.819715856588497,
+      "lossless": false
+    }
+  ],
+  "chunk_size": 128,
+  "max_tokens": 32,
+  "suffix_tokens": 64,
+  "group_size": 4,
+  "resume_order_per_group": [
+    0,
+    2,
+    1,
+    3
+  ],
+  "all_sessions_resume": true,
+  "timing": "synchronized local wall time; no simulated delay; initial prefill reported separately",
+  "cost_model": "calibrated export+encode and decode+import; transfer term effectively zero (bandwidth=1e30); no storage penalty; no binding latency target; Beta(1,1) resolved-only history",
+  "memory": "paused payload byte lengths, including exact recurrent state+metadata; excludes transient CPU buffers, active tensors, weights, Python overhead; MLX active allocations separately",
+  "quality": "case-sensitive whitespace-only exact match; truncation fails; greedy token agreement to recompute; selected correlated controlled development cases, not a held-out production dataset",
+  "execution": "own Qwen text forward, FP16 activation/BF16 checkpoint conversion, FP32 recurrent state, NVFP4 weights; not native Ollama numerical equivalence",
+  "warmup": {
+    "answer": "4",
+    "tokens": [
+      19
+    ],
+    "ttft_ms": 397.52925001084805,
+    "wall_ms": 441.4176670834422,
+    "truncated": false
+  },
+  "integrity_gate": {
+    "prefix_tokens": 1417,
+    "suffix_tokens": 64,
+    "raw_restore_logits_bit_exact": true,
+    "max_abs_logit_difference": 0.0,
+    "memory_after_original_state_release": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  }
+}
