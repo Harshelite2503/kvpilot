@@ -1,0 +1,404 @@
+{
+  "schema_version": 1,
+  "evidence_type": "measured_local_ollama_branch_checkpoint_diagnostic",
+  "expected_cases": 12,
+  "completed_requests": 36,
+  "complete": true,
+  "arms": {
+    "a_prime": {
+      "requests": 12,
+      "correct": 12,
+      "quality_role": "setup compliance only",
+      "median_ttft_ms": 6510.723979037721,
+      "median_wall_ms": 6540.633625001647,
+      "median_cached_fraction": 0.0,
+      "median_prompt_eval_count": 1997.0,
+      "median_prompt_eval_cached_count": 0.0,
+      "median_prompt_eval_duration_ns": 6438215354.0,
+      "reported_allocation_bytes_min": 4288288272,
+      "reported_allocation_bytes_max": 4288288272,
+      "truncated_outputs": 0
+    },
+    "b_first_divergence": {
+      "requests": 12,
+      "correct": 12,
+      "quality_role": "setup compliance only",
+      "median_ttft_ms": 6488.8664374593645,
+      "median_wall_ms": 6518.96402152488,
+      "median_cached_fraction": 0.001503006012024048,
+      "median_prompt_eval_count": 1996.0,
+      "median_prompt_eval_cached_count": 3.0,
+      "median_prompt_eval_duration_ns": 6442102167.0,
+      "reported_allocation_bytes_min": 4508718608,
+      "reported_allocation_bytes_max": 4508980752,
+      "truncated_outputs": 0
+    },
+    "c_after_divergence": {
+      "requests": 12,
+      "correct": 9,
+      "quality_role": "target exact-answer check",
+      "median_ttft_ms": 268.9826460555196,
+      "median_wall_ms": 320.76881249668077,
+      "median_cached_fraction": 0.9826043565686957,
+      "median_prompt_eval_count": 2011.5,
+      "median_prompt_eval_cached_count": 1977.0,
+      "median_prompt_eval_duration_ns": 227933396.0,
+      "reported_allocation_bytes_min": 4612855312,
+      "reported_allocation_bytes_max": 4613379604,
+      "truncated_outputs": 0
+    }
+  },
+  "case_observations": [
+    {
+      "case_id": "literal-heartbeat",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015015015015015015,
+        "c_after_divergence": 0.9845771144278607
+      },
+      "ttft_ms": {
+        "a_prime": 6509.449791978113,
+        "b_first_divergence": 6467.302583041601,
+        "c_after_divergence": 183.98970796260983
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 4636792,
+        "b_first_divergence": 590209,
+        "c_after_divergence": 668334
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "literal-priority-queue",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0014985014985014985,
+        "c_after_divergence": 0.98558648111332
+      },
+      "ttft_ms": {
+        "a_prime": 6494.701791903935,
+        "b_first_divergence": 6472.5082910154015,
+        "c_after_divergence": 187.7677080919966
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 1317167,
+        "b_first_divergence": 607875,
+        "c_after_divergence": 586334
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "production-port-override",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015052684395383843,
+        "c_after_divergence": 0.9855217174238642
+      },
+      "ttft_ms": {
+        "a_prime": 6627.356458106078,
+        "b_first_divergence": 6542.558417073451,
+        "c_after_divergence": 179.0832079714164
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 526708,
+        "b_first_divergence": 680625,
+        "c_after_divergence": 861333
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "tenant-retention-override",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015015015015015015,
+        "c_after_divergence": 0.9826216484607746
+      },
+      "ttft_ms": {
+        "a_prime": 6511.116542038508,
+        "b_first_divergence": 6486.9742499431595,
+        "c_after_divergence": 285.86845798417926
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 581708,
+        "b_first_divergence": 766917,
+        "c_after_divergence": 1538375
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "region-audit-multihop",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015037593984962407,
+        "c_after_divergence": 0.9850448654037887
+      },
+      "ttft_ms": {
+        "a_prime": 6495.715833036229,
+        "b_first_divergence": 6473.567666020244,
+        "c_after_divergence": 172.86104196682572
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 726750,
+        "b_first_divergence": 641292,
+        "c_after_divergence": 480250
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "plan-concurrency-multihop",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015045135406218655,
+        "c_after_divergence": 0.9825870646766169
+      },
+      "ttft_ms": {
+        "a_prime": 6530.069915927015,
+        "b_first_divergence": 6537.800124962814,
+        "c_after_divergence": 267.1459590783343
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 589709,
+        "b_first_divergence": 582333,
+        "c_after_divergence": 583916
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "explicit-false-inheritance",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.001503006012024048,
+        "c_after_divergence": 0.9830929885629041
+      },
+      "ttft_ms": {
+        "a_prime": 6516.562208998948,
+        "b_first_divergence": 6478.86654199101,
+        "c_after_divergence": 266.68387500103563
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 519667,
+        "b_first_divergence": 620792,
+        "c_after_divergence": 569083
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "tenant-retry-wait-calculation",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015022533800701052,
+        "c_after_divergence": 0.9743842364532019
+      },
+      "ttft_ms": {
+        "a_prime": 6510.331416036934,
+        "b_first_divergence": 6490.75862497557,
+        "c_after_divergence": 296.9726249575615
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 607667,
+        "b_first_divergence": 709792,
+        "c_after_divergence": 648417
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": false
+    },
+    {
+      "case_id": "partial-batch-calculation",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015037593984962407,
+        "c_after_divergence": 0.979187314172448
+      },
+      "ttft_ms": {
+        "a_prime": 6505.5540420580655,
+        "b_first_divergence": 6492.954374989495,
+        "c_after_divergence": 270.8193330327049
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 657458,
+        "b_first_divergence": 574625,
+        "c_after_divergence": 861750
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "classifier-exception-order",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.001503006012024048,
+        "c_after_divergence": 0.9767786561264822
+      },
+      "ttft_ms": {
+        "a_prime": 6530.122583033517,
+        "b_first_divergence": 6472.186125000007,
+        "c_after_divergence": 301.5722919953987
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 594958,
+        "b_first_divergence": 547833,
+        "c_after_divergence": 547917
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": true
+    },
+    {
+      "case_id": "canonical-trailing-slashes",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015060240963855422,
+        "c_after_divergence": 0.9815920398009951
+      },
+      "ttft_ms": {
+        "a_prime": 6504.848042037338,
+        "b_first_divergence": 6928.519333014265,
+        "c_after_divergence": 414.9293339578435
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 1248334,
+        "b_first_divergence": 488708,
+        "c_after_divergence": 6011750
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": false
+    },
+    {
+      "case_id": "health-timeout-exception",
+      "completed_arms": [
+        "a_prime",
+        "b_first_divergence",
+        "c_after_divergence"
+      ],
+      "cached_fractions": {
+        "a_prime": 0.0,
+        "b_first_divergence": 0.0015022533800701052,
+        "c_after_divergence": 0.9777558082056352
+      },
+      "ttft_ms": {
+        "a_prime": 6797.528792056255,
+        "b_first_divergence": 6516.002000076696,
+        "c_after_divergence": 291.17554193362594
+      },
+      "source_predicted_pattern_observed": true,
+      "load_duration_ns": {
+        "a_prime": 498250,
+        "b_first_divergence": 504125,
+        "c_after_divergence": 553875
+      },
+      "all_loads_below_250ms": true,
+      "target_correct": false
+    }
+  ],
+  "source_predicted_pattern_count": 12,
+  "other_observed_pattern_count": 0,
+  "unavailable_pattern_count": 0,
+  "target_quality": {
+    "scored_cases": 12,
+    "correct": 9,
+    "incorrect_case_ids": [
+      "tenant-retry-wait-calculation",
+      "canonical-trailing-slashes",
+      "health-timeout-exception"
+    ],
+    "validation": "Synthetic exact-answer checks only; no cold target-answer comparison in this diagnostic."
+  },
+  "excluded_requests": 0,
+  "kvpilot_policy_tested": false,
+  "kvpilot_codecs_tested": false,
+  "compression_quality_validated": false,
+  "general_task_quality_validated": false,
+  "kv_only_memory_saved_bytes": null,
+  "limitations": [
+    "All requests, including misses, slow loads and setup costs, remain in this descriptive summary and raw log.",
+    "Fixed A/B/C order and different questions make this a diagnostic, not an isolated causal speedup estimate.",
+    "The default twelve synthetic cases share one repository and are correlated; they are not independent general coding tasks.",
+    "The source hypothesis is specific to the inspected Ollama v0.40.11 MLX hybrid recurrent-state path; the installed backend and tokenization may differ.",
+    "Cache fractions are server-reported observations. A matching pattern is consistent with checkpoint reuse, not instrumentation proving its internal cause.",
+    "Allocation snapshots are not KV-only memory, peak usage, or separately additive CPU/GPU memory.",
+    "Each triplet begins with a model unload/reload and warmup; setup costs are reported separately. This is not a multi-session pressure test.",
+    "The reported 8 GiB allocation stop is checked between requests, not a guaranteed peak-memory cap.",
+    "Setup A and B are real work; no new KVPilot controller, codec, memory saving or compression-quality result is measured."
+  ],
+  "setup": {
+    "attempted_triplets": 12,
+    "completed_resets_and_warmups": 12,
+    "total_reset_and_warm_wall_ms": 26261.983124772087,
+    "median_reset_and_warm_wall_ms": 2126.839541539084,
+    "cleanup_wall_ms": 27.664041961543262
+  },
+  "run_status": "complete",
+  "sources_unchanged": true
+}

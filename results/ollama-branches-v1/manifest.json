@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "evidence_type": "measured_local_ollama_branch_checkpoint_diagnostic",
+  "started_at": "2026-10-27T04:59:15.344703+00:00",
+  "run_id": "1204a608eb704df7aef838632823cc7c",
+  "python": "3.13.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "base_url": "http://127.0.0.1:11434",
+  "requested_model": "qwen3.5:4b",
+  "request_defaults": {
+    "model": "qwen3.5:4b",
+    "think": false,
+    "stream": true,
+    "truncate": false,
+    "shift": false,
+    "keep_alive": "5m",
+    "options": {
+      "temperature": 0,
+      "seed": 20261027,
+      "num_ctx": 4096,
+      "num_predict": 64,
+      "presence_penalty": 0,
+      "repeat_penalty": 1
+    }
+  },
+  "reported_memory_stop_bytes": 8589934592,
+  "source_hashes": {
+    "harness": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/scripts/benchmark_ollama.py",
+      "sha256": "5e3ebf8c4e4034cfafc790d1cf3b3deb56f7ce5b7cd853a6032da3aed4894eee"
+    },
+    "diagnostic": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/scripts/diagnose_ollama_branches.py",
+      "sha256": "fb8d4b8ed01d2b1987f924e91b7d6fe54fa9a3a687a7cf1c4516f2880c25c7d2"
+    },
+    "fixture": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/examples/ollama_quality_cases.json",
+      "sha256": "c82628f11b16650b3296a9f1b8df2ff43ee10a48ea664646c78915a220461011"
+    }
+  },
+  "plan": [
+    {
+      "trial_id": "literal-heartbeat",
+      "case_id": "literal-heartbeat",
+      "nonce": "41f738b1767feed5a1d2487c0de9a76a6173226efb329716db71b3b827a8043a",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "e36fe050784185c84f473a3fad9cd2846142d78d33167a9ceb8d804721bfac28"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "fe9bd21c20b5759ef523db724f6d44662a087c8fbc2674330a9e795d9778ebb1"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What is the active production worker heartbeat_interval_s? Answer with only the integer number of seconds.",
+          "prompt_sha256": "7debd5064617a5b6a80d036a2570df19d134d6b4b078d4e689a6b5530892d9fb"
+        }
+      ]
+    },
+    {
+      "trial_id": "literal-priority-queue",
+      "case_id": "literal-priority-queue",
+      "nonce": "9161782862e8d41a74b20924e81b0d72e458d17589924db827b7b271d5c71fb3",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "73b6168758672fc848b4ea12ef2a9f0db2dbeabebacda646dd3e63b50adb4ea3"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "d8dfaff4d8ab191752fa0f6ff348d713c1f97819c64d890d07cdc5a464df088e"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What is the active production priority queue name? Answer with only the exact queue name.",
+          "prompt_sha256": "3696db9301a31196852f147a34da323ec1769807a119f45efa45330444e77a69"
+        }
+      ]
+    },
+    {
+      "trial_id": "production-port-override",
+      "case_id": "production-port-override",
+      "nonce": "aed6520da4a9ca03ecee134634adbf5bb63f8d7d89dc5e32f538c6262a2ed08e",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "b2d2f51a0eff44464838648edc5e38ecf873ea0c09fb97e899c1ccb83a255721"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "c17c1710643574a096fd677e04a8d4aa3370d61b5b5b872e94d0f1e375b8295c"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What listen_port does the active production service use? Answer with only the integer port.",
+          "prompt_sha256": "f108e2fdf76184b9cab9a4949fe6a96d3c06361e9ef8f78ae136a2b344025ff7"
+        }
+      ]
+    },
+    {
+      "trial_id": "tenant-retention-override",
+      "case_id": "tenant-retention-override",
+      "nonce": "c55fdb45fcd684559b863a988c124c78f94e9b6cc83d41677be171202223546b",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "4413e4c79342dea330cc8b6f725fa814d2cd276f58ebf509bec459c8b4d71d6c"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "be6916e68d13e145d58eb036bb80472e5e0c38b3366fd94c3e8ebc5d0c044c0f"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "For tenant cedar in production, what is the effective audit_days value? Answer with only the integer number of days.",
+          "prompt_sha256": "a86bd1258a272cb3a58aae601d2ef3406384331440aa540323cefc031a7b8c1e"
+        }
+      ]
+    },
+    {
+      "trial_id": "region-audit-multihop",
+      "case_id": "region-audit-multihop",
+      "nonce": "d7c169b74bca4014bc759c4bb1c8381fd4f6ed236223bf26dd1660557e18ef9c",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "420e47ab1d8fa25072f56966a86236715c860ff5aef3cc2973667956d40bc808"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "62ee4b8189c383833624110dc6277b25afdf23134f99e2a3dafec8233ddbd4f6"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "Which audit bucket receives tenant cedar's audit records? Answer with only the exact bucket name.",
+          "prompt_sha256": "94b716a635946bf2e04c25e8746146702104c36359792ccf9ad6c0648c70c0f0"
+        }
+      ]
+    },
+    {
+      "trial_id": "plan-concurrency-multihop",
+      "case_id": "plan-concurrency-multihop",
+      "nonce": "5f86557b1bb50ccdbf57c252190964e65ebe6e86c24b5bab78939427bdf8adc6",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "43dcd4752637dde2069ee481726a3ed7695fe92b0a52c76d938b62750611daec"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "0dd5d8c408f20678f8fe8f79d2fdc3329df228ef798e26b1139b9f83fa60efc8"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What is tenant birch's general-worker max_inflight limit in this deployment? Answer with only the integer limit.",
+          "prompt_sha256": "3a8f1dcd11c8affda1217f70b321bdbce0f3524bbe9eab6093705ffe6dec6e05"
+        }
+      ]
+    },
+    {
+      "trial_id": "explicit-false-inheritance",
+      "case_id": "explicit-false-inheritance",
+      "nonce": "c1fcc732f6781f94cea298321f32ce676ec6a0497e536f74d59db562f6469565",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "31271b0481a7275e190646c46f7049c1b5a2fa244df33d2b1154aa55fee6bfbc"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "2c88d6829628b45973fa9687b260d8c18e51d9548c5d0da7fc970d4f4ccaa200"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "For tenant birch in production, what does webhook_enabled return? Answer with only true or false in lowercase.",
+          "prompt_sha256": "19f2c2466aaec3bd00fa66fd2699d6f85e6f514b3f93e921fcc99cf0f4c35445"
+        }
+      ]
+    },
+    {
+      "trial_id": "tenant-retry-wait-calculation",
+      "case_id": "tenant-retry-wait-calculation",
+      "nonce": "2b91af5bc00b535871fcd8eb57821b8af558643283152c68b69fff034502d1c4",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "8df0d46829e9e480e4e657c68c82f77b339ae4e3b5a1b4c7e570c1a519990f88"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "b9f68908a721f70b6e7d7f58c016e08b902c4e1428e5949809db8a690144bf26"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "A tenant birch operation fails on every allowed attempt. Using its effective retry settings, what is the total configured waiting time between calls, excluding execution time? Answer with only the integer number of seconds.",
+          "prompt_sha256": "9facaedfdae8f55f58b22bbc4d3b6d483dc8eaa602192f28c3e9223c462dce0c"
+        }
+      ]
+    },
+    {
+      "trial_id": "partial-batch-calculation",
+      "case_id": "partial-batch-calculation",
+      "nonce": "34e78eb42e30c7643eea90bd2acecaec4df1c04372233c65e4b8c2638111d56b",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "90c130b0789d4876280322f7fa690ebe92314c04702f38dc9ae42ab94ebb38fb"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "9d0d5b7f2cc368003ac27c442c9a9b561d5d2ef5db987b4cbdd37c59dca20ae3"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "Using the active production max_chunk_items, how many batches does split_batches return for exactly 53 items? Answer with only the integer batch count.",
+          "prompt_sha256": "b2b50144a4ed5fd15e312e95e4f654235b013ca60af5788d668b89d9c2c44306"
+        }
+      ]
+    },
+    {
+      "trial_id": "classifier-exception-order",
+      "case_id": "classifier-exception-order",
+      "nonce": "016dc3585ee80205b914977cc1f81c2fed45a09201cd535cb78e75c4556bcf6e",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "42e04873c643520e0b918afd03b2f51b3361e341e1969d21a9707ab172af2f84"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "05ee13f90e62c183b3ced1217f9aa5652ba2e014c06f1c871d54b44f3f728217"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What exact classification string does classify_ticket(score=95, tier=\"free\", flagged=False) return? Answer with only the classification, without quotation marks or a queue name.",
+          "prompt_sha256": "9ab520ea10da5015ac616ec489cee1c848d4ae3b617df1fb6ff1af1c4f3556d1"
+        }
+      ]
+    },
+    {
+      "trial_id": "canonical-trailing-slashes",
+      "case_id": "canonical-trailing-slashes",
+      "nonce": "ef98748aac695be4678a58e76290ad823dcf775ffba2a75cb31453b56de565cc",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "00d38808897d6b8627d3d99da296dde13919bb87dd156b31d6f0e604e4a22444"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "a8c762bb79ca0cfff50416f21425ca5bc712238f8121927859fecd84f8b69715"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "What exact string does canonical_path(\"/v1/tickets///\") return? Answer with only the path, without quotation marks.",
+          "prompt_sha256": "4ff8b1cb82ac96f55a1c99871cccad814048417bb3c1c1c3431b459833aa32f2"
+        }
+      ]
+    },
+    {
+      "trial_id": "health-timeout-exception",
+      "case_id": "health-timeout-exception",
+      "nonce": "1d184f0399d46345af7c3c59980e376038e9fcccfcbf7c76705ad8702db69570",
+      "phases": [
+        {
+          "arm": "a_prime",
+          "question": "Zeta setup: reply only READY.",
+          "prompt_sha256": "f72facf29fa603d2b3a02adc4640fcec454cc5de6ba17704bbfedffb6dd11453"
+        },
+        {
+          "arm": "b_first_divergence",
+          "question": "Beta setup: reply only READY.",
+          "prompt_sha256": "84500ffa51de4a5522c856bd7b73d391adcf9cb8a6bf321a29de0141597b3fb2"
+        },
+        {
+          "arm": "c_after_divergence",
+          "question": "For tenant spruce in production, what does timeout_for(\"/readyz\", effective_config) return after merging its configuration? Answer with only the integer number of milliseconds.",
+          "prompt_sha256": "fb009196af175789ff6ec9af926e88e163da9aa88e5be00d7fae6f47d05f56fb"
+        }
+      ]
+    }
+  ],
+  "source_references": [
+    {
+      "url": "https://github.com/ollama/ollama/blob/v0.40.11/mlxrunner/pipeline.go#L153",
+      "interpretation": "Schedules recurrent checkpoints at 8192-token intervals and near the prompt end (length minus four)."
+    },
+    {
+      "url": "https://github.com/ollama/ollama/blob/v0.40.11/mlxrunner/cache/recurrent.go#L244",
+      "interpretation": "Cumulative recurrent state cannot be rewound to an arbitrary shared prefix."
+    },
+    {
+      "url": "https://github.com/ollama/ollama/blob/v0.40.11/mlxrunner/prefix_cache.go#L108",
+      "interpretation": "Restores a checkpoint no later than the match, and schedules a newly observed branch point for capture during prefill."
+    }
+  ],
+  "protocol": {
+    "order": "One A/B/C triplet per case in fixture order; one unique leading content nonce per triplet.",
+    "a_prime": "Zeta setup: reply only READY.",
+    "b_first_divergence": "Beta setup: reply only READY.",
+    "c_after_divergence": "Original fixture question; all three suffixes differ after the common document.",
+    "hypothesis": "A is cold; the first divergent B may also be cold, then C may reuse the branch checkpoint learned while prefilling B.",
+    "observational_pattern": "A cached fraction <=5%, B <=5%, C >=80%; descriptive classification only, never a row exclusion rule.",
+    "quality": "Use benchmark_ollama.normalized_answer: case-sensitive whitespace normalization, no substring extraction; truncated answers fail.",
+    "warmup": "Unload and warm this model before every triplet using the benchmark harness helper. Save every setup cost and result in setup.jsonl. Finally unload this model again.",
+    "memory_stop": "Check reported model allocation against 8 GiB between requests; stop and unload on breach. This is not a guaranteed peak-memory cap.",
+    "memory": "Before/after model allocation snapshots from /api/ps; not KV-only or peak memory."
+  },
+  "kvpilot_policy_tested": false,
+  "kvpilot_codecs_tested": false,
+  "ollama": {
+    "version": "0.40.11"
+  },
+  "model": {
+    "name": "qwen3.5:4b",
+    "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+    "size": 3973305013,
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "",
+      "families": null,
+      "parameter_size": "",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    }
+  },
+  "show": {
+    "details": {
+      "parent_model": "",
+      "format": "safetensors",
+      "family": "qwen3_5",
+      "families": null,
+      "parameter_size": "4.5B",
+      "quantization_level": "nvfp4",
+      "runner": "mlx"
+    },
+    "model_info": {
+      "general.architecture": "qwen3_5",
+      "general.parameter_count": 4538986496,
+      "qwen3_5.block_count": 32,
+      "qwen3_5.context_length": 262144,
+      "qwen3_5.embedding_length": 2560
+    },
+    "capabilities": [
+      "completion",
+      "vision",
+      "thinking",
+      "tools"
+    ],
+    "thinking": {
+      "values": [
+        false,
+        true
+      ],
+      "default": true
+    }
+  },
+  "memory_initial": null,
+  "memory_initial_error": null,
+  "cleanup": {
+    "model": "qwen3.5:4b",
+    "created_at": "2026-10-27T05:02:24.366885Z",
+    "response": "",
+    "done": true,
+    "done_reason": "unload"
+  },
+  "memory_final": null,
+  "memory_final_error": null,
+  "cleanup_wall_ms": 27.664041961543262,
+  "finished_at": "2026-10-27T05:02:24.396184+00:00",
+  "completed_requests": 36,
+  "source_hashes_after": {
+    "harness": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/scripts/benchmark_ollama.py",
+      "sha256": "5e3ebf8c4e4034cfafc790d1cf3b3deb56f7ce5b7cd853a6032da3aed4894eee"
+    },
+    "diagnostic": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/scripts/diagnose_ollama_branches.py",
+      "sha256": "fb8d4b8ed01d2b1987f924e91b7d6fe54fa9a3a687a7cf1c4516f2880c25c7d2"
+    },
+    "fixture": {
+      "path": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/examples/ollama_quality_cases.json",
+      "sha256": "c82628f11b16650b3296a9f1b8df2ff43ee10a48ea664646c78915a220461011"
+    }
+  },
+  "sources_unchanged": true
+}

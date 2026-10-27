@@ -1,0 +1,271 @@
+{
+  "evidence_type": "measured_local_ollama_native_prefix_cache",
+  "arms": {
+    "fresh_prefix": {
+      "requests": 24,
+      "correct": 18,
+      "scored": 24,
+      "median_ttft_ms": 6582.419208018109,
+      "median_wall_ms": 6639.821562508587,
+      "median_cached_fraction": 0.0,
+      "reported_allocation_bytes_min": 4288288272,
+      "reported_allocation_bytes_max": 4665546256,
+      "truncated_outputs": 0
+    },
+    "exact_repeat": {
+      "requests": 24,
+      "correct": 18,
+      "scored": 24,
+      "median_ttft_ms": 79.42514604656026,
+      "median_wall_ms": 138.03833402926102,
+      "median_cached_fraction": 0.9980124222375633,
+      "reported_allocation_bytes_min": 4340438544,
+      "reported_allocation_bytes_max": 4718196240,
+      "truncated_outputs": 0
+    },
+    "shared_prefix": {
+      "requests": 24,
+      "correct": 18,
+      "scored": 24,
+      "median_ttft_ms": 6567.190145957284,
+      "median_wall_ms": 6613.911374995951,
+      "median_cached_fraction": 0.0024667049592087074,
+      "reported_allocation_bytes_min": 4508947984,
+      "reported_allocation_bytes_max": 4730983952,
+      "truncated_outputs": 0
+    },
+    "prime": {
+      "requests": 24,
+      "correct": 0,
+      "scored": 0,
+      "median_ttft_ms": 6521.1222289945,
+      "median_wall_ms": 6550.256229005754,
+      "median_cached_fraction": 0.0014955138312663782,
+      "reported_allocation_bytes_min": 4288288272,
+      "reported_allocation_bytes_max": 4510160400,
+      "truncated_outputs": 0
+    }
+  },
+  "paired": {
+    "exact_repeat": {
+      "valid_cache_and_load_control_pairs": 24,
+      "total_trials": 24,
+      "answer_agreement_count": 24,
+      "correct_to_incorrect_trial_ids": [],
+      "excluded_from_verified_hit_timing": [],
+      "all_timed_pairs": 24,
+      "all_timed_pairs_median_ttft_speedup": 82.62350851812235,
+      "median_paired_ttft_speedup": 82.62350851812235,
+      "median_paired_ttft_reduction_percent": 98.78969025017254
+    },
+    "shared_prefix": {
+      "valid_cache_and_load_control_pairs": 0,
+      "total_trials": 24,
+      "answer_agreement_count": 24,
+      "correct_to_incorrect_trial_ids": [],
+      "excluded_from_verified_hit_timing": [
+        {
+          "trial_id": "r1-canonical-trailing-slashes",
+          "fresh_cached_fraction": 0.001488833746898263,
+          "warm_cached_fraction": 0.0014932802389248383,
+          "fresh_load_ns": 905167,
+          "warm_load_ns": 1100291,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-classifier-exception-order",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.002471576866040534,
+          "fresh_load_ns": 499625,
+          "warm_load_ns": 607916,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-explicit-false-inheritance",
+          "fresh_cached_fraction": 0.0014917951268025858,
+          "warm_cached_fraction": 0.0014917951268025858,
+          "fresh_load_ns": 750708,
+          "warm_load_ns": 504208,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-health-timeout-exception",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0024703557312252965,
+          "fresh_load_ns": 3514083,
+          "warm_load_ns": 533583,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-literal-heartbeat",
+          "fresh_cached_fraction": 0.0014962593516209476,
+          "warm_cached_fraction": 0.0014947683109118087,
+          "fresh_load_ns": 627583,
+          "warm_load_ns": 507458,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-literal-priority-queue",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0024925224327018943,
+          "fresh_load_ns": 3244541,
+          "warm_load_ns": 579375,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-partial-batch-calculation",
+          "fresh_cached_fraction": 0.0014858841010401188,
+          "warm_cached_fraction": 0.0014851485148514852,
+          "fresh_load_ns": 563167,
+          "warm_load_ns": 629958,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-plan-concurrency-multihop",
+          "fresh_cached_fraction": 0.0014925373134328358,
+          "warm_cached_fraction": 0.001487357461576599,
+          "fresh_load_ns": 649833,
+          "warm_load_ns": 508000,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-production-port-override",
+          "fresh_cached_fraction": 0.0014932802389248383,
+          "warm_cached_fraction": 0.00149402390438247,
+          "fresh_load_ns": 777291,
+          "warm_load_ns": 544125,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-region-audit-multihop",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0029835902536051715,
+          "fresh_load_ns": 679750,
+          "warm_load_ns": 513500,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-tenant-retention-override",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.002982107355864811,
+          "fresh_load_ns": 4101875,
+          "warm_load_ns": 699916,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r1-tenant-retry-wait-calculation",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0024630541871921183,
+          "fresh_load_ns": 3515209,
+          "warm_load_ns": 594167,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-canonical-trailing-slashes",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0029791459781529296,
+          "fresh_load_ns": 817750,
+          "warm_load_ns": 590958,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-classifier-exception-order",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0029615004935834156,
+          "fresh_load_ns": 753583,
+          "warm_load_ns": 566458,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-explicit-false-inheritance",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0024888003982080635,
+          "fresh_load_ns": 604458,
+          "warm_load_ns": 456625,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-health-timeout-exception",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.002967359050445104,
+          "fresh_load_ns": 3276709,
+          "warm_load_ns": 768042,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-literal-heartbeat",
+          "fresh_cached_fraction": 0.0015,
+          "warm_cached_fraction": 0.0014955134596211367,
+          "fresh_load_ns": 711584,
+          "warm_load_ns": 779708,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-literal-priority-queue",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.002485089463220676,
+          "fresh_load_ns": 682541,
+          "warm_load_ns": 2981042,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-partial-batch-calculation",
+          "fresh_cached_fraction": 0.0014851485148514852,
+          "warm_cached_fraction": 0.0014895729890764648,
+          "fresh_load_ns": 648042,
+          "warm_load_ns": 20087209,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-plan-concurrency-multihop",
+          "fresh_cached_fraction": 0.0014925373134328358,
+          "warm_cached_fraction": 0.0014903129657228018,
+          "fresh_load_ns": 459625,
+          "warm_load_ns": 581750,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-production-port-override",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0029865604778496766,
+          "fresh_load_ns": 3186208,
+          "warm_load_ns": 607792,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-region-audit-multihop",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.0024888003982080635,
+          "fresh_load_ns": 3814583,
+          "warm_load_ns": 571209,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-tenant-retention-override",
+          "fresh_cached_fraction": 0.0014910536779324055,
+          "warm_cached_fraction": 0.0014895729890764648,
+          "fresh_load_ns": 2053250,
+          "warm_load_ns": 619875,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        },
+        {
+          "trial_id": "r2-tenant-retry-wait-calculation",
+          "fresh_cached_fraction": 0.0,
+          "warm_cached_fraction": 0.002455795677799607,
+          "fresh_load_ns": 3180417,
+          "warm_load_ns": 2747333,
+          "reason": "failed the predeclared cache/load/TTFT control; retained in all-arm and all-timed summaries"
+        }
+      ],
+      "all_timed_pairs": 24,
+      "all_timed_pairs_median_ttft_speedup": 1.0025666059698268,
+      "median_paired_ttft_speedup": null,
+      "median_paired_ttft_reduction_percent": null
+    }
+  },
+  "kvpilot_policy_tested": false,
+  "kvpilot_codecs_tested": false,
+  "kv_only_memory_saved_bytes": null,
+  "compression_quality_validated": false,
+  "caveat": "Descriptive native-cache microbenchmark; no controller/compression, concurrency or production-quality claim. Priming is reported separately and is not free."
+}

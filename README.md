@@ -2,7 +2,7 @@
 
 **We are building software that decides what to do with an AI agent's saved calculations while it waits.**
 
-**Today: a working local research prototype.** It contains real CPU compression experiments and a separate simulation of cache-management decisions. It is not connected to a live language model yet. The diagrams below separate what exists from the intended product.
+**Today: a working local research prototype.** It contains CPU compression experiments, a separate simulation of cache-management decisions, and a real-model benchmark using local Ollama. The Ollama benchmark measures its existing cache behavior; our adaptive policy and codecs are not integrated into the model runner. The diagrams below separate what exists from the intended product.
 
 ## The problem, in plain English
 
@@ -12,7 +12,7 @@ Now imagine hundreds of agents waiting at once. Their saved calculations compete
 
 **KVPilot's job would be to choose which saved calculations deserve space, and in which format.** The goal is to make agents cheaper to run and quicker to resume within a memory budget. Those benefits still need to be demonstrated on a real serving system.
 
-This is the intended decision flow. Today's simulator models these choices; the live model connection is future work.
+This is the intended decision flow. Today's simulator models these choices; connecting this decision policy to a model runner is future work.
 
 ```mermaid
 flowchart TD
@@ -34,7 +34,7 @@ This manages **reusable calculations**, not lasting knowledge about a user. It d
 
 ## What we have actually built
 
-There are two separate working experiments:
+There are three separate experiments:
 
 ```mermaid
 flowchart TB
@@ -51,9 +51,18 @@ flowchart TB
         G --> H["Compare six decision policies"]
         H --> I["Calculate delay, memory use and transfers"]
     end
+    subgraph LOCAL["Built: local Ollama model benchmark"]
+        direction TB
+        J["Synthetic repository and questions"] --> K["Real Qwen model on the Mac"]
+        K --> L["Compare fresh and reused native caches"]
+        L --> M["Measure response time and check answers"]
+        L --> N["Record aggregate memory, not KV-only bytes"]
+    end
 ```
 
 The CPU experiments really execute compression code. The simulation moves descriptions of cache pages through a model of storage; it does not run a language model or transfer real KV tensors. Its cost assumptions are supplied separately, so the CPU timings are not presented as GPU performance.
+
+The Ollama experiment runs real inference on the existing `qwen3.5:4b` model using the Mac's GPU. It measures native caching, not the simulated controller or our codecs. See the [backend capabilities and limits](docs/ollama-backend.md).
 
 | Built piece | What it means in everyday terms |
 |---|---|
@@ -63,6 +72,7 @@ The CPU experiments really execute compression code. The simulation moves descri
 | Decision policies | Simple rules such as always using INT4, plus an adaptive rule that compares estimated costs. |
 | Eviction-cost calculation | Before accepting a new cache, estimate the harm caused by removing existing caches to make room. |
 | Evaluation harness | Freeze the code, test previously unexecuted synthetic sequences, and retain wins and losses. |
+| Local real-model benchmark | Send synthetic repository questions to Ollama, time the first answer text, verify cache-hit counters and score exact answers. |
 
 The current controller does not learn an expiry timer. Stored data leaves this replay through resume, cancellation or eviction when space is needed.
 
@@ -100,7 +110,7 @@ flowchart TD
     D -->|Restore cached state| B
 ```
 
-We would first need to measure real costs, connect actual lifecycle events, check cache compatibility, and test generated answers. No GPU integration, live serving speedup or preserved coding accuracy has been demonstrated yet.
+We would first need to measure integration costs, connect actual lifecycle events, check cache compatibility, and test generated answers after restoring our own compressed state. Native Ollama reuse is now measured locally; a live KVPilot speedup or compression-quality result has not been demonstrated.
 
 ## What we have learned so far
 
@@ -109,6 +119,22 @@ The frozen evaluation ran **140 previously unseen synthetic traces containing 33
 The new policy reduced modeled tail resume delay versus fixed INT4 in five of seven workload families. Cancellation-heavy traffic regressed, and branching was inconclusive. The two largest wins exactly matched simply keeping raw data, while using **3.76 times** the stored-byte time and transfer volume of INT4. No family met our original combined latency-and-memory target.
 
 So we have built a working experiment and improved its decision rule. We have not yet proved that adding KVPilot makes a real model-serving system faster or cheaper. See the [full results, including regressions](docs/eviction-results.md).
+
+## Real local model: what we measured
+
+We ran the already installed **Ollama `qwen3.5:4b` on an M1 Pro Mac with 16 GB memory**, using its MLX GPU backend. No GPU rental or model download was needed. The main experiment used twelve synthetic repository questions, each tested twice:
+
+| Native Ollama condition | Median time to first answer text | Correct answers |
+|---|---:|---:|
+| Fresh document prefix | 6.582 s | 18/24 |
+| Exact repeated prompt | 0.079 s | 18/24 |
+| First changed question after the document was primed | 6.567 s | 18/24 |
+
+Exact repeats reused 99.80% of the input and gave identical answers in all 24 comparisons, including the same mistakes. The model passed nine of twelve distinct questions; this is not general coding-quality validation. Order and kernel warmup can contribute to the observed timing ratio.
+
+A separate A/B/C diagnostic found that, after the first changed question established a checkpoint, a further new question reused a median 98.26% of the input and started answering in **0.269 s**. All twelve trios showed this pattern; nine of twelve target answers were correct. Both preceding setup requests are real work and remain in the archive.
+
+**This measures Ollama's existing cache, not a KVPilot improvement.** Main-run aggregate allocation was 3.99–4.41 GiB; it does not isolate KV bytes or demonstrate memory savings. The installed MLX API cannot inject our codecs or policy. Read the [complete results, failures, setup costs and reproduction commands](docs/ollama-results.md), and the [backend source review](docs/ollama-backend.md).
 
 ## How this relates to existing work
 
@@ -125,6 +151,7 @@ The candidate product is a measurable policy and diagnostics layer on an existin
 | Policy | Raw/compressed/recompute choices; exact planned LRU victims; expected lost-cache benefit per affected owner; historical resume forecast; decision log | Greedy heuristic, no survival model, future-arrival planning or global SLO guarantee |
 | Baselines | Recompute, raw retention, fixed codecs, original `adaptive`, exact-sizing zero-penalty `adaptive_exact` | `adaptive_eviction` is the candidate; these are not actual vLLM/LMCache/TensorRT benchmark arms |
 | Experiments | Codec benchmark, sensitivity sweep, seven-family seeded holdout protocol, source freeze and paired whole-run bootstrap | Synthetic assumptions; new event sequences do not establish production generalization |
+| Local model reference | Ollama streaming timings, cached-token counts, exact-answer checks and aggregate allocation snapshots | Native backend behavior; no KVPilot cache control, tensor capture or isolated KV-memory saving |
 | Verification | Codec round trips, malformed input, isolation, shared prefixes, cancellation, capacity, early return and causal decisions | Does not establish LLM task quality or production correctness |
 
 The policy rejects lossy profiles by default. The example explicitly enables **unvalidated lossy exploration** so we can study assumed cost tradeoffs. This flag is not quality approval.
@@ -157,9 +184,9 @@ An optional `--input your-capture.npy` argument to the codec benchmark accepts a
 
 ## Initial evidence
 
-The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Current local verification passed **130 tests plus 89 subtests**. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds the new experiment. Cloud CI has not run.
+The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Pre-eviction-freeze verification passed **130 tests plus 89 subtests**; verification after adding the local-model harnesses passed **174 tests plus 89 subtests**. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds that experiment. Cloud CI has not run.
 
-All policy timings are **modeled from assumptions** in [assumed-costs.json](examples/assumed-costs.json). They do not use the CPU benchmark timings as invented GPU timings. `measured_gpu_itl_ms` and `measured_llm_task_success` remain null. Fully restoring a compressed cache to FP16 does not reduce its active attention footprint.
+All policy timings are **modeled from assumptions** in [assumed-costs.json](examples/assumed-costs.json). They do not use the CPU benchmark timings as invented GPU timings. `measured_gpu_itl_ms` and `measured_llm_task_success` remain null in those replay results; the separate Ollama archive contains measured native-model timings and answer checks. Fully restoring a compressed cache to FP16 does not reduce its active attention footprint.
 
 ## Eviction-aware experiment
 

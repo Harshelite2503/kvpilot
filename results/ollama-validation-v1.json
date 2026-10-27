@@ -1,0 +1,162 @@
+{
+  "ollama-qwen35-4b-v2": {
+    "status": "complete",
+    "requests_verified": 96,
+    "prompts_reconstructed_and_hashed": true,
+    "scores_recomputed": true,
+    "summary_recomputed": true,
+    "source_hashes_match": true,
+    "reported_allocation_min_bytes": 4288288272,
+    "reported_allocation_max_bytes": 4730983952,
+    "setup_count": 24,
+    "setup_total_ms": 54939.402876305394,
+    "setup_median_ms": 2258.134271018207,
+    "memory_final": null,
+    "thinking_chars_total": 0,
+    "wrong_answers": [
+      {
+        "trial_id": "r1-canonical-trailing-slashes",
+        "arm": "shared_prefix",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r1-canonical-trailing-slashes",
+        "arm": "fresh_prefix",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r1-canonical-trailing-slashes",
+        "arm": "exact_repeat",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r1-tenant-retry-wait-calculation",
+        "arm": "fresh_prefix",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "r1-tenant-retry-wait-calculation",
+        "arm": "exact_repeat",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "r1-tenant-retry-wait-calculation",
+        "arm": "shared_prefix",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "r1-health-timeout-exception",
+        "arm": "fresh_prefix",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r1-health-timeout-exception",
+        "arm": "exact_repeat",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r1-health-timeout-exception",
+        "arm": "shared_prefix",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r2-canonical-trailing-slashes",
+        "arm": "fresh_prefix",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r2-canonical-trailing-slashes",
+        "arm": "exact_repeat",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r2-canonical-trailing-slashes",
+        "arm": "shared_prefix",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "r2-health-timeout-exception",
+        "arm": "fresh_prefix",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r2-health-timeout-exception",
+        "arm": "exact_repeat",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r2-health-timeout-exception",
+        "arm": "shared_prefix",
+        "answer": "1200",
+        "expected_answer": "250"
+      },
+      {
+        "trial_id": "r2-tenant-retry-wait-calculation",
+        "arm": "fresh_prefix",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "r2-tenant-retry-wait-calculation",
+        "arm": "exact_repeat",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "r2-tenant-retry-wait-calculation",
+        "arm": "shared_prefix",
+        "answer": "4",
+        "expected_answer": "15"
+      }
+    ]
+  },
+  "ollama-branches-v1": {
+    "status": "complete",
+    "requests_verified": 36,
+    "prompts_reconstructed_and_hashed": true,
+    "scores_recomputed": true,
+    "summary_recomputed": true,
+    "source_hashes_match": true,
+    "reported_allocation_min_bytes": 4288288272,
+    "reported_allocation_max_bytes": 4613379604,
+    "setup_count": 12,
+    "setup_total_ms": 26261.983124772087,
+    "setup_median_ms": 2126.839541539084,
+    "memory_final": null,
+    "thinking_chars_total": 0,
+    "wrong_answers": [
+      {
+        "trial_id": "tenant-retry-wait-calculation",
+        "arm": "c_after_divergence",
+        "answer": "4",
+        "expected_answer": "15"
+      },
+      {
+        "trial_id": "canonical-trailing-slashes",
+        "arm": "c_after_divergence",
+        "answer": "/v1/tickets/",
+        "expected_answer": "/v1/tickets"
+      },
+      {
+        "trial_id": "health-timeout-exception",
+        "arm": "c_after_divergence",
+        "answer": "1200",
+        "expected_answer": "250"
+      }
+    ]
+  }
+}

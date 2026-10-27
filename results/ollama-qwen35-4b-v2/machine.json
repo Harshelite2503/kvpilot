@@ -1,0 +1,9 @@
+{
+  "machine_name": "MacBook Pro",
+  "machine_model": "MacBookPro18,3",
+  "chip_type": "Apple M1 Pro",
+  "physical_memory": "16 GB",
+  "number_processors": "proc 8:0:6:2",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0.1\nBuildVersion:\t\t26A434",
+  "scope": "Local laptop measurements; no rented GPU. API reports MLX on GPU. Memory counters are allocation proxies, not KV-only bytes."
+}
