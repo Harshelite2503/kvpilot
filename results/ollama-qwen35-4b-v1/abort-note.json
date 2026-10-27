@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "run_id": "ac4634a9ffb4433ea2684a4b20e3024d",
+  "source_commit": "a2975c3",
+  "harness_sha256_matches_source_commit": true,
+  "status": "manually_interrupted_partial_run",
+  "reason": "The executing agent sent an interrupt after observing growing API-reported model allocation on the 16 GiB Mac, then reported unloading the model. This was a precautionary manual stop, not an out-of-memory error or an automatic threshold trigger.",
+  "reason_provenance": "Executing agent's contemporaneous account; the preserved manifest independently records KeyboardInterrupt.",
+  "automatic_memory_guard_present_in_this_version": false,
+  "automatic_memory_threshold_triggered": false,
+  "planned_requests": 96,
+  "completed_request_rows": 21,
+  "completed_four_arm_trials": 5,
+  "partial_trial": {
+    "trial_id": "r1-canonical-trailing-slashes",
+    "completed_arms": ["prime"],
+    "next_planned_arm": "shared_prefix"
+  },
+  "raw_manifest_error": "KeyboardInterrupt: ",
+  "last_completed_request_memory": {
+    "source": "requests.jsonl final row, memory_after.size from /api/ps",
+    "trial_id": "r1-canonical-trailing-slashes",
+    "arm": "prime",
+    "reported_model_allocation_bytes": 7727306256,
+    "initial_manifest_reported_model_allocation_bytes": 4928968208,
+    "first_request_before_reported_model_allocation_bytes": 4994373136,
+    "interpretation": "Snapshots of reported model allocation, not KV-only bytes, process RSS, total system pressure, or a measured peak. size and size_vram describe the same reported amount here and must not be added together."
+  },
+  "unrecorded_work": "An interrupted in-flight request may have performed partial work. Its completed output, token counts, duration and final memory snapshot are unavailable; the 21 completed rows do not account for that work.",
+  "analysis_limit": "This is an incomplete exploratory run. Its five completed comparisons and fifteen scored answers are not the planned full benchmark and must not be pooled with the revised per-trial-reset run as if the protocols were identical.",
+  "preserved_artifact_sha256": {
+    "manifest.json": "0a0ed4ca6596e3406736d75cff44d77b184b7064c9a2c8f8b368443eef9b0128",
+    "requests.jsonl": "526dd0f6c31fd6cdb98785ecc7789f80439c99a0cb14180f0cdd49f2304b8e8e",
+    "warmup.json": "42f6769ee6edf05069e1bc103764e43bb61db50322bbd56691f66a6388dd5c1a"
+  },
+  "raw_manifest_modified_by_this_audit": false
+}

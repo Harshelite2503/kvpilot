@@ -205,6 +205,7 @@ def test_main_archives_all_four_arms_and_scores_truncated_exact_answer_as_wrong(
     }]}))
     output = tmp_path / "result"
     calls = []
+    unloads = []
     seen_prompts = set()
     seen_prefixes = set()
 
@@ -219,6 +220,12 @@ def test_main_archives_all_four_arms_and_scores_truncated_exact_answer_as_wrong(
                 return {"capabilities": ["completion"]}
             if path == "/api/version":
                 return {"version": "offline-fixture"}
+            if path == "/api/generate":
+                assert body == {"model": "fixture-model", "keep_alive": 0, "stream": False}
+                unloads.append(deepcopy(body))
+                seen_prompts.clear()
+                seen_prefixes.clear()
+                return {"done": True, "done_reason": "unload"}
             raise AssertionError(f"unexpected endpoint {path}")
 
         def model_memory(self, model):
@@ -251,9 +258,19 @@ def test_main_archives_all_four_arms_and_scores_truncated_exact_answer_as_wrong(
     records = [json.loads(line) for line in (output / "requests.jsonl").read_text().splitlines()]
     manifest = json.loads((output / "manifest.json").read_text())
     summary = json.loads((output / "summary.json").read_text())
+    setup = [json.loads(line) for line in (output / "setup.jsonl").read_text().splitlines()]
     assert len(calls) == 5  # One separately archived warmup, then four experimental arms.
+    assert len(unloads) == 2  # Before the trial and finally, not between cache-paired arms.
+    assert len(setup) == 1
+    assert setup[0]["trial_id"] == records[0]["trial_id"]
+    assert setup[0]["reset_and_warm_wall_ms"] >= 0
+    assert setup[0]["unload_done_reason"] == "unload"
     assert len(records) == manifest["completed_requests"] == 4
     assert manifest["status"] == "complete"
+    assert manifest["reset_between_trials"] is True
+    assert manifest["cleanup"]["done_reason"] == "unload"
+    assert manifest["memory_final"] is None
+    assert "1 synthetic tasks" in manifest["protocol"]["quality"]
     assert manifest["fixture_sha256"] == sha256(fixture.read_bytes()).hexdigest()
     indexed = {r["arm"]: r for r in records}
     assert set(indexed) == {"fresh_prefix", "exact_repeat", "prime", "shared_prefix"}
@@ -275,3 +292,119 @@ def test_main_archives_all_four_arms_and_scores_truncated_exact_answer_as_wrong(
     assert fresh_prompt.replace(indexed["fresh_prefix"]["nonce"], "nonce") == shared_prompt.replace(
         indexed["shared_prefix"]["nonce"], "nonce"
     )
+
+
+def test_memory_stop_checks_reported_allocation_and_preserves_missingness():
+    benchmark.check_memory(None, 100)
+    benchmark.check_memory({"size": None}, 100)
+    benchmark.check_memory({"size_vram": 999}, 100)  # A different field is not a KV-size substitute.
+    benchmark.check_memory({"size": 100}, 100)
+    with pytest.raises(RuntimeError, match="memory stop"):
+        benchmark.check_memory({"size": 101}, 100)
+
+
+def install_lifecycle_fixture(tmp_path, monkeypatch, *, retain=False, failure=None, repeats=2):
+    """A stateful fake exposes reset boundaries and allocation-stop behavior."""
+    fixture = tmp_path / "lifecycle-cases.json"
+    fixture.write_text(json.dumps({"cases": [{
+        "id": "port", "context": "Port: 42", "question": "Which port?", "expected_answer": "42",
+    }]}))
+    output = tmp_path / "lifecycle-result"
+    state = {"events": [], "loaded": False, "size": 50, "requests": 0}
+
+    class FakeOllama:
+        def __init__(self, base_url):
+            benchmark.local_url(base_url)
+
+        def json(self, path, body=None):
+            if path == "/api/tags":
+                return {"models": [{"name": "fixture-model"}]}
+            if path == "/api/show":
+                return {}
+            if path == "/api/version":
+                return {"version": "offline-fixture"}
+            if path == "/api/generate":
+                assert body == {"model": "fixture-model", "keep_alive": 0, "stream": False}
+                state["events"].append("unload")
+                state["loaded"] = False
+                state["size"] = 50
+                return {"done": True, "done_reason": "unload"}
+            raise AssertionError(f"unexpected endpoint {path}")
+
+        def model_memory(self, model):
+            return {"size": state["size"]} if state["loaded"] else None
+
+        def generate(self, body):
+            warm = body["prompt"] == "Reply only READY."
+            state["events"].append("warmup" if warm else "request")
+            state["loaded"] = True
+            if warm and failure == "warmup":
+                raise RuntimeError("fixture warmup failed")
+            if not warm:
+                state["requests"] += 1
+                if failure == "generate":
+                    raise RuntimeError("fixture generation failed")
+                if failure == "memory":
+                    state["size"] = 101
+            return {
+                "client_wall_ms": 120, "client_ttft_ms": 100,
+                "answer": "42", "thinking_chars": 0, "done_reason": "stop",
+                "server_metrics": {"prompt_eval_count": 1000, "prompt_eval_cached_count": 0,
+                                   "load_duration": 0},
+            }
+
+    monkeypatch.setattr(benchmark, "Ollama", FakeOllama)
+    args = ["benchmark_ollama", "--cases", str(fixture), "--model", "fixture-model",
+            "--repeats", str(repeats), "--max-reported-gib", str(100 / 2**30),
+            "--output-dir", str(output)]
+    if retain:
+        args.append("--retain-across-trials")
+    monkeypatch.setattr(benchmark.sys, "argv", args)
+    return output, state
+
+
+def test_default_resets_before_each_trial_but_not_within_four_arm_comparison(tmp_path, monkeypatch):
+    output, state = install_lifecycle_fixture(tmp_path, monkeypatch)
+    assert benchmark.main() == 0
+    assert state["events"] == ["unload", "warmup", *(["request"] * 4),
+                               "unload", "warmup", *(["request"] * 4), "unload"]
+    assert state["loaded"] is False
+    records = [json.loads(line) for line in (output / "requests.jsonl").read_text().splitlines()]
+    setup = [json.loads(line) for line in (output / "setup.jsonl").read_text().splitlines()]
+    assert len(records) == 8
+    assert len(setup) == 2
+    assert {r["trial_id"] for r in records} == {s["trial_id"] for s in setup}
+    assert all(s["reset_and_warm_wall_ms"] >= 0 for s in setup)
+
+
+def test_retain_option_warms_once_and_explicitly_preserves_loaded_model(tmp_path, monkeypatch):
+    output, state = install_lifecycle_fixture(tmp_path, monkeypatch, retain=True)
+    assert benchmark.main() == 0
+    assert state["events"] == ["warmup", *(["request"] * 8)]
+    assert state["loaded"] is True
+    manifest = json.loads((output / "manifest.json").read_text())
+    assert manifest["reset_between_trials"] is False
+    assert "cleanup" not in manifest
+    setup = [json.loads(line) for line in (output / "setup.jsonl").read_text().splitlines()]
+    assert len(setup) == 1
+
+
+@pytest.mark.parametrize("failure,completed", [("memory", 1), ("generate", 0), ("warmup", 0)])
+def test_failure_preserves_completed_rows_and_unloads_before_recording_failed_manifest(
+    tmp_path, monkeypatch, failure, completed,
+):
+    output, state = install_lifecycle_fixture(tmp_path, monkeypatch, failure=failure)
+    with pytest.raises(RuntimeError, match="memory stop" if failure == "memory" else "fixture"):
+        benchmark.main()
+    assert state["events"][0] == state["events"][-1] == "unload"
+    assert state["events"].count("unload") == 2
+    assert state["events"].count("request") == (0 if failure == "warmup" else 1)
+    assert state["loaded"] is False
+    manifest = json.loads((output / "manifest.json").read_text())
+    assert manifest["status"] == "failed"
+    assert manifest["completed_requests"] == completed
+    assert manifest["cleanup"]["done_reason"] == "unload"
+    assert manifest["memory_final"] is None
+    assert "RuntimeError" in manifest["error"]
+    assert len((output / "requests.jsonl").read_text().splitlines()) == completed
+    assert not (output / "summary.json").exists()

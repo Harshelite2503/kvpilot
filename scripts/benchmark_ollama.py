@@ -11,6 +11,7 @@ import argparse
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import math
 from pathlib import Path
 import platform
 import random
@@ -214,6 +215,22 @@ def write_json(path: Path, data: object):
     path.write_text(json.dumps(data, indent=2, allow_nan=False) + "\n")
 
 
+def reset_and_warm(client: Ollama, base_body: dict) -> dict:
+    started = time.perf_counter()
+    unloaded = client.json("/api/generate", {
+        "model": base_body["model"], "keep_alive": 0, "stream": False})
+    result = client.generate(dict(base_body, prompt="Reply only READY."))
+    result["reset_and_warm_wall_ms"] = (time.perf_counter() - started) * 1000
+    result["unload_done_reason"] = unloaded.get("done_reason")
+    result["memory_after"] = client.model_memory(base_body["model"])
+    return result
+
+
+def check_memory(snapshot: dict | None, limit_bytes: int):
+    if snapshot and isinstance(snapshot.get("size"), int) and snapshot["size"] > limit_bytes:
+        raise RuntimeError("reported model allocation exceeded benchmark memory stop; no more requests issued")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", default="http://127.0.0.1:11434")
@@ -223,10 +240,15 @@ def main() -> int:
     parser.add_argument("--num-ctx", type=int, default=4096)
     parser.add_argument("--num-predict", type=int, default=64)
     parser.add_argument("--seed", type=int, default=20261027)
+    parser.add_argument("--retain-across-trials", action="store_true",
+                        help="Skip default model resets; permits accumulated native caches up to the memory stop")
+    parser.add_argument("--max-reported-gib", type=float, default=8.0)
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
     if args.repeats < 1 or args.num_ctx < 512 or args.num_predict < 1:
         parser.error("positive repeats/output and context >=512 required")
+    if not math.isfinite(args.max_reported_gib) or args.max_reported_gib <= 0:
+        parser.error("max-reported-gib must be finite and positive")
     fixture = json.loads(args.cases.read_text())
     cases = fixture["cases"]
     if not cases or len({c["id"] for c in cases}) != len(cases):
@@ -253,6 +275,8 @@ def main() -> int:
         "model": {k: installed.get(k) for k in ("name", "digest", "size", "details")},
         "show": {k: shown.get(k) for k in ("details", "model_info", "capabilities", "thinking")},
         "memory_initial": client.model_memory(args.model), "request_defaults": base_body,
+        "reset_between_trials": not args.retain_across_trials,
+        "reported_memory_stop_bytes": int(args.max_reported_gib * 2**30),
         "fixture_sha256": sha256(args.cases.read_bytes()).hexdigest(),
         "harness_sha256": sha256(Path(__file__).read_bytes()).hexdigest(), "plan": plan,
         "protocol": {
@@ -260,22 +284,28 @@ def main() -> int:
             "exact_repeat": "Immediately repeat identical full prompt after fresh_prefix. Always second; an upper-bound reuse case.",
             "shared_prefix": "Use another fresh nonce; prime document with a different question, then ask target question. Block order randomized against fresh+repeat.",
             "prime_question": "For this document-loading check, reply with the literal READY.",
-            "quality": "Exact match after whitespace normalization only; 12 synthetic tasks, repeated trials are not independent tasks.",
+            "quality": f"Exact match after whitespace normalization only; {len(cases)} synthetic tasks, repeated trials are not independent tasks.",
             "valid_timing_pair": "fresh cached <=5%, warm cached >=80%, both load_duration <250ms, both TTFT present; invalid pairs retained.",
             "memory": "Before/after /api/ps model size and size_vram snapshots; not KV-only, peak, or separate CPU+GPU totals.",
             "priming_cost": "Prime requests included in raw rows and separate summary. Warm latency assumes earlier useful prefill; priming from scratch costs work.",
+            "reset": "By default unload/reload this model between trials and unload at end, bounding retained caches. Setup time is saved separately; compared requests all use resident weights. This is not a multi-session pressure test. Memory stop is checked between requests, not a guaranteed peak cap.",
         },
     }
     write_json(args.output_dir / "manifest.json", manifest)
     rows = []
     try:
-        warm_body = dict(base_body, prompt="Reply only READY.")
-        warmup = client.generate(warm_body)
-        warmup["memory_after"] = client.model_memory(args.model)
-        write_json(args.output_dir / "warmup.json", warmup)
         by_id = {c["id"]: c for c in cases}
-        with (args.output_dir / "requests.jsonl").open("w") as log:
-            for trial in plan:
+        with (args.output_dir / "requests.jsonl").open("w") as log, (args.output_dir / "setup.jsonl").open("w") as setup:
+            for index, trial in enumerate(plan):
+                if not args.retain_across_trials:
+                    warmup = reset_and_warm(client, base_body)
+                elif index == 0:
+                    warmup = client.generate(dict(base_body, prompt="Reply only READY."))
+                else:
+                    warmup = None
+                if warmup is not None:
+                    setup.write(json.dumps(dict(warmup, trial_id=trial["trial_id"])) + "\n")
+                    setup.flush()
                 case = by_id[trial["case_id"]]
                 for block in trial["blocks"]:
                     arms = ("fresh_prefix", "exact_repeat") if block == "repeat_block" else ("prime", "shared_prefix")
@@ -283,6 +313,7 @@ def main() -> int:
                         question = manifest["protocol"]["prime_question"] if arm == "prime" else case["question"]
                         prompt = make_prompt(case["context"], question, trial["nonces"][block])
                         before = client.model_memory(args.model)
+                        check_memory(before, manifest["reported_memory_stop_bytes"])
                         result = client.generate(dict(base_body, prompt=prompt))
                         result.update(trial_id=trial["trial_id"], case_id=case["id"], arm=arm,
                                       nonce=trial["nonces"][block], prompt_sha256=sha256(prompt.encode()).hexdigest(),
@@ -302,6 +333,13 @@ def main() -> int:
         manifest["error"] = f"{type(exc).__name__}: {exc}"
         raise
     finally:
+        if not args.retain_across_trials:
+            try:
+                manifest["cleanup"] = client.json("/api/generate", {
+                    "model": args.model, "keep_alive": 0, "stream": False})
+                manifest["memory_final"] = client.model_memory(args.model)
+            except Exception as cleanup_error:
+                manifest["cleanup_error"] = f"{type(cleanup_error).__name__}: {cleanup_error}"
         manifest["finished_at"] = datetime.now(timezone.utc).isoformat()
         manifest["completed_requests"] = len(rows)
         write_json(args.output_dir / "manifest.json", manifest)
