@@ -1,18 +1,122 @@
 # KVPilot
 
-**A local experiment in deciding which paused agent KV caches are worth retaining, in what format, and for how long.**
+**We are building software that decides what to do with an AI agent's saved calculations while it waits.**
 
-Status: CPU prototype and research, 27 October 2026. No GPU, live vLLM/LMCache integration, real-model quality result, customer trace, or demonstrated startup advantage yet. The original adaptive policy and its negative result are preserved. The new eviction-aware experiment has a frozen source/config manifest and a paired synthetic holdout protocol; see [eviction results](docs/eviction-results.md).
+**Today: a working local research prototype.** It contains real CPU compression experiments and a separate simulation of cache-management decisions. It is not connected to a live language model yet. The diagrams below separate what exists from the intended product.
 
-## The question worth testing
+## The problem, in plain English
 
-A coding agent pauses for a tool or a person. Keeping its cache consumes scarce memory; encoding it costs compute; restoring it costs bandwidth; dropping it means another prefill. Branches may share most of the same physical cache. Can observable lifecycle events and calibrated costs support better choices than existing policies on a particular customer's workload?
+Imagine a coding assistant reads a repository, asks a tool to run tests, and waits for the answer. While processing the code and conversation, the language model builds a **KV cache**: numbers representing intermediate calculations for earlier tokens. Reusing those numbers can avoid doing the same work again.
+
+Now imagine hundreds of agents waiting at once. Their saved calculations compete for limited memory. Keeping everything takes space; compressing it takes work; deleting it may mean repeating work when an agent returns.
+
+**KVPilot's job would be to choose which saved calculations deserve space, and in which format.** The goal is to make agents cheaper to run and quicker to resume within a memory budget. Those benefits still need to be demonstrated on a real serving system.
+
+This is the intended decision flow. Today's simulator models these choices; the live model connection is future work.
+
+```mermaid
+flowchart TD
+    A["Agent pauses with a KV cache"] --> D["KVPilot compares the costs"]
+    D --> R["Keep raw<br/>More space"]
+    D --> Q["Compress<br/>Less space, extra work"]
+    D --> X["Discard<br/>Rebuild if needed"]
+    R --> S["On return: restore or recompute"]
+    Q --> S
+    X --> S
+    S --> W["Continue generating"]
+```
+
+On return, use a complete cached copy if restoring it is worthwhile; otherwise recompute from the input. Compressed copies need decoding first. Shared pages can remain for other agents, so discarding one session does not necessarily free all of its logical cache bytes.
+
+The choice uses estimates of return likelihood, encoding/transfer work, memory pressure and the cost of recomputation. It does not know the future. Approximate compression can also change model outputs, so quality must be tested before live use.
+
+This manages **reusable calculations**, not lasting knowledge about a user. It does not train the model, change its weights, extend its context limit, or build a memristor chip. Restoring a compact cache back to full-size numbers also restores its full active memory footprint.
+
+## What we have actually built
+
+There are two separate working experiments:
+
+```mermaid
+flowchart TB
+    subgraph CPU["Built: actual CPU compression experiments"]
+        direction TB
+        A["Small arrays of numbers"] --> B["Four storage formats"]
+        B --> C["Encode and decode on the CPU"]
+        C --> D["Measure bytes, time and numerical error"]
+    end
+    subgraph SIM["Built: analytical policy simulation"]
+        direction TB
+        E["Generated pause, resume and cancel events"] --> G["Replay with a fixed memory budget"]
+        F["Assumed compression and transfer costs"] --> G
+        G --> H["Compare six decision policies"]
+        H --> I["Calculate delay, memory use and transfers"]
+    end
+```
+
+The CPU experiments really execute compression code. The simulation moves descriptions of cache pages through a model of storage; it does not run a language model or transfer real KV tensors. Its cost assumptions are supplied separately, so the CPU timings are not presented as GPU performance.
+
+| Built piece | What it means in everyday terms |
+|---|---|
+| Four reference codecs | Four ways to store the numbers: unchanged FP16, exact zlib compression, approximate INT8 and approximate INT4. A codec is an encoder/decoder. |
+| Trace replay | A repeatable sequence of agents pausing, returning or being canceled, so policies face the same events. |
+| Shared-page accounting | Two agent branches can use the same prefix. That shared data consumes physical space once. |
+| Decision policies | Simple rules such as always using INT4, plus an adaptive rule that compares estimated costs. |
+| Eviction-cost calculation | Before accepting a new cache, estimate the harm caused by removing existing caches to make room. |
+| Evaluation harness | Freeze the code, test previously unexecuted synthetic sequences, and retain wins and losses. |
+
+The current controller does not learn an expiry timer. Stored data leaves this replay through resume, cancellation or eviction when space is needed.
+
+## The eviction problem we fixed
+
+**Eviction means removing cached data to make room.** The first adaptive rule asked whether storing the new cache looked cheap, but missed some of the extra work imposed on agents whose caches it displaced.
+
+Here is a hypothetical example, not a measured benchmark. Agents A and B share 4 MB of prefix data and each has a private 2 MB tail. Total physical storage is **4 + 2 + 2 = 8 MB**, even though each agent uses 6 MB logically.
+
+```mermaid
+flowchart TD
+    P["One shared prefix: 4 MB, stored once"] --> A["Agent A also has a private 2 MB tail"]
+    P --> B["Agent B also has a private 2 MB tail"]
+    N["A new cache needs space"] --> E["Candidate action: evict the shared prefix"]
+    P -.-> E
+    E --> L["Free 4 MB, but both A and B lose a complete cache"]
+    L --> C["New policy: price the expected extra work for A and B"]
+    C --> D["Compare raw storage, compression and declining storage"]
+```
+
+The new rule counts the shared storage once, but considers the lost benefit for both affected agents. If several pages from the same agent are removed, it charges that agent once. It then chooses among the available options; it does not guarantee that every expensive eviction will be avoided.
+
+Our replay simplifies any incomplete cache to full recomputation. A real inference engine may reuse surviving prefixes, so this part still needs live validation. The new rule also retains the existing oldest-first victim order; it does not search for an optimal set of pages to remove.
+
+## Where this would fit in a real product
+
+The first intended user is a team running its own coding-agent models. KVPilot would supply decisions and explanations through existing inference/cache infrastructure. **This integration is planned, not implemented.**
+
+```mermaid
+flowchart TD
+    A["Coding agents"] --> B["Model server, such as vLLM"]
+    B -->|Pause and cache events| C["KVPilot: decide what to retain"]
+    C -->|Storage decisions| D["Cache engine, such as LMCache"]
+    D <--> E["Host memory and optional SSD storage"]
+    D -->|Restore cached state| B
+```
+
+We would first need to measure real costs, connect actual lifecycle events, check cache compatibility, and test generated answers. No GPU integration, live serving speedup or preserved coding accuracy has been demonstrated yet.
+
+## What we have learned so far
+
+The frozen evaluation ran **140 previously unseen synthetic traces containing 33,600 sessions**, through six policies. **130 tests and 89 subtests passed** before evaluation.
+
+The new policy reduced modeled tail resume delay versus fixed INT4 in five of seven workload families. Cancellation-heavy traffic regressed, and branching was inconclusive. The two largest wins exactly matched simply keeping raw data, while using **3.76 times** the stored-byte time and transfer volume of INT4. No family met our original combined latency-and-memory target.
+
+So we have built a working experiment and improved its decision rule. We have not yet proved that adding KVPilot makes a real model-serving system faster or cheaper. See the [full results, including regressions](docs/eviction-results.md).
+
+## How this relates to existing work
 
 CacheGen already does bandwidth-adaptive KV compression. LMCache already provides tiered storage, compression, policy extension points and lazy offload. TensorRT-LLM already compresses cold pages, and recent research already studies retention during human approval. **Neither compression nor session awareness is our claimed invention.** See the [prior-art review](docs/research.md) and [18-group source register](docs/sources.json).
 
-The candidate product is a measurable policy and diagnostics layer on an existing engine: select a supported representation, decline uneconomic storage, explain the decision, and prove the benefit under a fixed memory budget. The [product hypothesis](docs/product-hypothesis.md) defines the first user and validation sequence. The immediate milestone is evidence that this layer adds value. It may turn out to be an upstream contribution rather than a standalone company.
+The candidate product is a measurable policy and diagnostics layer on an existing engine. The [product hypothesis](docs/product-hypothesis.md) defines the first user and validation sequence. It must earn a benefit over simpler policies and existing settings; it may turn out to be an upstream contribution rather than a standalone company.
 
-## What runs today
+## Implementation reference
 
 | Component | Implemented | Boundary |
 |---|---|---|
