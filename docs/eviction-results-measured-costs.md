@@ -48,20 +48,22 @@ Primary metric, paired mean per-run p95 modeled resume delay, `adaptive_eviction
 Three things happen at once:
 
 1. **The two large wins vanish.** In `fast_return` and `low_pressure`, the +47% and +62% p95
-   reductions become exact ties. Under measured costs every policy's p95 collapses to the
-   recompute level (129.9 ms and 130.5 ms), because restoring any stored representation now
-   costs more than recomputing, so every resume recomputes.
+   reductions become exact ties for the candidate versus INT4 and recompute (129.9 ms and
+   130.5 ms). This does not mean every resume recomputes: across the 20 `low_pressure` runs,
+   the candidate restores 40 of 4,688 resumes and fixed native restores 603. Native's mean
+   run-p95 is 130.44047 ms, compared with recompute's 130.53575 ms.
 2. **The remaining "wins" are tiny and against a degenerate baseline.** Fixed INT4 still
    encodes everything on pause but never restores anything on resume, so its p95 is just
-   recompute plus queueing noise. Beating it by 0.5 to 2.6% is not evidence of value.
-3. **The cancel-heavy regression disappears, for the same reason.** Nobody is doing anything
-   useful, so nobody regresses.
+   recompute's p95 exactly. The simulator models no service queues. Beating this baseline
+   by 0.5 to 2.6% does not establish a useful improvement in total work.
+3. **The cancel-heavy p95 regression disappears.** The candidate's small p95 improvement
+   still comes with substantially more modeled work than plain recomputation.
 
 Counting families, the candidate still "wins five of seven" on the primary metric. That
 statement is technically true in both runs and meaningless in the second. The honest
 headline is: **under measured codec costs no policy, including the candidate, materially
-improves modeled resume latency over plain recomputation, and all caching policies do more
-total work than recomputation.**
+improves modeled resume latency over plain recomputation, and every caching policy's
+scenario-mean total work exceeds recomputation's.**
 
 ## The comparison that matters: candidate versus plain recompute
 
@@ -79,33 +81,38 @@ same run rows (paired by seed):
 | shifted_pause_mix | +23.0% (20/0/0) | +0.9% (12/8/0) | 2.02× |
 
 Under measured costs the candidate buys at most 2.6% lower p95 and at most 3.8% lower mean
-resume delay at the price of 1.5 to 2.7× the total modeled service work of recomputation. It
+resume delay. Its ratio of scenario-mean total modeled service work to recomputation ranges
+from 1.01× to 2.65× (1.57× to 2.65× in the five families with a p95 improvement). It
 does not pass Astra's first gate ("beat the simplest credible policy").
 
-Fixed INT4 is far worse: its modeled total work is 9 to 45× recomputation's, because it pays
-encode on every pause and then recomputes anyway. Fixed raw FP16 is 3 to 4× recomputation's.
+Fixed INT4 is far worse: its ratio of scenario-mean total work is 5.28× to 37.02×
+recomputation's, because it pays encode on every pause and then recomputes anyway.
+Fixed raw FP16 ranges from 2.64× to 14.74× on the same estimator.
 The adaptive policies at least avoid most of that waste, which is the only positive reading of
 this run.
 
-## Eviction pricing contributes nothing under measured costs
+## Eviction pricing gives no p95 improvement under measured costs
 
 The predeclared attribution ablation (`adaptive_eviction` versus `adaptive_exact`, identical
-except for the eviction externality charge) is **0 wins, 20 ties, 0 losses in every scenario**.
-`adaptive`, `adaptive_exact` and `adaptive_eviction` produce identical metrics on every seed.
-With codec work this expensive the eviction penalty never changes a decision. The repository's
-one claimed algorithmic contribution has no measurable effect in this cost regime. Under
-assumed costs it accounted for +4.7% to +22.1% in four scenarios.
+except for the eviction externality charge) is **0 wins, 20 ties, 0 losses in every scenario
+on p95 resume delay**. Decisions and secondary metrics are not all identical. For
+`heterogeneous`, seed 1105, event `heterogeneous-s1105-f0162-b0`, `adaptive_exact` chooses
+`raw_fp16` while `adaptive_eviction` chooses `zlib_fp16`. Total modeled service work rises
+from 19,245.800033 to 19,418.763735 ms, and peak reserved bytes rise from 92,280,360 to
+94,861,717, without changing p95. Thus this run provides no primary-metric benefit from
+eviction pricing and includes a secondary-resource regression. Under assumed costs its
+p95 attribution was +4.7% to +22.1% in four scenarios.
 
 ## What this does and does not mean
 
 - It does **not** show that KV retention during agent waits is worthless. It shows that with
-  CPU-speed reference codecs and these pause distributions, the modeled break-even is never
-  reached. A GPU codec kernel, or no codec at all (raw transfer over a fast link), is a
+  CPU-speed reference codecs and these pause distributions, none of the evaluated caching
+  policies reduces scenario-mean total work below recomputation. Individual restores can
+  still be worthwhile. A GPU codec kernel, or no codec at all (raw transfer over a fast link), is a
   different regime, and `raw_fp16` here still carries a measured 6.45 ms/MiB "encode" cost
   that a real memcpy path would not.
-- It **does** show that the policy's apparent advantage was entirely an artifact of assumed
-  near-zero codec timings, and that the frozen holdout's "five of seven families" headline
-  should not be quoted anywhere.
+- It **does** show that the large latency advantages depend on the assumed codec costs.
+  The frozen holdout's "five of seven families" headline alone is not evidence of savings.
 - It confirms the harness works as intended: fed real numbers, it changed the conclusion.
 - The useful next experiment is not a better codec. It is to sweep codec cost from zero to the
   measured values and report the break-even cost per MiB at which any caching policy beats

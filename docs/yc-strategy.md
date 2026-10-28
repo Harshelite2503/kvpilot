@@ -14,14 +14,17 @@ What exists is an unusually honest research prototype:
 - Four CPU reference codecs (FP16, zlib, INT8, INT4) with measured byte ratios.
 - Native Ollama cache measurements on a Mac (6.6 s fresh vs 0.08 s exact repeat vs 0.27 s
   after a checkpoint). This measures Ollama, not KVPilot.
-- PR #1: the first real-GPU run. vLLM prefix caching gives 2.47x on a real model, a real KV
-  tensor was captured, and the codec costs were calibrated against it.
+- PR #1: the first real-GPU run. Two sequential vLLM requests had a 2.47× ratio of full
+  completion times (1,490 to 604 ms). This is not an isolated cache speedup or TTFT result:
+  warmup and order were uncontrolled. A real KV tensor was captured and CPU reference-codec
+  costs were calibrated against it. See [live-integration.md](live-integration.md).
 
 What PR #1 also shows, and what the pitch must not hide:
 
 - The assumed codec timings were about 100x too optimistic. Under measured costs the
   adaptive policy picks "recompute everything" on every one of 60 pause events, and the
-  published five-of-seven-families eviction result has not been rerun under those costs.
+  published five-of-seven-families eviction result is highly cost-sensitive. The same-day
+  [rerun](eviction-results-measured-costs.md) removes the two large p95 wins.
 - At the time of writing, no KVPilot decision had been applied to a live cache in this repo.
   **Superseded the same day:** the P100 branch, now merged, runs the policy inside an owned
   PyTorch runner on a Tesla P100 with Qwen2.5-0.5B. Eviction-aware admission takes 6.4 to 7.9%
@@ -78,16 +81,19 @@ loads. ([VC Cafe summary of YC RFS S26](https://www.vccafe.com/requests-for-star
 | Who | What they do | What it means for KVPilot |
 |---|---|---|
 | [Tensormesh / LMCache](https://pulse2.com/tensormesh-20-million-raised-to-scale-kv-caching-infrastructure-for-enterprise-ai-inference/) | $24.5M raised (Laude, AMD Ventures, CoreWeave, NVentures). KV storage tiers, serde (FP8, TurboQuant), "zero-cost cached tokens" SaaS. | The storage and codec mechanism layer is funded and ahead. Do not compete on bytes moved. |
-| NVIDIA Dynamo KVBM, vLLM session-aware retention, SGLang priority eviction, TensorRT-LLM token-range retention | Each engine now has its own retention knob. | Fragmentation is the opportunity: no one speaks all four, and no harness emits the signals they want. |
-| [Continuum](https://arxiv.org/abs/2511.02230) (ICLR 2026) | TTL pinning in GPU memory for tool calls. | Prior art for "keep during short waits". |
+| NVIDIA Dynamo KVBM, vLLM session-aware retention, SGLang priority eviction, TensorRT-LLM token-range retention | Engine-specific controls exist; [Dynamo agent hints](https://docs.nvidia.com/dynamo/agents/agent-hints) already span multiple backends, with feature-dependent support. | Integration and measured savings must beat these existing capabilities; a common hints API alone is not an unoccupied market. |
+| [Continuum](https://arxiv.org/abs/2511.02230) (arXiv v7, September 2026; conference acceptance not verified) | TTL pinning in GPU memory for tool calls. | Prior art for "keep during short waits". |
 | [MORI](https://arxiv.org/abs/2606.00866) (Berkeley, Stoica lab, May 2026) | Continuous idleness ranking, GPU/CPU tiering, on replayed Claude Code SWE-bench Pro traces: 20 to 71% higher throughput, 18 to 43% lower TTFT vs best offloading baseline. | The strongest academic competitor to an adaptive policy. Any KVPilot number must be compared to it. |
 | [Adaptive KV Retention at Human-Approval Timescales](https://arxiv.org/abs/2608.30830) (JHU, Aug 2026) | Prices "GPU opportunity cost": residency costs 41% goodput, eviction costs about 10x resume latency; their controller beats vLLM by 23 to 51%, MORI by 22 to 29%. | Validates the exact tradeoff KVPilot models. Two authors, a preprint, no product. |
 | [CacheWise](https://arxiv.org/abs/2606.16824) (June 2026) | Coding-agent traces, reuse-aware eviction from tool metadata: 2 to 2.6x fewer evictions, up to 3.5x session completion. Traces open-sourced. | Free realistic workloads for Astra's step 3. |
 | [OneTriangle](https://dealroom.co/news/talk-nfubxNVmQYY-onetriangle-launches-with-yc-s26/) (YC S26) | KV transfer between models (small prefill, large decode). | Proof YC funds KV-layer companies; not a direct overlap. |
 
-The lesson is the same one `docs/research.md` already drew: the mechanisms (compress,
-offload, TTL, priority) are taken. What is not taken is the layer that knows what the agent
-is doing, prices it in dollars, and drives every engine's knobs the same way.
+The lesson is the same one `docs/research.md` already drew: compression, offload, TTL,
+priority and agent-aware controls have prior art. Replay is also occupied:
+[Dynamo agent simulation](https://docs.nvidia.com/dynamo/agents/agent-simulation) supports
+offline and live replay, and [LMCache tracing](https://docs.lmcache.ai/mp/tracing_and_debugging.html)
+supports cache-configuration replay. Deployment-specific savings and low integration cost
+are hypotheses to validate, not evidence that nobody is building this layer.
 
 ## 4. Three ways to make it big, in the order to pursue them
 
@@ -97,29 +103,33 @@ KVPilot's replay simulator is a counterfactual engine. Turn it outward:
 
 - Ingest traces from a thin OpenAI-compatible proxy (request timestamps, token counts,
   cached-token counts, tool-call durations, session and turn IDs) plus engine metrics.
-  Never prompt contents. Microsoft collected exactly this at 13.5M-session scale, so teams
-  know it is safe to share.
+  Exclude prompt contents. Obtain permission, minimize identifiers and review retention:
+  metadata can still be sensitive; another organization's study does not make it safe to share.
 - Replay the team's own week against policies: current config, TTL, priority hints,
   offload tier sizes, recompute. Report GPU-seconds wasted on re-prefill after turn-boundary
-  eviction, p95 resume latency, and dollars at their GPU rate.
+  eviction and p95 resume latency. Request elapsed time is not GPU busy time or allocated
+  GPU-hours. Report dollars only after a live experiment connects the saved work to fewer
+  billed GPU-hours, or more completed work at the same spend and service target.
 - Output a recommendation they can apply today in vLLM, SGLang, Dynamo or TRT-LLM
   settings. Charge for the report and the dashboard before any code of yours touches their
   serving path.
 
-Why this is the wedge: it sells to a platform team in a week, it needs no live connector,
-it uses the part of the repo that is actually finished, and every customer adds traces
-that make the policy better. It is the "pause-cost advisor" in
+This wedge can be tested through platform-team interviews and offline pilots before a live
+connector. The current simulator still needs customer-trace ingestion and deployment cost
+calibration; a sale or policy improvement is not guaranteed. It is the "pause-cost advisor" in
 `docs/product-hypothesis.md`, promoted from a step to the product. The analogy for the
 deck: Datadog or Vantage, but for agent inference memory.
 
 ### Wedge 2 (next): the cross-engine "agent hints" layer
 
-Anthropic has `cache_control`. Dynamo wants `nvext.agent_hints`. vLLM has retention
-intervals. SGLang has priorities. The agent harness (Claude Code, Codex-style CLIs,
-OpenHands, LangGraph, in-house loops) is the only thing that knows "this is a 2-second
-tool call", "this is a human approval that will take 30 minutes", "this subagent just
-terminated", "this think block closed". Nothing today carries that semantic signal to the
-engine, and nothing carries it to four engines the same way.
+Anthropic has `cache_control`. Dynamo already exposes `nvext.agent_hints` for serving
+intent, priority and speculative prefill across backends; supported actions differ by engine.
+SGLang has priorities. vLLM's
+[`prefix_cache_retention_interval`](https://docs.vllm.ai/en/latest/api/vllm/config/cache/)
+is a checkpoint interval in tokens, not a time-based TTL. Agent harnesses can supply useful
+lifecycle information, but future tool and approval durations remain predictions. First
+identify a valuable lifecycle signal or deployment requirement these existing interfaces
+do not handle, rather than assuming no signal reaches an engine today.
 
 Ship a small open-source SDK and sidecar that annotates requests with lifecycle hints and
 translates them into each engine's native retention API, using KVPilot's cost model to set
@@ -158,9 +168,11 @@ make the policy fail. Two changes:
 - **Rerun the frozen eviction holdout under the measured costs from PR #1 before quoting any
   policy number anywhere.** Done on 28 October 2026, see
   [eviction-results-measured-costs.md](eviction-results-measured-costs.md): the +47% and +62%
-  wins become exact ties, no policy beats plain recomputation by more than 2.6% on p95, every
-  caching policy does 1.5 to 2.7× the work of recomputation, and the eviction-pricing ablation
-  is 0/20/0 ties in every scenario. The "five of seven families" headline is dead.
+  wins become exact ties and no policy beats plain recomputation by more than 2.6% on p95.
+  Scenario-mean adaptive work is 1.01× to 2.65× recomputation's. Fixed INT4 ranges from
+  5.28× to 37.02× and native from 2.64× to 14.74×. The eviction-pricing ablation has
+  20 p95 ties in every scenario, but one seed's changed decision increases work and peak
+  reservation. The "five of seven families" headline alone does not establish savings.
 
 Steps 4 and 5 (a stronger owned INT4 codec, GPU-side packing before transfer) should be
 cut. They are the mechanism layer where Tensormesh, TurboQuant, KVTC and TensorRT-LLM's
@@ -189,10 +201,10 @@ Anthropic-style retention pricing on open models but have no policy layer to do 
 
 ## 8. Risks a partner will raise, and the answers
 
-- **"vLLM just shipped session-aware retention. Why won't upstream absorb you?"** Upstream
-  ships mechanisms per engine with static settings. The policy, the cross-engine
-  translation, the economics, and the harness-side signal are not in any engine's scope, and
-  teams run more than one engine. Datadog did not die because Linux has `top`.
+- **"vLLM just shipped session-aware retention. Why won't upstream absorb you?"** This is
+  a real risk. Dynamo already covers cross-backend hints and replay. KVPilot would need
+  customer-verified savings or operational capabilities beyond the upstream baseline;
+  neither an independent SDK nor a dashboard establishes that advantage by itself.
 - **"Tensormesh raised $24.5M for this."** They sell storage and a hosted inference
   product. KVPilot sits above storage and is engine-agnostic; it can drive LMCache as one of
   its backends.

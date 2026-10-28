@@ -17,3 +17,6 @@ results/local-*
 
 .venv-torch/
 .venv-p100/
+.venv-ci/
+.venv-ci-313/
+artifacts/
