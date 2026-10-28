@@ -1,0 +1,136 @@
+{
+  "256": {
+    "target_tokens": 256,
+    "actual_prefix_tokens": 212,
+    "prefill_ms": 963.7040829658508,
+    "samples": [
+      {
+        "repeat": 0,
+        "codec": "raw_native",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 2611370,
+        "export_ms": 12.147249937057495,
+        "encode_ms": 2.2593750953674316,
+        "decode_ms": 2.1012920141220093,
+        "import_ms": 13.03737497329712,
+        "source_max_abs_error": 0.0
+      },
+      {
+        "repeat": 0,
+        "codec": "group_int8",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 1354183,
+        "export_ms": 11.8961660861969,
+        "encode_ms": 20.143707990646362,
+        "decode_ms": 7.85604202747345,
+        "import_ms": 13.349207997322083,
+        "source_max_abs_error": 0.875
+      },
+      {
+        "repeat": 0,
+        "codec": "group_int4",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 702904,
+        "export_ms": 12.210166931152344,
+        "encode_ms": 20.20816683769226,
+        "decode_ms": 19.43400001525879,
+        "import_ms": 15.547667145729065,
+        "source_max_abs_error": 15.5625
+      },
+      {
+        "repeat": 1,
+        "codec": "group_int8",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 1354183,
+        "export_ms": 14.117499947547913,
+        "encode_ms": 19.773374915122986,
+        "decode_ms": 12.92662501335144,
+        "import_ms": 101.18541693687439,
+        "source_max_abs_error": 0.875
+      },
+      {
+        "repeat": 1,
+        "codec": "group_int4",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 702904,
+        "export_ms": 28.255499958992004,
+        "encode_ms": 20.505375027656555,
+        "decode_ms": 18.915499925613403,
+        "import_ms": 14.44408404827118,
+        "source_max_abs_error": 15.5625
+      },
+      {
+        "repeat": 1,
+        "codec": "raw_native",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 2611370,
+        "export_ms": 12.29295814037323,
+        "encode_ms": 1.8252919912338257,
+        "decode_ms": 1.6304590702056885,
+        "import_ms": 12.702584028244019,
+        "source_max_abs_error": 0.0
+      },
+      {
+        "repeat": 2,
+        "codec": "group_int4",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 702904,
+        "export_ms": 10.849375128746033,
+        "encode_ms": 19.942958116531372,
+        "decode_ms": 18.638500094413757,
+        "import_ms": 14.251083016395569,
+        "source_max_abs_error": 15.5625
+      },
+      {
+        "repeat": 2,
+        "codec": "raw_native",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 2611370,
+        "export_ms": 13.353792071342468,
+        "encode_ms": 1.8075000047683716,
+        "decode_ms": 1.754417061805725,
+        "import_ms": 11.472041964530945,
+        "source_max_abs_error": 0.0
+      },
+      {
+        "repeat": 2,
+        "codec": "group_int8",
+        "raw_tensor_bytes": 2605056,
+        "stored_bytes": 1354183,
+        "export_ms": 10.256291031837463,
+        "encode_ms": 19.16600012779236,
+        "decode_ms": 7.7867079973220825,
+        "import_ms": 12.777040958404541,
+        "source_max_abs_error": 0.875
+      }
+    ],
+    "integrity_gate": {
+      "raw_restore_logits_bit_exact": true,
+      "max_abs_logit_difference": 0.0,
+      "original_live_cache_released": true
+    },
+    "profiles": [
+      {
+        "name": "raw_native",
+        "ratio": 0.9975821120714414,
+        "encode_ms_per_mib": 5.798893094812549,
+        "decode_ms_per_mib": 5.7692752094388755,
+        "lossless": true
+      },
+      {
+        "name": "group_int8",
+        "ratio": 1.9237104586307758,
+        "encode_ms_per_mib": 12.896553087534395,
+        "decode_ms_per_mib": 8.535446550861094,
+        "lossless": false
+      },
+      {
+        "name": "group_int4",
+        "ratio": 3.706133412244062,
+        "encode_ms_per_mib": 13.048889064189023,
+        "decode_ms_per_mib": 13.42775707124914,
+        "lossless": false
+      }
+    ]
+  }
+}

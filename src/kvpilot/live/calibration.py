@@ -1,21 +1,25 @@
 """Real host-side timing of kvpilot's reference codecs on a real array.
 
-This measures actual wall-clock encode/decode time and actual serialized size
-on whatever device the array already lives on (e.g. a KV block already copied
-to host memory). It is not a GPU benchmark and does not claim PCIe or device
-timing. Feed it a real captured KV tensor to replace the illustrative numbers
-in examples/assumed-costs.json with measured ones.
+This measures host wall-clock encode/decode time and serialized size for a
+NumPy array already in host memory. It is not a GPU or transfer benchmark.
+All reference codecs convert to FP16: raw_bytes and max_absolute_error are
+relative to that FP16 reference, and a lossless profile means lossless *after*
+this conversion. The original dtype and conversion error are reported
+separately; zero error on one sample never makes a quantizing codec lossless.
 """
 
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
-from ..codecs import decode, encode
+from ..codecs import CODECS, decode, encode, fp16_reference
 from ..policy import CodecProfile, MIB
+
+
+_LOSSLESS_FP16_CODECS = frozenset({"raw_fp16", "zlib_fp16"})
 
 
 @dataclass(frozen=True)
@@ -26,16 +30,25 @@ class CodecMeasurement:
     encode_ms: float
     decode_ms: float
     max_absolute_error: float
+    reference_dtype: str = field(default="<f2", init=False)
+    source_dtype: str | None = None
+    source_conversion_max_absolute_error: float | None = None
 
     def to_profile(self, name: str | None = None) -> CodecProfile:
-        """Build a policy.CodecProfile from this measurement, not an assumption."""
+        """Build measured costs with the codec's FP16-reference losslessness.
+
+        The profile's lossless flag describes the codec for every valid input,
+        not whether this particular calibration sample happened to round-trip.
+        """
+        if self.codec not in CODECS:
+            raise ValueError(f"unknown reference codec {self.codec!r}")
         mib = self.raw_bytes / MIB
         return CodecProfile(
             name or self.codec,
             ratio=self.raw_bytes / self.stored_bytes,
             encode_ms_per_mib=self.encode_ms / mib,
             decode_ms_per_mib=self.decode_ms / mib,
-            lossless=self.max_absolute_error == 0.0,
+            lossless=self.codec in _LOSSLESS_FP16_CODECS,
         )
 
 
@@ -44,9 +57,10 @@ def measure_codec(array: np.ndarray, codec_name: str, *, group_size: int = 64, r
 
     Raises on an empty array: there is no meaningful per-MiB rate for zero bytes.
     """
-    if repeats < 1:
-        raise ValueError("repeats must be at least 1")
-    reference = np.asarray(array, dtype="<f2")
+    if type(repeats) is not int or repeats < 1:
+        raise ValueError("repeats must be a positive integer")
+    source = np.asarray(array)
+    reference = fp16_reference(source)
     if reference.size == 0:
         raise ValueError("array must not be empty")
     encode_times_ms = []
@@ -68,4 +82,7 @@ def measure_codec(array: np.ndarray, codec_name: str, *, group_size: int = 64, r
         encode_ms=float(np.median(encode_times_ms)),
         decode_ms=float(np.median(decode_times_ms)),
         max_absolute_error=error,
+        source_dtype=str(source.dtype),
+        source_conversion_max_absolute_error=float(np.max(np.abs(
+            source.astype(np.float64) - reference.astype(np.float64)))),
     )

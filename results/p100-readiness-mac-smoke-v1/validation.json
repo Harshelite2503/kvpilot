@@ -1,0 +1,7 @@
+{
+  "valid": true,
+  "sessions_checked": 40,
+  "events_checked": 80,
+  "blocks_checked": 10,
+  "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+}

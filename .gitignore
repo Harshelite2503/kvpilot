@@ -14,3 +14,6 @@ dist/
 data/
 results/local-*
 .venv-local/
+
+.venv-torch/
+.venv-p100/

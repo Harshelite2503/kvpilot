@@ -1,0 +1,282 @@
+[
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "roomy",
+    "policy": "group_int4",
+    "block_id": "block-0000",
+    "wall_ms": 4841.624292135239,
+    "budget_bytes": 10987180,
+    "peak_paused_payload_bytes": 2854047,
+    "byte_event_sum": 11370490,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 432586752,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144406016
+      },
+      "after": {
+        "process_rss_bytes": 547864576,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 547897344,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 343
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "pressure",
+    "policy": "adaptive_exact",
+    "block_id": "block-0001",
+    "wall_ms": 3834.452292084694,
+    "budget_bytes": 2747563,
+    "peak_paused_payload_bytes": 2746539,
+    "byte_event_sum": 13253459,
+    "event_count": 8,
+    "evicted_states": 3,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 547864576,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 558170112,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 558202880,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 245
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "pressure",
+    "policy": "recompute",
+    "block_id": "block-0002",
+    "wall_ms": 4017.9662920236588,
+    "budget_bytes": 2747563,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 558170112,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 559955968,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 559988736,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 252
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "roomy",
+    "policy": "raw_native",
+    "block_id": "block-0003",
+    "wall_ms": 3102.1644579172134,
+    "budget_bytes": 10987180,
+    "peak_paused_payload_bytes": 10605225,
+    "byte_event_sum": 42248868,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 559955968,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 564051968,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 564084736,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 208
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "pressure",
+    "policy": "group_int4",
+    "block_id": "block-0004",
+    "wall_ms": 3492.23537504673,
+    "budget_bytes": 2747563,
+    "peak_paused_payload_bytes": 2141351,
+    "byte_event_sum": 10657794,
+    "event_count": 8,
+    "evicted_states": 1,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 564051968,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 566345728,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 566378496,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 225
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "pressure",
+    "policy": "adaptive_eviction",
+    "block_id": "block-0005",
+    "wall_ms": 3826.0525419712067,
+    "budget_bytes": 2747563,
+    "peak_paused_payload_bytes": 2648234,
+    "byte_event_sum": 10592936,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 566345728,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 568082432,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 568115200,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 245
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "roomy",
+    "policy": "recompute",
+    "block_id": "block-0006",
+    "wall_ms": 4038.6046249866486,
+    "budget_bytes": 10987180,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 568098816,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 569884672,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 569917440,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 254
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "pressure",
+    "policy": "raw_native",
+    "block_id": "block-0007",
+    "wall_ms": 4266.893042087555,
+    "budget_bytes": 2747563,
+    "peak_paused_payload_bytes": 2746539,
+    "byte_event_sum": 13253459,
+    "event_count": 8,
+    "evicted_states": 3,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 569884672,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 418775040,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 570589184,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 273
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "roomy",
+    "policy": "adaptive_exact",
+    "block_id": "block-0008",
+    "wall_ms": 3377.067041039467,
+    "budget_bytes": 10987180,
+    "peak_paused_payload_bytes": 10605225,
+    "byte_event_sum": 42248868,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 418791424,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 419233792,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 419266560,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 223
+    }
+  },
+  {
+    "repeat": 0,
+    "context_target": 256,
+    "scenario": "roomy",
+    "policy": "adaptive_eviction",
+    "block_id": "block-0009",
+    "wall_ms": 2946.3796248435974,
+    "budget_bytes": 10987180,
+    "peak_paused_payload_bytes": 10605225,
+    "byte_event_sum": 42248868,
+    "event_count": 8,
+    "evicted_states": 0,
+    "memory": {
+      "before": {
+        "process_rss_bytes": 419233792,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "after": {
+        "process_rss_bytes": 420691968,
+        "device_allocated_bytes": 988065536,
+        "device_driver_allocated_bytes": 1144750080
+      },
+      "sampled_peak_process_rss_bytes": 420724736,
+      "rss_sampling_interval_ms": 10,
+      "rss_samples": 193
+    }
+  }
+]

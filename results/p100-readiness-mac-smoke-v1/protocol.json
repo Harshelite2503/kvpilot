@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "evidence_type": "measured_owned_cache_torch",
+  "created_utc": "2026-10-28T06:33:29.640138+00:00",
+  "source_sha256": {
+    "experiments/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "experiments/local/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "experiments/local/gated_delta.py": "11fb79db1490d3927e9ca07085b83e614768dd2d1c30961fcfa171b5d60332c3",
+    "experiments/local/qwen_runner.py": "97f378447ee0bc4b0c595a3cbc33901927d9a323e98169999f62146e0c99ad39",
+    "experiments/local/state_codec.py": "58b2162da0c99d7cbf0c45181003a245d162dd48c851e4ad736cc3e10b638256",
+    "experiments/local/store.py": "ea4953c1079bd94dcf06e238413a06400f696910bd131e747a36a59e85d4093d",
+    "experiments/local/weights.py": "3323b9c578e1f8335f9a14da5731e13580bf857ea51db00dd3b8b89fcb5fa504",
+    "experiments/torch/__init__.py": "f45e1f33e4803cca8dd105441bf28b46fd225c39c02abb96b9f5379fd9c8cceb",
+    "experiments/torch/benchmark.py": "1d0340d4d69a03e800bd49f00d8f2a698a90eff9e2050ac6df16b2266fd326bb",
+    "experiments/torch/qwen_runner.py": "e8d3b77c4ce43b18a2dda2145ccf955bc22a9b9342a27185f83eef8092612e01",
+    "experiments/torch/weights.py": "a846bc71f2f077b83c52c49a043f73e3b9041e6def7cba98cd2f4658e28c837b",
+    "scripts/benchmark_p100_kvpilot.py": "42aafad53ab84d00fc5b835883323d1285785102e72b3671f294c80b2ffa69cc",
+    "scripts/validate_p100_results.py": "5b0e052bd75a1541e3d32b5c3ec9c545ca3b10f4f44eee279b4a57c7084e991f",
+    "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+    "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+    "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+    "src/kvpilot/integrations/__init__.py": "aa585271e54798d3e825a74aaeeb501fa7529be41a9f8a257f398db8650937ab",
+    "src/kvpilot/integrations/vllm_connector.py": "c699ea26b165b41a3559a8297d8fb59dc63bca37bb3822de106f01f2141ec28b",
+    "src/kvpilot/live/__init__.py": "cda03eeac4b73987fce669fde34b4a11c5b60c40513f7e7e69e6fd9a654e4ea5",
+    "src/kvpilot/live/calibration.py": "433f544e61f2b04ed9ab9e61806abaede19c1c4f7496b94f26f52bf76de7125f",
+    "src/kvpilot/live/recorder.py": "8ec2179863a240a1e53e16037e79830cb263ac7cc982ebc6d994628d5fd01e24",
+    "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+    "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+    "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50"
+  },
+  "fixture_sha256": "6f96574269b9e4a9bb04d1e4f9289fc01ef4ff2f683b2c6b3497410f19bb0439",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "device": "mps",
+  "device_name": "mps",
+  "cuda_version": null,
+  "versions": {
+    "torch": "2.7.1",
+    "numpy": "2.2.6",
+    "tokenizers": "0.21.2",
+    "safetensors": "0.5.3",
+    "psutil": "7.0.0"
+  },
+  "model_identity": {
+    "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+    "layout": "kvpilot_qwen25_single_sequence_bhtd_v1",
+    "execution": "kvpilot_qwen25_torch_eager_v1",
+    "device_type": "mps",
+    "activation_dtype": "float16",
+    "torch_version": "2.7.1",
+    "prompt_format": "explicit_user_only_qwen_chatml_v1"
+  },
+  "args": {
+    "model_dir": "data/qwen2.5-0.5b-instruct",
+    "output": "results/p100-readiness-mac-smoke-v1",
+    "device": "mps",
+    "contexts": [
+      256
+    ],
+    "cases": 4,
+    "repeats": 1,
+    "group_size": 4,
+    "scenarios": [
+      "roomy",
+      "pressure"
+    ],
+    "max_tokens": 24,
+    "chunk_size": 128,
+    "seed": 20261029,
+    "smoke": true,
+    "allow_unvalidated_lossy": true
+  },
+  "cases": [
+    "case-0000",
+    "case-0001",
+    "case-0002",
+    "case-0003"
+  ],
+  "jobs": [
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "roomy",
+      "policy": "group_int4",
+      "block_id": "block-0000"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "pressure",
+      "policy": "adaptive_exact",
+      "block_id": "block-0001"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "pressure",
+      "policy": "recompute",
+      "block_id": "block-0002"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "roomy",
+      "policy": "raw_native",
+      "block_id": "block-0003"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "pressure",
+      "policy": "group_int4",
+      "block_id": "block-0004"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "pressure",
+      "policy": "adaptive_eviction",
+      "block_id": "block-0005"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "roomy",
+      "policy": "recompute",
+      "block_id": "block-0006"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "pressure",
+      "policy": "raw_native",
+      "block_id": "block-0007"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "roomy",
+      "policy": "adaptive_exact",
+      "block_id": "block-0008"
+    },
+    {
+      "repeat": 0,
+      "context_target": 256,
+      "scenario": "roomy",
+      "policy": "adaptive_eviction",
+      "block_id": "block-0009"
+    }
+  ],
+  "schedules": {
+    "roomy": [
+      [
+        "pause",
+        "case-0000"
+      ],
+      [
+        "pause",
+        "case-0001"
+      ],
+      [
+        "pause",
+        "case-0002"
+      ],
+      [
+        "pause",
+        "case-0003"
+      ],
+      [
+        "resume",
+        "case-0000"
+      ],
+      [
+        "resume",
+        "case-0003"
+      ],
+      [
+        "resume",
+        "case-0002"
+      ],
+      [
+        "resume",
+        "case-0001"
+      ]
+    ],
+    "pressure": [
+      [
+        "pause",
+        "case-0000"
+      ],
+      [
+        "pause",
+        "case-0001"
+      ],
+      [
+        "pause",
+        "case-0002"
+      ],
+      [
+        "pause",
+        "case-0003"
+      ],
+      [
+        "resume",
+        "case-0000"
+      ],
+      [
+        "resume",
+        "case-0003"
+      ],
+      [
+        "resume",
+        "case-0002"
+      ],
+      [
+        "resume",
+        "case-0001"
+      ]
+    ]
+  },
+  "budgets_bytes": {
+    "256": {
+      "roomy": 10987180,
+      "pressure": 2747563,
+      "cancellation": 2747563
+    }
+  },
+  "warmup": {
+    "answer": "4",
+    "tokens": [
+      19
+    ],
+    "ttft_ms": 3607.9903750214726,
+    "wall_ms": 5281.320624984801,
+    "truncated": false
+  },
+  "policies": [
+    "recompute",
+    "raw_native",
+    "group_int4",
+    "adaptive_exact",
+    "adaptive_eviction"
+  ],
+  "quality_validated": false,
+  "timing": "synchronized sequential wall time; no sleeps, server queues or throughput claim; full prefill and cancellation costs included",
+  "memory": "owned payload lengths; CUDA allocator high-water mark separately; process RSS sampled every 10ms (lower bound on peak); MPS current counters only",
+  "transfers": "native arrays exported before CPU compression and imported after CPU decoding; bytes are tensor-copy payloads, not measured PCIe bus traffic; CPU/MPS copies are not PCIe claims",
+  "policy_costs": "export+encode and decode+import calibrated per context; bandwidth term effectively zero to avoid charging transfers twice; estimates never reported as measured time",
+  "quality": "strict numeric answer exact match and paired greedy-token agreement; controlled generated tasks, not production quality certification; repeated cases are not independent samples",
+  "cache_ownership": "own K/V tensors, codecs and PausedStateStore; no Transformers/vLLM/Ollama/cache library; CPU-side compression"
+}

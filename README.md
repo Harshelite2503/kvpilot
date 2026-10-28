@@ -225,6 +225,21 @@ kvpilot replay --trace examples/synthetic-sessions.jsonl --config examples/assum
 
 An optional `--input your-capture.npy` argument to the codec benchmark accepts a single numeric array. Record the model/layer/token/dtype provenance yourself; the program labels external input as unverified. `.npy` and `.npz` captures are excluded from Git by default.
 
+### P100 setup and offline weights
+
+The [owned PyTorch/P100 protocol](docs/p100-runner.md) provides a pinned CUDA
+12.6 environment, an FP16 arithmetic preflight, an explicit pinned-model
+download, and offline SHA256 handoff checks. The benchmark uses local weights
+and KVPilot's own cache management. **No P100 performance or quality results
+have been recorded yet.** vLLM 0.32.0 is not compatible with the P100; the
+earlier RTX 3090 first/repeat ratio describes native vLLM requests, not a
+KVPilot gain. See the corrected [Phase 1 provenance and limits](docs/phase1-report.md).
+
+The new runner passed a [40-session real-model Mac smoke test](results/p100-readiness-mac-smoke-v1/report.md)
+and exact restoration checks. It exposed an INT4 answer regression on one of
+four questions; adaptive results still trade speed against memory. These are
+Mac readiness observations, not P100 performance or quality guarantees.
+
 ## Initial evidence
 
 The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Pre-eviction-freeze verification passed **130 tests plus 89 subtests**; the earlier native Ollama harness version passed **174 tests plus 89 subtests**. Current direct-runner validation is reported above. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds that experiment. Cloud CI has not run.

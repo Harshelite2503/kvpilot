@@ -1,0 +1,6 @@
+# Lightweight dependencies shared by the owned PyTorch runner and offline tools.
+# Install the device-specific PyTorch build separately; see docs/p100-runner.md.
+numpy==2.2.6
+tokenizers==0.21.2
+safetensors==0.5.3
+psutil==7.0.0

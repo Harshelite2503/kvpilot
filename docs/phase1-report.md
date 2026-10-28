@@ -1,21 +1,23 @@
 # Phase 1 real-GPU validation: approach and results, in full detail
 
-This is the complete record of the first real-GPU validation of KVPilot's
-decision policy, run against the approved plan ("Real GPU validation of
-KVPilot's decision policy"). [`docs/live-integration.md`](live-integration.md)
-is the short status tracker; this file is the detailed one — every command,
-every failure, every number.
+This records the Phase 1 vLLM baseline, captured-array CPU calibration and
+modeled sensitivity check. **It did not validate KVPilot's controller on a
+live vLLM cache.** Historical timings and tables are retained below;
+interpretations were corrected during review to distinguish native cache
+behavior, host measurements and simulation. [`docs/live-integration.md`](live-integration.md)
+is the short status tracker. The separate [owned MLX results](local-results.md)
+are an earlier real-model KVPilot experiment, and [P100 preparation](p100-runner.md)
+is a new path with no P100 results yet.
 
 ## 1. Objective
 
-KVPilot's policy (`kvpilot.policy.choose_action`,
-`kvpilot.replay.estimate_eviction_cost`) had only ever run against
-synthetic traces and the illustrative numbers in
-`examples/assumed-costs.json`. The goal of Phase 1 was narrow and concrete:
+The vLLM integration path had not applied KVPilot's policy
+(`kvpilot.policy.choose_action`, `kvpilot.replay.estimate_eviction_cost`)
+to a live cache. The goal of Phase 1 was narrow and concrete:
 get one real GPU, run vLLM's own prefix caching on a real small model, and
-replace the assumed codec costs with numbers measured against a real
-captured KV tensor. Nothing from `choose_action` was applied to a live
-cache in this phase — that is Phase 2.
+compare illustrative codec costs with host-side measurements on a captured
+pool slice. Nothing from `choose_action` was applied to a live vLLM cache
+in this phase.
 
 ## 2. Why this architecture
 
@@ -24,7 +26,7 @@ cache: subclass vLLM's documented `KVConnectorBase_V1`, or extend LMCache's
 eviction policy. LMCache's eviction/admission extension points were found
 to be thin and still under active request upstream (an open, unmerged vLLM
 GitHub issue literally proposes "pluggable KV cache eviction policy").
-`KVConnectorBase_V1` is documented, stable, and has a reference
+`KVConnectorBase_V1` is a documented, version-specific contract and has a reference
 implementation (`LMCacheConnectorV1`) to study. Decision: build directly on
 `KVConnectorBase_V1`, skip LMCache as the control plane entirely. See the
 approved plan file for the full reasoning; this report only covers what
@@ -202,32 +204,32 @@ real tensor list, because the search returned on the first name match
 regardless of type. Fixed by walking a specific, now-confirmed path
 instead of a blind generic search (see §5).
 
-### 4.7 Fourth issue (not a failure, a data-quality catch): the KV cache tensor is a pool, not live data
+### 4.7 Fourth issue: the pool capture does not identify a request's live blocks
 
 The first successful capture returned a real tensor
 (`[56139, 2, 16, 128]`, bfloat16) but with a nonzero fraction of
 `~1.0e-5` — i.e. almost entirely zero. Root cause: that tensor is vLLM's
 **entire preallocated KV cache pool** sized for the box's full memory
-budget (898,224 tokens of capacity); only the rows actually written by a
-real prompt hold real values, and the test prompt used to find the
-attribute path was trivially short ("warm up the engine please"). Fix:
-rerun against the real ~1,600-token prefix used for the baseline test, and
-mask for written rows before saving:
+budget (reported capacity 898,224 tokens), and the test prompt used to find the
+attribute path was trivially short ("warm up the engine please"). The capture
+was rerun against the ~1,600-token prefix and used this heuristic:
 
 ```python
 written = (layer0.abs().sum(dim=(1, 2, 3)) > 0)
 real_slice = layer0[torch.nonzero(written).flatten()]
 ```
 
-This is the detail that matters most for anyone reusing this script:
-**never calibrate against the raw `kv_caches[i]` tensor directly** — it
-will make every codec look artificially compressible because most of it
-is padding.
+The variable name `written` overstates what this test proves: it selects
+nonzero rows, not verified blocks owned by the target request. Warmup/stale
+rows may be included, valid zero rows omitted, and unused allocation is not
+guaranteed to contain zeros. This avoids calibrating on this mostly zero
+pool but does not establish a representative request capture. A defensible
+capture needs the backend's layout descriptor and the request's block table.
 
 ## 5. The confirmed vLLM 0.32.0 internal path to real KV cache tensors
 
-For reuse in Phase 2 (this is new, hard-won knowledge — not documented
-anywhere in vLLM's own docs at the time of this test):
+The following private attribute path worked in the reported runtime. It is
+not a stable API guarantee for another version or backend:
 
 ```python
 os.environ.setdefault("VLLM_ENABLE_V1_MULTIPROCESSING", "0")  # required to stay in-process
@@ -237,7 +239,7 @@ executor = core.model_executor                  # UniProcExecutor
 worker = executor.driver_worker.worker          # WorkerWrapperBase -> gpu_worker.Worker
 runner = worker.model_runner                    # GPUModelRunner
 kv_caches = runner.kv_caches                    # list[torch.Tensor], one per layer
-# kv_caches[i].shape == [num_blocks, 2, num_kv_heads, head_dim]  (KV layout: "LBNHC")
+# Observed first-layer shape: [56139, 2, 16, 128]. Axis semantics unverified.
 ```
 
 `VLLM_ENABLE_V1_MULTIPROCESSING=0` is a debugging workaround, not how a
@@ -251,27 +253,31 @@ parent process see the tensors directly.
 
 ### 6.1 Real prefix-cache baseline
 
-Same methodology as the repo's existing `docs/ollama-results.md`: a long
-shared prefix (~1,600 tokens, a repeated small Python function wrapped in
-a code-review instruction) plus a short question, sent twice.
+A long prefix (~1,600 tokens, a repeated small Python function wrapped in
+a code-review instruction) plus a short question was sent twice with native
+vLLM prefix caching enabled. This simpler two-request observation is not the
+controlled multi-arm protocol in `docs/ollama-results.md`.
 
-| Run | Engine mode | Cold (first request) | Warm (repeat, cache hit) | Speedup |
+| Run | Engine mode | First request | Repeated request | First/repeat ratio |
 |---|---|---:|---:|---:|
-| 1 | multiprocess (default, production-representative) | 1490.37 ms | 604.02 ms | **2.47x** |
+| 1 | multiprocess (default) | 1490.37 ms | 604.02 ms | **2.47x** |
 | 2 | in-process (debug-only, needed for tensor access) | 634.24 ms | 499.32 ms | 1.27x |
 
-Run 1 is the one representative of a real deployment; run 2's smaller gap
-reflects removed multiprocess overhead on both sides, not a worse cache,
-and exists only because getting at the tensors required that mode.
+These are reported request-completion latencies, not measured TTFT. The
+2.47x ratio is **not a KVPilot improvement**: KVPilot controlled neither
+cache. Two requests do not separate caching from order and warmup effects,
+establish production performance, or explain the difference between engine
+modes. Run 2 was used to obtain tensor access; no controlled process-overhead
+ablation was performed.
 
 ### 6.2 Real KV tensor capture
 
 - Model: Qwen/Qwen2.5-0.5B-Instruct, dtype bfloat16, 24 layers.
-- Per-layer pool shape: `[56139, 2, 16, 128]` (num_blocks, k/v, num_kv_heads, head_dim).
-- Real captured slice after masking for written rows: `(153, 2, 16, 128)`,
+- Observed first-layer pool shape: `[56139, 2, 16, 128]`; semantic axis mapping unverified.
+- Captured slice after the nonzero-row heuristic: `(153, 2, 16, 128)`,
   99.88% nonzero, value range **-130.0 to 121.5**, mean absolute value
   **8.37**.
-- Saved to `real_kv_capture.npy` (gitignored by the repo's existing
+- Converted to float32 and saved to `real_kv_capture.npy` (gitignored by the repo's existing
   `.npy`/`.npz` exclusion rule — not committed, consistent with the
   repo's existing convention for unverified external captures).
 
@@ -281,6 +287,12 @@ Run locally (CPU/NumPy, no GPU needed) via
 `kvpilot.live.calibration.measure_codec` against the downloaded real
 tensor, 7 repeats per codec, median timing. Full machine-readable output:
 [`results/measured-costs-v1.json`](../results/measured-costs-v1.json).
+The artifact identifies the source array as float32 and the GPU of origin
+as RTX 3090; the **codec timings were CPU measurements**, not RTX 3090 kernel
+or transfer timings. All codecs convert to FP16, so ratios, per-MiB costs
+and numerical errors use the FP16 reference. Zero error here does not claim
+preservation of arbitrary source dtype values. Complete host/runtime/source-hash
+provenance and raw timing samples were not retained in this artifact.
 
 | Codec | Ratio (measured) | Ratio (assumed) | Encode ms/MiB (measured) | Encode ms/MiB (assumed) | Decode ms/MiB (measured) | Decode ms/MiB (assumed) | Max abs error |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -291,35 +303,37 @@ tensor, 7 repeats per codec, median timing. Full machine-readable output:
 
 ### 6.4 Interpretation
 
-1. **Compression ratio assumptions were good.** `group_int8` and
+1. **The fixed-format ratios matched this shape.** `group_int8` and
    `group_int4` matched the assumed ratios almost exactly (1.939 vs. 1.940,
-   3.764 vs. 3.760). `zlib_fp16` was *underestimated*: real KV data
-   compresses nearly 3x better with zlib than the assumed illustrative
-   number (3.25x vs. 1.08x), suggesting real attention key/value tensors
-   carry more redundancy than whatever data the assumed-costs example was
-   modeled on.
-2. **Compression timing assumptions were badly wrong — by ~100x, in the
-   optimistic direction.** `group_int8` decode: assumed 0.08 ms/MiB,
+   3.764 vs. 3.760). Their ratios primarily follow format and shape, not the
+   value distribution. `zlib_fp16` compressed this one selected array by
+   3.25x versus an illustrative 1.08x. The unverified capture cannot establish
+   a general distribution or compression ratio for request KV states.
+2. **This CPU reference implementation was much slower than the example
+   costs.** `group_int8` decode: assumed 0.08 ms/MiB,
    measured 8.12 ms/MiB (101x). `group_int4` decode: assumed 0.15 ms/MiB,
-   measured 13.51 ms/MiB (90x). Root cause, not a measurement artifact:
-   `src/kvpilot/codecs.py`'s quantized encode/decode paths use an
-   unvectorized Python `for group in range(groups)` loop — a correctness
-   reference, explicitly documented as such, never claimed to be fast. Any
-   `choose_action` decision seeded from the assumed timing numbers would
-   have systematically underestimated real compression overhead and
-   over-selected compression relative to what it actually costs with this
-   codec implementation.
-3. **Lossy error is real and non-trivial.** `group_int4`'s max absolute
+   measured 13.51 ms/MiB (90x). The measured implementation used NumPy
+   operations and a Python loop over column groups, with vectorized work
+   across rows inside each group. No profiling attributes the timing gap
+   to a particular component. This comparison motivates calibrating the
+   actual host implementation on the target machine. It does not measure
+   GPU codec performance or establish costs for another implementation.
+3. **Numerical error is measured; answer quality is not.** `group_int4`'s max absolute
    error of 9.28, against a real value range of about 250 units
-   (-130 to 121.5), is roughly 3.7% of range — the first concrete, measured
-   (not assumed) signal that restoring from int4 changes the actual
-   attention values the model would see, reinforcing why the repo's policy
-   rejects lossy codecs by default and why Phase 3's task-quality
-   exact-answer check matters before trusting any int4/int8 result.
+   (-130 to 121.5), is roughly 3.7% of range. It proves changes relative to
+   this array's FP16 reference, not a particular amount of generation-quality
+   loss. No lossy restore was applied to live vLLM generations in this phase.
 
-## 7. Feeding the measured costs into the real policy (closes the loop)
+Review subsequently found that calibration originally inferred a profile's
+`lossless` flag from zero error on one sample. Current code uses codec
+semantics instead: raw/zlib FP16 are exact relative to FP16; INT8/INT4 remain
+lossy even on an all-zero sample. The original numeric artifact is retained.
 
-Calibration alone doesn't say whether the gap between assumed and measured
+## 7. Modeled sensitivity to CPU codec costs
+
+This is a hybrid simulation: measured CPU codec costs plus unchanged assumed
+bandwidth, recomputation, budgets and pauses. It is not a live GPU policy
+benchmark. Calibration alone doesn't say whether the gap between assumed and measured
 numbers actually *matters* to a decision. Tested directly, at zero
 additional GPU cost (the existing `replay()` simulator is pure CPU, run on
 this dev machine): built
@@ -370,14 +384,12 @@ is `kvpilot.policy.choose_action` — completely unmodified — responding
 honestly to real overhead instead of the near-zero overhead the assumed
 file had been feeding it.
 
-This closes the open question from §8 of the earlier draft of this report
-("would measured costs actually change the policy's behavior?") — yes,
-completely, for this trace and this codec implementation. It also means
-the repo's own existing eviction-experiment headline result (`docs/eviction-results.md`:
-"modeled p95 improves in five of seven families") was produced entirely
-under the assumed, ~100x-too-fast codec timings; it has not been rerun
-under measured costs, and based on the result above, doing so would very
-likely change its conclusions substantially.
+Measured CPU costs changed choices for this development trace. The earlier
+frozen eviction study remains a result under its declared illustrative cost
+model; it was never GPU performance evidence. This sensitivity run does not
+establish what its seven families would do with a different implementation
+or hardware. It has not been rerun with these host costs, and no such outcome
+is claimed. Any new costs or algorithm deserve a separately labeled evaluation.
 
 ## 8. Cost accounting
 
@@ -391,21 +403,16 @@ likely change its conclusions substantially.
 
 ## 9. What is proven and what is not
 
-**Proven, with real measurements on real hardware (or, for §7, the
-existing tested simulator fed real measurements):**
-- vLLM's own native prefix caching gives a real, substantial speedup on
-  a real small model (2.47x in this one scenario).
-- The real captured KV tensor's value distribution and the real codec
-  round-trip errors/timings on it.
-- The specific internal attribute path to reach real KV tensors in vLLM
-  0.32.0 (§5), reusable for a future connector implementation.
-- `kvpilot.policy.choose_action`, fed the measured numbers instead of the
-  assumed ones, chooses completely differently: every decision in the
-  trace flips from "keep everything raw" to "recompute everything,
-  cache nothing" (§7). This also means the repo's existing published
-  eviction-experiment results were produced entirely under costs now
-  shown to be ~100x too optimistic on the timing axis, and have not yet
-  been rerun under measured ones.
+**Observed, within the stated provenance limits:**
+- Two native-vLLM first/repeat request pairs, with ratios 2.47x and 1.27x;
+  no KVPilot improvement or isolated causal caching effect is established.
+- CPU codec costs and FP16-reference round-trip errors for the selected
+  float32 pool slice; request ownership and semantic layout remain unverified.
+- A private tensor-access path in the reported vLLM runtime (§5), not a
+  stable connector API.
+- All 60 adaptive decisions in the development replay changed from raw
+  retention to recomputation when host codec costs replaced illustrative
+  costs, with other cost assumptions held fixed (§7).
 
 **Not proven, still pending:**
 - Whether a real `KVConnectorBase_V1` subclass can apply a KVPilot
@@ -415,11 +422,11 @@ existing tested simulator fed real measurements):**
   wrong results; doing it correctly is the actual multi-day connector
   engineering effort described in the approved plan, not something to
   hack around in one sitting.
-- Any task-quality (exact-answer) comparison between lossless and lossy
-  restore on live generations (only the raw byte-level quantization error
-  in §6.3/§6.4 has been measured so far).
-- Whether reruning the repo's existing eviction-experiment holdout under
-  measured costs changes its headline results, given §7's finding that it
-  very likely would.
+- Any task-quality comparison between exact and lossy restore on live
+  vLLM generations. The separate owned MLX experiment has its own answer
+  checks and cannot validate this integration.
+- Outcomes of a new eviction evaluation with a different cost model.
+- P100 performance or quality. See [the setup and offline handoff protocol](p100-runner.md)
+  for the planned owned PyTorch experiment.
 
 No external implementation code was copied for any of the above.
