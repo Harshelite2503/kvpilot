@@ -2,6 +2,8 @@
 
 This follows the [first P100 result](p100-results-2026-10-28.md). It adds the missing simple baseline and removes answer-length differences from a separate timing control. It does not claim a speedup before the new P100 run. All live K/V tensors, codecs, retention, eviction and restoration remain ours; Torch is the numerical engine.
 
+Local readiness: the complete helper's smoke-only route passed on the Mac GPU with real pinned Qwen2.5-0.5B weights: **48 sessions per mode, 96 total**, both independently audited; **512 tests and 89 subtests passed**, with 11 skipped tests. Source commit `af48abc9dec6c3e5f13a37d9f1799f3431f22a55` is preserved in the [equal-work record](../results/admission-readiness-mac-equal-work/record.json), [free-generation record](../results/admission-readiness-mac-free-generation/record.json) and [environment/tests/sweep record](../results/admission-readiness-mac-checks/README.md). These are one-repeat, four-question MPS readiness observations, not new P100 or production evidence. Timing rankings vary by mode/scenario; the simple baseline beats adaptive in the free-generation pressure smoke. Native/admission/adaptive match recompute's answers in this sample; fixed INT4 changes answers and scores 0/4 versus the native controls' 1/4 in both scenarios. Low control accuracy limits any quality conclusion.
+
 ## What changes
 
 Six policies run against the same capacity, case order and resolution schedule:
@@ -14,6 +16,8 @@ Six policies run against the same capacity, case order and resolution schedule:
 - `adaptive_eviction`: the existing selector including predicted eviction loss.
 
 Every saved snapshot includes framing in the budget. A refused admission performs no cache export or encoding. Admission planning remains timed. Canceled and evicted admissions remain charged. This tests whether adaptive decisions add value beyond a cheap conservative policy.
+
+The admission baseline still executes shared shape-sizing and store bookkeeping, including forecast construction used by the common diagnostics. Those forecasts cannot change its capacity-only decision. Its measured overhead describes this implementation, not the minimum possible cost of a hand-optimized capacity check.
 
 Two independent runs answer different questions:
 

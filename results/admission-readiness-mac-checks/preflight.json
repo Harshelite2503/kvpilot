@@ -1,0 +1,15 @@
+{
+  "evidence_type": "environment_preflight",
+  "device": "mps",
+  "python": "3.13.0",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "ok": true,
+  "p100_ready": false,
+  "stage": "complete",
+  "torch_version": "2.7.1",
+  "cuda_runtime": null,
+  "fp16_matmul": "passed",
+  "fp16_causal_math_sdpa": "passed",
+  "attention_backend": "MATH",
+  "model_loaded": false
+}
