@@ -1,0 +1,18 @@
+{
+  "evidence_type": "analytical_assumptions",
+  "description": "Same cost_model as examples/assumed-costs.json, but codec ratio/encode/decode numbers replaced with REAL measurements from docs/phase1-report.md (results/measured-costs-v1.json): a real vLLM KV cache slice from Qwen2.5-0.5B-Instruct on a rented RTX 3090, timed with kvpilot.live.calibration.measure_codec on this dev machine. Still fed through the same analytical replay() simulator as assumed-costs.json -- bandwidth/budget/SLO/pause assumptions below are NOT measured, only the codec numbers are.",
+  "default_pause_ms": 500,
+  "cost_model": {
+    "bandwidth_bytes_per_ms": 16777216,
+    "host_budget_bytes": 33554432,
+    "storage_penalty_ms_per_mib_second": 0.05,
+    "resume_slo_ms": 50,
+    "allow_unvalidated_lossy": true
+  },
+  "codecs": [
+    {"name": "raw_fp16", "ratio": 0.9999385696950743, "encode_ms_per_mib": 6.452036601509533, "decode_ms_per_mib": 2.747398691580576, "lossless": true},
+    {"name": "zlib_fp16", "ratio": 3.2496895182931413, "encode_ms_per_mib": 28.245584314896, "decode_ms_per_mib": 5.623884967777854, "lossless": true},
+    {"name": "group_int8", "ratio": 1.9391088963390768, "encode_ms_per_mib": 15.782232682397163, "decode_ms_per_mib": 8.116789542601195, "lossless": false},
+    {"name": "group_int4", "ratio": 3.763631941337385, "encode_ms_per_mib": 17.059053592627343, "decode_ms_per_mib": 13.505254902578647, "lossless": false}
+  ]
+}
