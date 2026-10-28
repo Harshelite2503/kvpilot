@@ -1,0 +1,5 @@
+# Portable top-level CI pins, shared by Python 3.11 and 3.13.
+# This is not a complete dependency resolution or a hash-verified lockfile.
+# Install the optional tensor engine and runner requirements separately.
+numpy==2.2.6
+pytest==8.4.2

@@ -1,0 +1,5604 @@
+{
+  "schema_version": 1,
+  "evidence_type": "analytical_trace_replay",
+  "policy": "raw_fp16",
+  "quality_validated": false,
+  "cost_model": {
+    "bandwidth_bytes_per_ms": 16777216,
+    "host_budget_bytes": 33554432,
+    "storage_penalty_ms_per_mib_second": 0.05,
+    "resume_slo_ms": 50,
+    "allow_unvalidated_lossy": true
+  },
+  "codec_profiles": [
+    {
+      "name": "raw_fp16",
+      "ratio": 1,
+      "encode_ms_per_mib": 0,
+      "decode_ms_per_mib": 0,
+      "lossless": true
+    },
+    {
+      "name": "zlib_fp16",
+      "ratio": 1.08,
+      "encode_ms_per_mib": 20,
+      "decode_ms_per_mib": 4,
+      "lossless": true
+    },
+    {
+      "name": "group_int8",
+      "ratio": 1.94,
+      "encode_ms_per_mib": 0.15,
+      "decode_ms_per_mib": 0.08,
+      "lossless": false
+    },
+    {
+      "name": "group_int4",
+      "ratio": 3.76,
+      "encode_ms_per_mib": 0.25,
+      "decode_ms_per_mib": 0.15,
+      "lossless": false
+    }
+  ],
+  "limitations": [
+    "No live LLM, GPU, PCIe, or LMCache execution",
+    "No active-decode latency or concurrent service queues",
+    "Supplied ratios/times are assumptions; prediction uses resolved history only",
+    "Paused-only store; complete-cache restore or full recompute; no partial-prefill execution",
+    "Encoding is charged once in full, including canceled/evicted jobs; no preemption savings",
+    "Host reservation starts at pause; raw GPU staging capacity is not modeled",
+    "Paused-only host accounting ends at resume/cancel and excludes in-flight restore buffers",
+    "Eviction-aware scoring uses marginal full-cache loss and a plug-in history forecast, not survival analysis",
+    "Incoming-session resume target takes precedence; no global victim-SLO guarantee",
+    "Fixed codec policies and simple historical expected-cost policy are reference baselines, not production schedulers"
+  ],
+  "metrics": {
+    "resume_count": 46,
+    "cancel_count": 14,
+    "unresolved_count": 0,
+    "modeled_mean_resume_ms": 9.5,
+    "modeled_p50_resume_ms": 0.5,
+    "modeled_p95_resume_ms": 35.0,
+    "modeled_slo_violations": 0,
+    "modeled_transferred_bytes": 549453824,
+    "peak_host_reserved_bytes": 33554432,
+    "host_reserved_byte_ms": 263561674752.0,
+    "shared_block_hits": 57,
+    "evicted_blocks": 24,
+    "full_recomputes": 12,
+    "modeled_encoding_ms": 0.0,
+    "modeled_decoding_ms": 0.0,
+    "modeled_recompute_ms": 420.0,
+    "modeled_total_service_ms": 452.75,
+    "canceled_owner_encoding_ms_upper_bound": 0.0,
+    "measured_gpu_itl_ms": null,
+    "measured_llm_task_success": null
+  },
+  "decisions": [
+    {
+      "at_ms": 0.0,
+      "type": "pause",
+      "session_id": "session-0",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 8388608,
+            "encode_ms": 0.0,
+            "offload_ms": 0.5,
+            "restore_ms": 0.5,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.95,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 8388608,
+              "encode_ms": 0.0,
+              "offload_ms": 0.5,
+              "restore_ms": 0.5,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.95,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 7767230,
+              "encode_ms": 160.0,
+              "offload_ms": 0.4629629850387573,
+              "restore_ms": 32.46296298503876,
+              "predicted_resume_ms": 32.46296298503876,
+              "expected_cost_ms": 176.87962967157364,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 4324025,
+              "encode_ms": 1.2,
+              "offload_ms": 0.25773197412490845,
+              "restore_ms": 0.8977319741249085,
+              "predicted_resume_ms": 0.8977319741249085,
+              "expected_cost_ms": 2.009690750837326,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 2231013,
+              "encode_ms": 2.0,
+              "offload_ms": 0.13297873735427856,
+              "restore_ms": 1.3329787373542785,
+              "predicted_resume_ms": 1.3329787373542785,
+              "expected_cost_ms": 2.8526596009731295,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 8388608,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 50.0,
+      "type": "pause",
+      "session_id": "session-1",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 8388608,
+            "encode_ms": 0.0,
+            "offload_ms": 0.5,
+            "restore_ms": 0.5,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.95,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 8388608,
+              "encode_ms": 0.0,
+              "offload_ms": 0.5,
+              "restore_ms": 0.5,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.95,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 7767230,
+              "encode_ms": 160.0,
+              "offload_ms": 0.4629629850387573,
+              "restore_ms": 32.46296298503876,
+              "predicted_resume_ms": 32.46296298503876,
+              "expected_cost_ms": 176.87962967157364,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 4324025,
+              "encode_ms": 1.2,
+              "offload_ms": 0.25773197412490845,
+              "restore_ms": 0.8977319741249085,
+              "predicted_resume_ms": 0.8977319741249085,
+              "expected_cost_ms": 2.009690750837326,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 2231013,
+              "encode_ms": 2.0,
+              "offload_ms": 0.13297873735427856,
+              "restore_ms": 1.3329787373542785,
+              "predicted_resume_ms": 1.3329787373542785,
+              "expected_cost_ms": 2.8526596009731295,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 16777216,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 100.0,
+      "type": "pause",
+      "session_id": "session-2",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 20971520,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 125.0,
+      "type": "resume",
+      "session_id": "session-2",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 20971520,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 150.0,
+      "type": "resume",
+      "session_id": "session-1",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 150.0,
+      "type": "pause",
+      "session_id": "session-3",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 8388608,
+            "encode_ms": 0.0,
+            "offload_ms": 0.5,
+            "restore_ms": 0.5,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.95,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 8388608,
+              "encode_ms": 0.0,
+              "offload_ms": 0.5,
+              "restore_ms": 0.5,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.95,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 7767230,
+              "encode_ms": 160.0,
+              "offload_ms": 0.4629629850387573,
+              "restore_ms": 32.46296298503876,
+              "predicted_resume_ms": 32.46296298503876,
+              "expected_cost_ms": 176.87962967157364,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 4324025,
+              "encode_ms": 1.2,
+              "offload_ms": 0.25773197412490845,
+              "restore_ms": 0.8977319741249085,
+              "predicted_resume_ms": 0.8977319741249085,
+              "expected_cost_ms": 2.009690750837326,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 2231013,
+              "encode_ms": 2.0,
+              "offload_ms": 0.13297873735427856,
+              "restore_ms": 1.3329787373542785,
+              "predicted_resume_ms": 1.3329787373542785,
+              "expected_cost_ms": 2.8526596009731295,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 16777216,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 200.0,
+      "type": "pause",
+      "session_id": "session-4",
+      "forecast": {
+        "resume_probability": 0.75,
+        "pause_ms": 62.5
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6375,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 26.25,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6375,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 34.21296298503876,
+              "expected_cost_ms": 105.90277780592442,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2594588303565977,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.757180917263031,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 20971520,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 201.0,
+      "type": "resume",
+      "session_id": "session-4",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 20971520,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 250.0,
+      "type": "pause",
+      "session_id": "session-5",
+      "forecast": {
+        "resume_probability": 0.8,
+        "pause_ms": 42.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6584,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6584,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 54.71296298503876,
+              "expected_cost_ms": 124.00962965869904,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2922887285232543,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.801914961051941,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 20971520,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 251.0,
+      "type": "cancel",
+      "session_id": "session-5"
+    },
+    {
+      "at_ms": 300.0,
+      "type": "pause",
+      "session_id": "session-6",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 20971520,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 350.0,
+      "type": "pause",
+      "session_id": "session-7",
+      "forecast": {
+        "resume_probability": 0.6666666666666666,
+        "pause_ms": 31.75
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.5896833333333332,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 23.333333333333332,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.5896833333333332,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 64.96296298503876,
+              "expected_cost_ms": 123.54600311245521,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.198049891602993,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.679171161520481,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 25165824,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 351.0,
+      "type": "resume",
+      "session_id": "session-7",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 25165824,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 400.0,
+      "type": "pause",
+      "session_id": "session-8",
+      "forecast": {
+        "resume_probability": 0.7142857142857143,
+        "pause_ms": 25.6
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6122628571428572,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 25.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6122628571428572,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 71.11296298503876,
+              "expected_cost_ms": 131.03119579422815,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2306952049364361,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.722486385988508,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 25165824,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 450.0,
+      "type": "pause",
+      "session_id": "session-9",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 29360128,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 500.0,
+      "type": "pause",
+      "session_id": "session-10",
+      "forecast": {
+        "resume_probability": 0.7142857142857143,
+        "pause_ms": 25.6
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6122628571428572,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 25.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6122628571428572,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 71.11296298503876,
+              "expected_cost_ms": 131.03119579422815,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2306952049364361,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.722486385988508,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 501.0,
+      "type": "resume",
+      "session_id": "session-10",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 550.0,
+      "type": "pause",
+      "session_id": "session-11",
+      "forecast": {
+        "resume_probability": 0.75,
+        "pause_ms": 21.5
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6293,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 26.25,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6293,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 75.21296298503876,
+              "expected_cost_ms": 136.64518521296978,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.255232025003433,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.7550000649929047,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 575.0,
+      "type": "resume",
+      "session_id": "session-11",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 600.0,
+      "type": "pause",
+      "session_id": "session-12",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 650.0,
+      "type": "pause",
+      "session_id": "session-13",
+      "forecast": {
+        "resume_probability": 0.7777777777777778,
+        "pause_ms": 22.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6432888888888888,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 27.22222222222222,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6432888888888888,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 74.71296298503876,
+              "expected_cost_ms": 138.34563788848453,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2746965163230897,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.7804846995989483,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 675.0,
+      "type": "resume",
+      "session_id": "session-13",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 700.0,
+      "type": "pause",
+      "session_id": "session-14",
+      "forecast": {
+        "resume_probability": 0.8,
+        "pause_ms": 22.375
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.654475,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.654475,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 74.33796298503876,
+              "expected_cost_ms": 139.70599539926647,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.2902655320584773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8008710774958134,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 750.0,
+      "type": "pause",
+      "session_id": "session-15",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 800.0,
+      "type": "resume",
+      "session_id": "session-14",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 800.0,
+      "type": "pause",
+      "session_id": "session-16",
+      "forecast": {
+        "resume_probability": 0.8181818181818182,
+        "pause_ms": 31.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6652909090909092,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.636363636363637,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6652909090909092,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 65.71296298503876,
+              "expected_cost_ms": 134.00237376674738,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3038613624269313,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8179932979540392,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 850.0,
+      "type": "pause",
+      "session_id": "session-17",
+      "forecast": {
+        "resume_probability": 0.8181818181818182,
+        "pause_ms": 31.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6652909090909092,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.636363636363637,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6652909090909092,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 65.71296298503876,
+              "expected_cost_ms": 134.00237376674738,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3038613624269313,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8179932979540392,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 851.0,
+      "type": "resume",
+      "session_id": "session-17",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 900.0,
+      "type": "resume",
+      "session_id": "session-16",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 900.0,
+      "type": "pause",
+      "session_id": "session-18",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 29360128,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 950.0,
+      "type": "pause",
+      "session_id": "session-19",
+      "forecast": {
+        "resume_probability": 0.8461538461538461,
+        "pause_ms": 34.54545454545455
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.679986013986014,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.615384615384617,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.679986013986014,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 62.16750843958421,
+              "expected_cost_ms": 132.8411551711776,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3237755730835707,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8438179531564245,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1000.0,
+      "type": "pause",
+      "session_id": "session-20",
+      "forecast": {
+        "resume_probability": 0.8461538461538461,
+        "pause_ms": 34.54545454545455
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.679986013986014,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.615384615384617,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.679986013986014,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 62.16750843958421,
+              "expected_cost_ms": 132.8411551711776,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3237755730835707,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8438179531564245,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1050.0,
+      "type": "pause",
+      "session_id": "session-21",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1100.0,
+      "type": "resume",
+      "session_id": "session-20",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1100.0,
+      "type": "pause",
+      "session_id": "session-22",
+      "forecast": {
+        "resume_probability": 0.8571428571428571,
+        "pause_ms": 40.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6865714285714286,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6865714285714286,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 56.71296298503876,
+              "expected_cost_ms": 128.8500000303132,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3320177438599723,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8541794007846286,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1150.0,
+      "type": "pause",
+      "session_id": "session-23",
+      "forecast": {
+        "resume_probability": 0.8571428571428571,
+        "pause_ms": 40.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6865714285714286,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6865714285714286,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 56.71296298503876,
+              "expected_cost_ms": 128.8500000303132,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3320177438599723,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8541794007846286,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1151.0,
+      "type": "cancel",
+      "session_id": "session-23"
+    },
+    {
+      "at_ms": 1200.0,
+      "type": "resume",
+      "session_id": "session-22",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1200.0,
+      "type": "pause",
+      "session_id": "session-24",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 29360128,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1250.0,
+      "type": "pause",
+      "session_id": "session-25",
+      "forecast": {
+        "resume_probability": 0.8125,
+        "pause_ms": 41.5
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.66455,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.4375,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.66455,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 55.21296298503876,
+              "expected_cost_ms": 125.099699103415,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.300973007327318,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8133444827735423,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1251.0,
+      "type": "resume",
+      "session_id": "session-25",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1300.0,
+      "type": "pause",
+      "session_id": "session-26",
+      "forecast": {
+        "resume_probability": 0.8235294117647058,
+        "pause_ms": 38.8
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6695247058823529,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 28.823529411764703,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6695247058823529,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 57.91296298503876,
+              "expected_cost_ms": 127.93169501866733,
+              "within_resume_slo": false,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3084027377992518,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8233092046266444,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1301.0,
+      "type": "resume",
+      "session_id": "session-26",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1350.0,
+      "type": "pause",
+      "session_id": "session-27",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1400.0,
+      "type": "resume",
+      "session_id": "session-8",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1400.0,
+      "type": "pause",
+      "session_id": "session-28",
+      "forecast": {
+        "resume_probability": 0.8421052631578947,
+        "pause_ms": 93.11764705882354
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.689676160990712,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.473684210526315,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.689676160990712,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.12786781154624,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3269845281298314,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8432230136400405,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1450.0,
+      "type": "pause",
+      "session_id": "session-29",
+      "forecast": {
+        "resume_probability": 0.8421052631578947,
+        "pause_ms": 93.11764705882354
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.689676160990712,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.473684210526315,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.689676160990712,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.12786781154624,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3269845281298314,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8432230136400405,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1500.0,
+      "type": "resume",
+      "session_id": "session-28",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1500.0,
+      "type": "pause",
+      "session_id": "session-30",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1550.0,
+      "type": "resume",
+      "session_id": "session-29",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1550.0,
+      "type": "pause",
+      "session_id": "session-31",
+      "forecast": {
+        "resume_probability": 0.8571428571428571,
+        "pause_ms": 93.84210526315789
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6973398496240601,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.0,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6973398496240601,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.37584379743453,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.337568477975874,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.857043344138081,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1551.0,
+      "type": "resume",
+      "session_id": "session-31",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1600.0,
+      "type": "pause",
+      "session_id": "session-32",
+      "forecast": {
+        "resume_probability": 0.8636363636363636,
+        "pause_ms": 89.2
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6996581818181818,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.227272727272727,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6996581818181818,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.48200675536503,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3416280013023725,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8627476533690366,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1625.0,
+      "type": "resume",
+      "session_id": "session-32",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1650.0,
+      "type": "pause",
+      "session_id": "session-33",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1700.0,
+      "type": "pause",
+      "session_id": "session-34",
+      "forecast": {
+        "resume_probability": 0.8695652173913043,
+        "pause_ms": 86.14285714285714
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7020111801242235,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.434782608695652,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7020111801242235,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.5791569112058,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3454563062522722,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.868018770908865,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1750.0,
+      "type": "pause",
+      "session_id": "session-35",
+      "forecast": {
+        "resume_probability": 0.8695652173913043,
+        "pause_ms": 86.14285714285714
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7020111801242235,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.434782608695652,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7020111801242235,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.5791569112058,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3454563062522722,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.868018770908865,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1775.0,
+      "type": "resume",
+      "session_id": "session-35",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1800.0,
+      "type": "pause",
+      "session_id": "session-36",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1850.0,
+      "type": "pause",
+      "session_id": "session-37",
+      "forecast": {
+        "resume_probability": 0.875,
+        "pause_ms": 83.36363636363636
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7041727272727273,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.625,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7041727272727273,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.66821550964767,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3489679734370925,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8728518605784936,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1851.0,
+      "type": "resume",
+      "session_id": "session-37",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 1900.0,
+      "type": "pause",
+      "session_id": "session-38",
+      "forecast": {
+        "resume_probability": 0.88,
+        "pause_ms": 79.78260869565217
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7059565217391304,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.8,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7059565217391304,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.930354289386585,
+              "expected_cost_ms": 95.14496782504995,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3520931253039319,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8772438272704248,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 1950.0,
+      "type": "cancel",
+      "session_id": "session-19"
+    },
+    {
+      "at_ms": 1950.0,
+      "type": "pause",
+      "session_id": "session-39",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2000.0,
+      "type": "pause",
+      "session_id": "session-40",
+      "forecast": {
+        "resume_probability": 0.8461538461538461,
+        "pause_ms": 118.125
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6967019230769231,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.615384615384617,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6967019230769231,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.19922544877117,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3323920235748474,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8482636761183922,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2050.0,
+      "type": "pause",
+      "session_id": "session-41",
+      "forecast": {
+        "resume_probability": 0.8461538461538461,
+        "pause_ms": 118.125
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6967019230769231,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.615384615384617,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6967019230769231,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.19922544877117,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3323920235748474,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8482636761183922,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2100.0,
+      "type": "resume",
+      "session_id": "session-40",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2100.0,
+      "type": "pause",
+      "session_id": "session-42",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2150.0,
+      "type": "pause",
+      "session_id": "session-43",
+      "forecast": {
+        "resume_probability": 0.8518518518518519,
+        "pause_ms": 117.4
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.699405925925926,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.814814814814817,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.699405925925926,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.29300276496146,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.336299423831304,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.853447274081972,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2200.0,
+      "type": "pause",
+      "session_id": "session-44",
+      "forecast": {
+        "resume_probability": 0.8518518518518519,
+        "pause_ms": 117.4
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.699405925925926,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 29.814814814814817,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.699405925925926,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.29300276496146,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.336299423831304,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.853447274081972,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2250.0,
+      "type": "resume",
+      "session_id": "session-43",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2250.0,
+      "type": "pause",
+      "session_id": "session-45",
+      "forecast": {
+        "resume_probability": 0.5,
+        "pause_ms": 500
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.6,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 17.5,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.6,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 88.56481483578682,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1298454320430755,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.5513298571109773,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2300.0,
+      "type": "cancel",
+      "session_id": "session-6"
+    },
+    {
+      "at_ms": 2300.0,
+      "type": "resume",
+      "session_id": "session-44",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2300.0,
+      "type": "pause",
+      "session_id": "session-46",
+      "forecast": {
+        "resume_probability": 0.8620689655172413,
+        "pause_ms": 116.11111111111111
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7042567049808429,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.172413793103445,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7042567049808429,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.46115725160558,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3433069421806556,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8627425924818177,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2350.0,
+      "type": "pause",
+      "session_id": "session-47",
+      "forecast": {
+        "resume_probability": 0.8620689655172413,
+        "pause_ms": 116.11111111111111
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7042567049808429,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.172413793103445,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7042567049808429,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.46115725160558,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3433069421806556,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8627425924818177,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2375.0,
+      "type": "resume",
+      "session_id": "session-47",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2400.0,
+      "type": "pause",
+      "session_id": "session-48",
+      "forecast": {
+        "resume_probability": 0.3333333333333333,
+        "pause_ms": 2000.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.8166666666666667,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 11.666666666666666,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.8166666666666667,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 86.09567904472351,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1680069828033448,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.4783689022064208,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2450.0,
+      "type": "pause",
+      "session_id": "session-49",
+      "forecast": {
+        "resume_probability": 0.8666666666666667,
+        "pause_ms": 112.85714285714286
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7059047619047619,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.333333333333336,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7059047619047619,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.53633159126554,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3461846585273742,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8667832533291409,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2451.0,
+      "type": "resume",
+      "session_id": "session-49",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2500.0,
+      "type": "pause",
+      "session_id": "session-50",
+      "forecast": {
+        "resume_probability": 0.8709677419354839,
+        "pause_ms": 109.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.707283870967742,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.483870967741936,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.707283870967742,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.60650539795813,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3487928901595454,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8705199759283373,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2525.0,
+      "type": "resume",
+      "session_id": "session-50",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2550.0,
+      "type": "pause",
+      "session_id": "session-51",
+      "forecast": {
+        "resume_probability": 0.3333333333333333,
+        "pause_ms": 2000.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.8166666666666667,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 11.666666666666666,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.8166666666666667,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 86.09567904472351,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1680069828033448,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.4783689022064208,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2600.0,
+      "type": "pause",
+      "session_id": "session-52",
+      "forecast": {
+        "resume_probability": 0.875,
+        "pause_ms": 106.2
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.70874,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.625,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.70874,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.67244446607828,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3513222384142876,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8740665614438057,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2650.0,
+      "type": "pause",
+      "session_id": "session-53",
+      "forecast": {
+        "resume_probability": 0.875,
+        "pause_ms": 106.2
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.70874,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.625,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.70874,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.67244446607828,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3513222384142876,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8740665614438057,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2700.0,
+      "type": "resume",
+      "session_id": "session-34",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2700.0,
+      "type": "pause",
+      "session_id": "session-54",
+      "forecast": {
+        "resume_probability": 0.3333333333333333,
+        "pause_ms": 2000.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.8166666666666667,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 11.666666666666666,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.8166666666666667,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 86.09567904472351,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1680069828033448,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.4783689022064208,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2750.0,
+      "type": "pause",
+      "session_id": "session-55",
+      "forecast": {
+        "resume_probability": 0.8787878787878788,
+        "pause_ms": 135.03225806451613
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7164003910068427,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.757575757575758,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7164003910068427,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.74021362752019,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3569418567783322,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8790717437920332,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2751.0,
+      "type": "resume",
+      "session_id": "session-55",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2800.0,
+      "type": "pause",
+      "session_id": "session-56",
+      "forecast": {
+        "resume_probability": 0.8823529411764706,
+        "pause_ms": 130.84375
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.7173452205882352,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 30.88235294117647,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.7173452205882352,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.79819548761888,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.3590015526490176,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8821162925707067,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2801.0,
+      "type": "resume",
+      "session_id": "session-56",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2850.0,
+      "type": "pause",
+      "session_id": "session-57",
+      "forecast": {
+        "resume_probability": 0.3333333333333333,
+        "pause_ms": 2000.0
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.8166666666666667,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 11.666666666666666,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.8166666666666667,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 86.09567904472351,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.1680069828033448,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.4783689022064208,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2900.0,
+      "type": "resume",
+      "session_id": "session-38",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 2900.0,
+      "type": "pause",
+      "session_id": "session-58",
+      "forecast": {
+        "resume_probability": 0.8888888888888888,
+        "pause_ms": 152.58823529411765
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.724962091503268,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 31.11111111111111,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.724962091503268,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.90994434560514,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.365811004560134,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8892630415561151,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 2950.0,
+      "type": "pause",
+      "session_id": "session-59",
+      "forecast": {
+        "resume_probability": 0.8888888888888888,
+        "pause_ms": 152.58823529411765
+      },
+      "actions": [
+        {
+          "selected": {
+            "action": "raw_fp16",
+            "stored_bytes": 4194304,
+            "encode_ms": 0.0,
+            "offload_ms": 0.25,
+            "restore_ms": 0.25,
+            "predicted_resume_ms": 0.5,
+            "expected_cost_ms": 0.724962091503268,
+            "within_resume_slo": true,
+            "eviction_cost_ms": 0.0
+          },
+          "alternatives": [
+            {
+              "action": "recompute",
+              "stored_bytes": 0,
+              "encode_ms": 0,
+              "offload_ms": 0,
+              "restore_ms": 35.0,
+              "predicted_resume_ms": 35.0,
+              "expected_cost_ms": 31.11111111111111,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "raw_fp16",
+              "stored_bytes": 4194304,
+              "encode_ms": 0.0,
+              "offload_ms": 0.25,
+              "restore_ms": 0.25,
+              "predicted_resume_ms": 0.5,
+              "expected_cost_ms": 0.724962091503268,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "zlib_fp16",
+              "stored_bytes": 3883615,
+              "encode_ms": 80.0,
+              "offload_ms": 0.23148149251937866,
+              "restore_ms": 16.23148149251938,
+              "predicted_resume_ms": 16.48148149251938,
+              "expected_cost_ms": 94.90994434560514,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int8",
+              "stored_bytes": 2162013,
+              "encode_ms": 0.6,
+              "offload_ms": 0.1288660168647766,
+              "restore_ms": 0.4488660168647766,
+              "predicted_resume_ms": 0.6988660168647767,
+              "expected_cost_ms": 1.365811004560134,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            },
+            {
+              "action": "group_int4",
+              "stored_bytes": 1115507,
+              "encode_ms": 1.0,
+              "offload_ms": 0.06648939847946167,
+              "restore_ms": 0.6664893984794616,
+              "predicted_resume_ms": 0.9164893984794616,
+              "expected_cost_ms": 1.8892630415561151,
+              "within_resume_slo": true,
+              "eviction_cost_ms": 0.0
+            }
+          ],
+          "reason": "fixed codec baseline (no quality guarantee)"
+        }
+      ],
+      "host_reserved_bytes": 33554432,
+      "raw_bytes": 8388608
+    },
+    {
+      "at_ms": 3000.0,
+      "type": "resume",
+      "session_id": "session-58",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 33554432,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3050.0,
+      "type": "resume",
+      "session_id": "session-41",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3200.0,
+      "type": "resume",
+      "session_id": "session-24",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3300.0,
+      "type": "resume",
+      "session_id": "session-46",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3600.0,
+      "type": "resume",
+      "session_id": "session-52",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 29360128,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3650.0,
+      "type": "cancel",
+      "session_id": "session-33"
+    },
+    {
+      "at_ms": 3650.0,
+      "type": "resume",
+      "session_id": "session-53",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 25165824,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3800.0,
+      "type": "cancel",
+      "session_id": "session-36"
+    },
+    {
+      "at_ms": 3950.0,
+      "type": "resume",
+      "session_id": "session-39",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 20971520,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 3950.0,
+      "type": "resume",
+      "session_id": "session-59",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 20971520,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 4400.0,
+      "type": "resume",
+      "session_id": "session-48",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 5600.0,
+      "type": "cancel",
+      "session_id": "session-12"
+    },
+    {
+      "at_ms": 5750.0,
+      "type": "cancel",
+      "session_id": "session-15"
+    },
+    {
+      "at_ms": 6350.0,
+      "type": "cancel",
+      "session_id": "session-27"
+    },
+    {
+      "at_ms": 6500.0,
+      "type": "resume",
+      "session_id": "session-30",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 7250.0,
+      "type": "resume",
+      "session_id": "session-45",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 7550.0,
+      "type": "cancel",
+      "session_id": "session-51"
+    },
+    {
+      "at_ms": 10000.0,
+      "type": "cancel",
+      "session_id": "session-0"
+    },
+    {
+      "at_ms": 10150.0,
+      "type": "resume",
+      "session_id": "session-3",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 10450.0,
+      "type": "cancel",
+      "session_id": "session-9"
+    },
+    {
+      "at_ms": 10900.0,
+      "type": "cancel",
+      "session_id": "session-18"
+    },
+    {
+      "at_ms": 11050.0,
+      "type": "resume",
+      "session_id": "session-21",
+      "path": "full_recompute",
+      "modeled_resume_delay_ms": 35.0,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 12100.0,
+      "type": "cancel",
+      "session_id": "session-42"
+    },
+    {
+      "at_ms": 12700.0,
+      "type": "resume",
+      "session_id": "session-54",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 16777216,
+      "within_resume_slo": true
+    },
+    {
+      "at_ms": 12850.0,
+      "type": "resume",
+      "session_id": "session-57",
+      "path": "restore",
+      "modeled_resume_delay_ms": 0.5,
+      "host_reserved_bytes": 8388608,
+      "within_resume_slo": true
+    }
+  ],
+  "scenario_description": "Illustrative costs, NOT GPU measurements. Lossy actions explicitly enabled only for policy sensitivity experiments; no model quality validated. Ratios include assumed metadata overhead."
+}

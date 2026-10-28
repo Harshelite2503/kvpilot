@@ -101,3 +101,14 @@ python scripts/evaluate_eviction.py --split holdout \
 ```
 
 Use a new output directory. This reproduces the frozen experiment; it does not create a new holdout. A changed frozen source/config file is rejected before workload generation. No paid service or external inference endpoint is used.
+
+**Since commit `fac2ed2` the current tree refuses this command** with `freeze mismatch in component_sha256`. The freeze binds every `src/**/*.py` file, and the live-measurement and vLLM-connector modules added after the freeze are new files, even though the policy, replay, workload and evaluator sources are unchanged. This is the intended behaviour: the freeze belongs to the revision it was taken on. Reproduce from that revision in a throwaway worktree:
+
+```bash
+git worktree add /tmp/kvpilot-b2dc97b b2dc97b
+cd /tmp/kvpilot-b2dc97b && python scripts/evaluate_eviction.py --split holdout \
+  --freeze-manifest results/eviction-freeze-v1.json \
+  --output-dir /tmp/kvpilot-v1-reproduction
+```
+
+Verified on 28 October 2026: the regenerated `summary.json` and `runs.jsonl` are byte-identical to the checked-in archive. The same costs rerun with measured codec timings are in [eviction-results-measured-costs.md](eviction-results-measured-costs.md).

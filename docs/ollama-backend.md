@@ -1,5 +1,7 @@
 # What the local Ollama benchmark measures
 
+Subsequent work added a [direct tensor runner](local-runner.md) that reads the same local weights and gives KVPilot ownership of the state. Its [results](local-results.md) test our codecs and policy. This document describes the earlier Ollama API experiment.
+
 Source review: **2026-10-27**, pinned to **Ollama v0.40.11**. The local benchmark uses `qwen3.5:4b` on the MLX runner, Apple M1 Pro with 16 GB unified memory, with the experiment's context setting kept at 4096. These findings describe that backend and version; they are not claims about every Ollama runner or the upstream Python MLX-LM package.
 
 The supported API can measure native prompt-cache reuse, request timings, generated answers, and aggregate model-memory reporting. It does **not** expose the raw cache or the controls needed to run KVpilot's compression/admission policy inside this runner. Native-cache results therefore establish a reference, not a measured KVpilot improvement.

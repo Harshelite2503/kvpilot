@@ -2,6 +2,8 @@
 
 Research cutoff: **27 October 2026**. This review uses primary papers, official documentation, public proposals, and selected upstream source files. It establishes substantial prior art; it does **not** establish a unique invention, production readiness, or customer demand. The accompanying [source register](sources.json) records dates, code and license evidence, and limits for 18 source groups.
 
+**28 October follow-up:** the [first P100 audit](p100-results-2026-10-28.md) and [next-experiment research plan](next-experiments.md) add measured evidence, the missing no-eviction baseline, and direct comparisons with InferCept, Continuum, CacheWise, KIVI and KVQuant. This original review remains the dated background; the follow-up distinguishes proposals from implemented capabilities.
+
 The defensible first project is a reproducible experiment: **can a causal controller choose when and how to retain paused-session KV state more effectively than existing simple policies, after charging for codec work, transfers, memory occupancy, and recomputation?** A useful negative result would prevent building another cache layer whose overhead exceeds its benefit.
 
 ## What is already being built

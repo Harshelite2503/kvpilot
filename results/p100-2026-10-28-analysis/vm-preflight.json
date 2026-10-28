@@ -1,0 +1,30 @@
+{
+  "evidence_type": "environment_preflight",
+  "device": "cuda",
+  "python": "3.11.18",
+  "platform": "Linux-5.14.0-687.60.1.el9_8.x86_64-x86_64-with-glibc2.34",
+  "ok": true,
+  "p100_ready": true,
+  "stage": "complete",
+  "torch_version": "2.7.1+cu126",
+  "cuda_runtime": "12.6",
+  "device_name": "Tesla P100-PCIE-16GB",
+  "compute_capability": [
+    6,
+    0
+  ],
+  "compiled_arches": [
+    "sm_50",
+    "sm_60",
+    "sm_70",
+    "sm_75",
+    "sm_80",
+    "sm_86",
+    "sm_90"
+  ],
+  "total_device_bytes": 17059545088,
+  "fp16_matmul": "passed",
+  "fp16_causal_math_sdpa": "passed",
+  "attention_backend": "MATH",
+  "model_loaded": false
+}

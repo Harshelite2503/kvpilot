@@ -1,0 +1,24 @@
+{
+  "source": "local_huggingface_safetensors",
+  "model_dir": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/data/qwen2.5-0.5b-instruct",
+  "file_sha256": {
+    "config.json": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "model.safetensors": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "generation_config.json": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+  },
+  "expected_hashes_verified": false,
+  "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+  "source_file_bytes": {
+    "config.json": 659,
+    "tokenizer.json": 7031645,
+    "model.safetensors": 988097824,
+    "tokenizer_config.json": 7305,
+    "generation_config.json": 242
+  },
+  "activation_dtype": "float16",
+  "device": "mps",
+  "torch_version": "2.7.1",
+  "conversion": "all unquantized floating weights converted to execution dtype"
+}

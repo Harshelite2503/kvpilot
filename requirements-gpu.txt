@@ -1,0 +1,6 @@
+# For the rented GPU validation box only (Linux + CUDA 12.9/13.x).
+# Not used by the local test suite or any script in scripts/, which stay CPU-only.
+#
+# Install with (uv auto-selects the right CUDA build for the box's driver):
+#   uv pip install -r requirements-gpu.txt --torch-backend=auto
+vllm==0.32.0

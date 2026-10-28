@@ -1,0 +1,130 @@
+{
+  "prefix_tokens": 1417,
+  "prefill_ms": 4045.419541954994,
+  "profiles": [
+    {
+      "name": "raw_native",
+      "ratio": 0.9999109055951623,
+      "encode_ms_per_mib": 0.4487195351563317,
+      "decode_ms_per_mib": 0.43995896610937696,
+      "lossless": true
+    },
+    {
+      "name": "group_int8",
+      "ratio": 1.2978975709722074,
+      "encode_ms_per_mib": 3.323007475775434,
+      "decode_ms_per_mib": 0.8306389990838805,
+      "lossless": false
+    },
+    {
+      "name": "group_int4",
+      "ratio": 1.533839342059718,
+      "encode_ms_per_mib": 3.441050968827432,
+      "decode_ms_per_mib": 2.8834178550620666,
+      "lossless": false
+    }
+  ],
+  "samples": [
+    {
+      "repeat": 0,
+      "codec": "raw_native",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 97952279,
+      "export_ms": 20.64370906352997,
+      "encode_ms": 78.96229207515717,
+      "decode_ms": 42.97791600227356,
+      "import_ms": 16.48783302307129
+    },
+    {
+      "repeat": 0,
+      "codec": "group_int8",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 75463237,
+      "export_ms": 3.6632920503616333,
+      "encode_ms": 306.72637498378754,
+      "decode_ms": 65.21533298492432,
+      "import_ms": 12.371541023254395
+    },
+    {
+      "repeat": 0,
+      "codec": "group_int4",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 63855157,
+      "export_ms": 2.7592920064926147,
+      "encode_ms": 318.65637505054474,
+      "decode_ms": 285.0575829744339,
+      "import_ms": 28.139875054359436
+    },
+    {
+      "repeat": 1,
+      "codec": "group_int8",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 75463237,
+      "export_ms": 5.317582964897156,
+      "encode_ms": 812.1817909479141,
+      "decode_ms": 78.54833388328552,
+      "import_ms": 55.58012497425079
+    },
+    {
+      "repeat": 1,
+      "codec": "group_int4",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 63855157,
+      "export_ms": 10.988084077835083,
+      "encode_ms": 318.1607919931412,
+      "decode_ms": 255.42341601848602,
+      "import_ms": 13.905833005905151
+    },
+    {
+      "repeat": 1,
+      "codec": "raw_native",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 97952279,
+      "export_ms": 3.206874966621399,
+      "encode_ms": 38.70633411407471,
+      "decode_ms": 27.849667072296143,
+      "import_ms": 13.24525010585785
+    },
+    {
+      "repeat": 2,
+      "codec": "group_int4",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 63855157,
+      "export_ms": 2.8270000219345093,
+      "encode_ms": 308.02562499046326,
+      "decode_ms": 253.59437489509583,
+      "import_ms": 9.87795889377594
+    },
+    {
+      "repeat": 2,
+      "codec": "raw_native",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 97952279,
+      "export_ms": 2.827875018119812,
+      "encode_ms": 33.97495794296265,
+      "decode_ms": 27.41712498664856,
+      "import_ms": 9.357667088508606
+    },
+    {
+      "repeat": 2,
+      "codec": "group_int8",
+      "raw_tensor_bytes": 97943552,
+      "stored_bytes": 75463237,
+      "export_ms": 2.7536250352859497,
+      "encode_ms": 299.23862504959106,
+      "decode_ms": 64.72937512397766,
+      "import_ms": 11.063250064849854
+    }
+  ],
+  "integrity_gate": {
+    "prefix_tokens": 1417,
+    "suffix_tokens": 64,
+    "raw_restore_logits_bit_exact": true,
+    "max_abs_logit_difference": 0.0,
+    "memory_after_original_state_release": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  }
+}

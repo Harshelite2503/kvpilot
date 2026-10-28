@@ -1,0 +1,4 @@
+# Linux x86_64, Python 3.11 recommended. Install from the official CUDA 12.6 index:
+# python -m pip install -r experiments/torch/requirements-p100.txt --index-url https://download.pytorch.org/whl/cu126
+# Do not replace this with the CUDA 12.8/13.x build: Pascal support differs.
+torch==2.7.1+cu126

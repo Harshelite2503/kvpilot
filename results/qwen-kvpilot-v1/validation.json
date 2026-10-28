@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "validator": "independent_standard_library_archive_checks_v1",
+  "validated_at_utc": "2026-10-27T05:47:31.659072+00:00",
+  "archive": "/Users/harshelite/Documents/Codex/2026-10-27/okk-so-i-have-an-idea/outputs/kvpilot/results/qwen-kvpilot-v1",
+  "status": "valid",
+  "valid": true,
+  "checks": [
+    {
+      "name": "parse_archive",
+      "passed": true
+    },
+    {
+      "name": "source_and_fixture_hashes",
+      "passed": true,
+      "source_files": 15
+    },
+    {
+      "name": "complete_rows_blocks_and_integrity_gate",
+      "passed": true
+    },
+    {
+      "name": "quality_timings_candidate_bytes_and_actions",
+      "passed": true,
+      "responses_checked": 160
+    },
+    {
+      "name": "independent_lifecycle_capacity_and_denominators",
+      "passed": true,
+      "lifecycle_events": 320
+    },
+    {
+      "name": "independent_summary_and_control_pairing",
+      "passed": true,
+      "summary_cells": 10,
+      "quality_pairs": 160
+    },
+    {
+      "name": "archive_stable_during_validation",
+      "passed": true
+    }
+  ],
+  "rows_filtered": 0,
+  "model_executed": false,
+  "limitations": [
+    "This checks archived records, exact framing arithmetic and lifecycle consistency; payload contents were not archived and cannot be independently re-decoded here.",
+    "Current source and archived-file hashes establish consistency, not authenticated provenance or a re-execution of measured timings.",
+    "Eviction penalties and pause forecasts lack original event timestamps for full independent numerical replay; allowed actions, selection from recorded costs and resolved-only probability counts are checked.",
+    "Correlated synthetic cases and repeated timings do not establish general quality, statistical noninferiority or production performance."
+  ],
+  "archive_sha256": {
+    "protocol.json": "123c4d895cd55dbd7333da39295109ff7f01eb8338d44e756656abb7b05677d3",
+    "fixture.json": "f06c50e1c50a73871e8c90574f04f163ee8c674ea61883e1cc76aecae18f4cd2",
+    "model-provenance.json": "abd6991366af5dec82c827173559f36b04c2ccb6bab5a1e859888f77870c4d13",
+    "calibration.json": "905dc2177c1727c4f8cd5accf9e52021f08923847d113937bdc06c66c28bd9bf",
+    "rows.jsonl": "200a929c1888e4d5424e45f72e3f2d6359a5e9f798fc5a7be0ac25ea7b3cd1bb",
+    "blocks.json": "92939784909c4c661c8c4a255caedc2dce0791bc871948715d8d010a6cc5e5ee",
+    "summary.json": "006d57c009f2439da77659821499e28582f3a94189b4d2b9dfd265c29dad6b61"
+  },
+  "row_count": 160,
+  "block_count": 20,
+  "selected_case_count": 8,
+  "expected_row_count": 160,
+  "expected_block_count": 20,
+  "selected_fixture_sha256": "19f55367b1ffe6ddf0f8da1fb720a795bb0c66786b5f665ad9d2d90a80cf40a9",
+  "jobs_without_recompute_control": [],
+  "recomputed_summaries": [
+    {
+      "scenario": "pressure",
+      "policy": "adaptive_eviction",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 8,
+      "actions": {
+        "raw_native": 4,
+        "recompute": 8,
+        "group_int8": 4
+      },
+      "total_pause_ms": 1661.93516767025,
+      "total_resume_wall_ms": 37047.448374032974,
+      "pause_plus_resume_ms": 38709.383541703224,
+      "total_including_initial_prefill_ms": 102959.35566484928,
+      "median_resume_ttft_ms": 2219.2375620133244,
+      "peak_paused_payload_bytes": 175524444,
+      "mean_paused_payload_bytes_after_event": 97246102.625,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "pressure",
+      "policy": "adaptive_exact",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 4,
+      "actions": {
+        "raw_native": 16
+      },
+      "total_pause_ms": 1296.8606668710709,
+      "total_resume_wall_ms": 53853.381085038185,
+      "pause_plus_resume_ms": 55150.241751909256,
+      "total_including_initial_prefill_ms": 120251.57695949078,
+      "median_resume_ttft_ms": 4238.890041534789,
+      "peak_paused_payload_bytes": 99754519,
+      "mean_paused_payload_bytes_after_event": 86920660.125,
+      "evicted_states": 12,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "pressure",
+      "policy": "group_int4",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 14,
+      "quality_pairs": 16,
+      "hits": 12,
+      "actions": {
+        "group_int4": 16
+      },
+      "total_pause_ms": 5862.8593313694,
+      "total_resume_wall_ms": 24656.490458130836,
+      "pause_plus_resume_ms": 30519.349789500237,
+      "total_including_initial_prefill_ms": 95968.64612340927,
+      "median_resume_ttft_ms": 494.61116746626794,
+      "peak_paused_payload_bytes": 192879775,
+      "mean_paused_payload_bytes_after_event": 120430179.375,
+      "evicted_states": 4,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "pressure",
+      "policy": "raw_native",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 4,
+      "actions": {
+        "raw_native": 16
+      },
+      "total_pause_ms": 1041.90729033947,
+      "total_resume_wall_ms": 52332.847041249275,
+      "pause_plus_resume_ms": 53374.754331588745,
+      "total_including_initial_prefill_ms": 117190.86729073524,
+      "median_resume_ttft_ms": 4170.795041541569,
+      "peak_paused_payload_bytes": 99754519,
+      "mean_paused_payload_bytes_after_event": 86920660.125,
+      "evicted_states": 12,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "pressure",
+      "policy": "recompute",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 0,
+      "actions": {
+        "recompute": 16
+      },
+      "total_pause_ms": 128.97529208660126,
+      "total_resume_wall_ms": 68957.31875026226,
+      "pause_plus_resume_ms": 69086.29404234886,
+      "total_including_initial_prefill_ms": 133668.9390412569,
+      "median_resume_ttft_ms": 4213.343833562452,
+      "peak_paused_payload_bytes": 0,
+      "mean_paused_payload_bytes_after_event": 0.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "adaptive_eviction",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 16,
+      "actions": {
+        "raw_native": 16
+      },
+      "total_pause_ms": 1045.6986247301102,
+      "total_resume_wall_ms": 5154.41016626358,
+      "pause_plus_resume_ms": 6200.1087909936905,
+      "total_including_initial_prefill_ms": 70873.32187128067,
+      "median_resume_ttft_ms": 237.3141460744664,
+      "peak_paused_payload_bytes": 397936732,
+      "mean_paused_payload_bytes_after_event": 198700078.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "adaptive_exact",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 16,
+      "actions": {
+        "raw_native": 16
+      },
+      "total_pause_ms": 1235.3245848417282,
+      "total_resume_wall_ms": 5098.93329179287,
+      "pause_plus_resume_ms": 6334.257876634598,
+      "total_including_initial_prefill_ms": 71226.48850178719,
+      "median_resume_ttft_ms": 234.41329097282141,
+      "peak_paused_payload_bytes": 397936732,
+      "mean_paused_payload_bytes_after_event": 198700078.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "group_int4",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 14,
+      "quality_pairs": 16,
+      "hits": 16,
+      "actions": {
+        "group_int4": 16
+      },
+      "total_pause_ms": 5943.177830576897,
+      "total_resume_wall_ms": 9008.56337416172,
+      "pause_plus_resume_ms": 14951.741204738617,
+      "total_including_initial_prefill_ms": 79778.56149494648,
+      "median_resume_ttft_ms": 477.3496250282042,
+      "peak_paused_payload_bytes": 257048276,
+      "mean_paused_payload_bytes_after_event": 128452874.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "raw_native",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 16,
+      "actions": {
+        "raw_native": 16
+      },
+      "total_pause_ms": 1016.8497916460037,
+      "total_resume_wall_ms": 5098.327790379524,
+      "pause_plus_resume_ms": 6115.177582025528,
+      "total_including_initial_prefill_ms": 70435.66803717613,
+      "median_resume_ttft_ms": 237.68695843638852,
+      "peak_paused_payload_bytes": 397936732,
+      "mean_paused_payload_bytes_after_event": 198700078.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    },
+    {
+      "scenario": "roomy",
+      "policy": "recompute",
+      "responses": 16,
+      "correct": 14,
+      "token_identical_to_recompute": 16,
+      "quality_pairs": 16,
+      "hits": 0,
+      "actions": {
+        "recompute": 16
+      },
+      "total_pause_ms": 174.61833322048187,
+      "total_resume_wall_ms": 69947.94808006287,
+      "pause_plus_resume_ms": 70122.56641328335,
+      "total_including_initial_prefill_ms": 135664.25520420074,
+      "median_resume_ttft_ms": 4285.582958530635,
+      "peak_paused_payload_bytes": 0,
+      "mean_paused_payload_bytes_after_event": 0.0,
+      "evicted_states": 0,
+      "peak_mlx_active_bytes": 3803602128
+    }
+  ]
+}

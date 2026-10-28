@@ -1,0 +1,62 @@
+[
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "adaptive_eviction",
+    "block_wall_ms": 8998.80995798111,
+    "peak_paused_payload_bytes": 198427694,
+    "byte_event_sum": 396855388,
+    "event_count": 4,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "group_int4",
+    "block_wall_ms": 9932.534875035286,
+    "peak_paused_payload_bytes": 128380522,
+    "byte_event_sum": 256761044,
+    "event_count": 4,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "recompute",
+    "block_wall_ms": 16828.628167033195,
+    "peak_paused_payload_bytes": 0,
+    "byte_event_sum": 0,
+    "event_count": 4,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  },
+  {
+    "repeat": 0,
+    "scenario": "roomy",
+    "policy": "raw_native",
+    "block_wall_ms": 8753.08112502098,
+    "peak_paused_payload_bytes": 198427694,
+    "byte_event_sum": 396855388,
+    "event_count": 4,
+    "evicted_states": 0,
+    "engine_final": {
+      "mlx_active_bytes": 3286588928,
+      "mlx_cache_bytes": 0,
+      "mlx_peak_active_bytes": 3803602128
+    }
+  }
+]

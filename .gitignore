@@ -13,3 +13,10 @@ dist/
 *.npz
 data/
 results/local-*
+.venv-local/
+
+.venv-torch/
+.venv-p100/
+.venv-ci/
+.venv-ci-313/
+artifacts/
