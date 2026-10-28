@@ -82,6 +82,8 @@ class PausedStateStore:
     LRU victim order. Only the latter charges the predicted cost imposed on
     existing owners. A codec name selects a fixed codec; ``recompute`` retains
     no payload. Unsupported or unapproved lossy profiles are never silently used.
+    ``raw_admit_if_fits`` retains a lossless native snapshot only in currently
+    unused capacity; it never evicts, compresses, or predicts a future resume.
 
     ``raw_bytes`` is the calibration denominator, normally native tensor nbytes.
     ``exact_sizes`` must include complete serialized lengths for every supplied
@@ -95,8 +97,14 @@ class PausedStateStore:
         self._profile_map = {profile.name: profile for profile in self.profiles}
         if len(self._profile_map) != len(self.profiles):
             raise ValueError("duplicate codec profile")
-        if policy not in {"adaptive_exact", "adaptive_eviction", "recompute", *self._profile_map}:
+        if "raw_admit_if_fits" in self._profile_map:
+            raise ValueError("raw_admit_if_fits is a reserved local store policy name")
+        if policy not in {"adaptive_exact", "adaptive_eviction", "raw_admit_if_fits", "recompute", *self._profile_map}:
             raise ValueError(f"unsupported local store policy: {policy!r}")
+        if policy == "raw_admit_if_fits":
+            native = self._profile_map.get("raw_native")
+            if native is None or not native.lossless:
+                raise ValueError("raw_admit_if_fits requires a lossless raw_native profile")
         if policy in self._profile_map and not self._profile_map[policy].lossless and not cost_model.allow_unvalidated_lossy:
             raise ValueError("fixed lossy codec requires explicit exploration approval")
         self.policy, self.cost_model = policy, cost_model
@@ -166,8 +174,11 @@ class PausedStateStore:
             if not profile.lossless and not self.cost_model.allow_unvalidated_lossy:
                 continue
             required = exact_sizes[profile.name]
-            victims = plan_lru_evictions(self._entries, self.used_bytes,
-                                        self.cost_model.host_budget_bytes, required, set())
+            if self.policy == "raw_admit_if_fits":
+                victims = () if required <= self.cost_model.host_budget_bytes - self.used_bytes else None
+            else:
+                victims = plan_lru_evictions(self._entries, self.used_bytes,
+                                            self.cost_model.host_budget_bytes, required, set())
             loss = 0.0
             if victims is not None:
                 loss, _ = estimate_eviction_cost(victims, (session_id,), self._entries,
@@ -175,11 +186,19 @@ class PausedStateStore:
             charged = loss if self.policy == "adaptive_eviction" else 0.0
             impacts[profile.name] = AdmissionImpact(required, charged, victims is not None)
             plans.append(AdmissionPlan(profile.name, required, victims, loss, charged))
+        forced = None if self.policy in {"adaptive_exact", "adaptive_eviction"} else self.policy
+        if self.policy == "raw_admit_if_fits":
+            forced = "raw_native"
         decision = choose_action(
             raw_bytes, recompute, self.profiles, self.cost_model, forecast,
-            force_codec=None if self.policy in {"adaptive_exact", "adaptive_eviction"} else self.policy,
+            force_codec=forced,
             admission_impacts=impacts,
         )
+        if self.policy == "raw_admit_if_fits":
+            reason = ("native snapshot fits currently unused capacity; no eviction"
+                      if decision.selected.action == "raw_native" else
+                      "native snapshot exceeds currently unused capacity; recompute without eviction")
+            decision = Decision(decision.selected, decision.alternatives, reason)
         victims = () if decision.selected.action == "recompute" else next(
             plan.victims for plan in plans if plan.codec == decision.selected.action
         )

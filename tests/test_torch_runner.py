@@ -239,6 +239,88 @@ def test_eos_does_not_emit_or_append_stop_token(runner, monkeypatch):
     assert state.offset == 0
 
 
+def test_equal_work_uses_fixed_tokens_even_when_every_prediction_is_a_stop(runner, monkeypatch):
+    prefix, suffix, targets = [2, 5, 3], [8, 10], [16, 4, 16, 2]
+    _, state = runner.prefill(prefix)
+    runner.stop_ids = set(range(runner.config["vocab_size"]))
+    observed = []
+    forward = runner.forward
+
+    def recording_forward(tokens, current_state):
+        observed.append(list(tokens))
+        return forward(tokens, current_state)
+
+    monkeypatch.setattr(runner, "forward", recording_forward)
+    result, returned = runner.continue_fixed(suffix, state, targets)
+    assert returned is state
+    assert observed == [suffix] + [[token] for token in targets[:-1]]
+    expected_predictions = [int(independent_numpy_logits(
+        runner.config, runner.weights, prefix + suffix + targets[:index])[-1].argmax())
+        for index in range(len(targets))]
+    assert result["predicted_tokens"] == expected_predictions
+    assert result["tokens"] == targets and result["tokens"] is not targets
+    assert result["mode"] == "equal_work"
+    assert "answer" not in result and result["truncated"] is False
+    assert len(result["per_token_ms"]) == len(targets)
+    assert all(value >= 0 for value in result["per_token_ms"])
+    assert result["first_token_ms"] == result["ttft_ms"] == result["per_token_ms"][0]
+    assert result["total_ms"] == result["wall_ms"] == pytest.approx(sum(result["per_token_ms"]))
+    _, expected_state = runner.prefill(prefix + suffix + targets[:-1])
+    assert state.offset == expected_state.offset
+    assert state.token_digest == expected_state.token_digest
+    for name in state.tensors:
+        torch.testing.assert_close(state.tensors[name], expected_state.tensors[name], atol=1e-6, rtol=1e-5)
+
+
+@pytest.mark.parametrize("codec", ["raw_native", "group_int4"])
+def test_equal_work_after_restore_consumes_same_ids_and_steps(runner, codec):
+    _, state = runner.prefill([2, 5, 3, 8])
+    restored = runner.import_state(*decode_state(encode_state(*runner.export_state(state), codec)),
+                                   expected_prefix_hash=state.token_digest)
+    original, _ = runner.continue_fixed([6, 2], state, [16, 5, 2])
+    replay, _ = runner.continue_fixed([6, 2], restored, [16, 5, 2])
+    assert original["tokens"] == replay["tokens"] == [16, 5, 2]
+    assert len(original["per_token_ms"]) == len(replay["per_token_ms"]) == 3
+    assert state.offset == restored.offset == 8
+    assert state.token_digest == restored.token_digest
+    if codec == "raw_native":
+        assert original["predicted_tokens"] == replay["predicted_tokens"]
+
+
+@pytest.mark.parametrize("suffix,targets", [([], [1]), ([1], []), ([True], [2]),
+                                           ([1], [False]), ([1], [-1]), ([1], [17]),
+                                           ([1], [2, 3, -1]), ([1], "2"),
+                                           ([1], [2] * 127)])
+def test_invalid_equal_work_request_does_not_mutate_state(runner, monkeypatch, suffix, targets):
+    _, state = runner.prefill([1, 2])
+    before = (state.offset, state.token_digest, state.model_identity, dict(state.tensors))
+    monkeypatch.setattr(runner, "forward", lambda *_: pytest.fail("invalid request executed a forward"))
+    with pytest.raises(ValueError):
+        runner.continue_fixed(suffix, state, targets)
+    assert (state.offset, state.token_digest, state.model_identity) == before[:3]
+    assert state.tensors.keys() == before[3].keys()
+    assert all(state.tensors[name] is value for name, value in before[3].items())
+
+
+def test_equal_work_validates_state_before_timing_or_forward(runner, monkeypatch):
+    _, state = runner.prefill([1, 2])
+    state.model_identity["model_digest"] = "foreign"
+    monkeypatch.setattr(runner, "synchronize", lambda: pytest.fail("invalid request began timing"))
+    with pytest.raises(ValueError, match="identity"):
+        runner.continue_fixed([3], state, [4])
+
+
+@pytest.mark.parametrize("targets", [[16], [4, 5, 6, 16]])
+def test_equal_work_checks_exact_consumed_context_and_does_not_append_last_target(runner, targets):
+    runner.max_context = 2 + 1 + len(targets) - 1
+    _, state = runner.prefill([1, 2])
+    result, _ = runner.continue_fixed([3], state, targets)
+    assert state.offset == runner.max_context
+    assert len(result["predicted_tokens"]) == len(targets)
+    _, expected = runner.prefill([1, 2, 3] + targets[:-1])
+    assert state.token_digest == expected.token_digest
+
+
 def test_prompt_format_and_config_restrictions(runner):
     assert runner.prompt_tokens("read this") == [1, 2, 3]
     assert runner.tokenizer.last_text == "<|im_start|>user\nread this<|im_end|>\n<|im_start|>assistant\n"

@@ -157,6 +157,78 @@ def test_recompute_baseline_never_retains_or_hits_a_snapshot():
     assert store.peak_bytes == store.used_bytes == store.byte_event_sum == store.evicted_states == 0
 
 
+def test_admit_if_fits_uses_exact_free_bytes_and_never_evicts_or_compresses():
+    store = controller("raw_admit_if_fits", capacity=100)
+    first, a = pause(store, "a", 0, size=60, int4_size=10)
+    second, b = pause(store, "b", 1, size=40, int4_size=10)
+    assert first.selected.action == second.selected.action == "raw_native"
+    assert first.victims == second.victims == ()
+    assert store.used_bytes == store.peak_bytes == 100
+    blocked, payload = pause(store, "c", 2, size=1, int4_size=1)
+    assert blocked.selected.action == "recompute" and payload is None
+    assert blocked.victims == () and store.evicted_states == 0
+    assert tuple(store.payloads) == ("a", "b")
+    assert store.popresume("c", 3) is None
+    assert store.popresume("a", 4) == a
+    # A lossy snapshot would fit, but only a native snapshot is eligible.
+    blocked, payload = pause(store, "d", 5, size=61, int4_size=10)
+    assert blocked.selected.action == "recompute" and payload is None
+    assert blocked.victims == () and store.payloads == {"b": b}
+    admitted, _ = pause(store, "e", 6, size=60, int4_size=10)
+    assert admitted.selected.action == "raw_native" and admitted.victims == ()
+    store.cancel("b", 7)
+    admitted, _ = pause(store, "f", 8, size=40, int4_size=10)
+    assert admitted.selected.action == "raw_native"
+    assert store.used_bytes == store.peak_bytes == 100 and store.evicted_states == 0
+
+
+def test_admit_if_fits_is_capacity_only_despite_cost_slo_and_resolved_history():
+    store = PausedStateStore(
+        "raw_admit_if_fits", [CodecProfile("raw_native", 100, 1000, 1000)],
+        CostModel(1, 100, resume_slo_ms=.001),
+    )
+    for i in range(3):
+        plan = store.decide(str(i), MIB, 0, "tool", i * 2, {"raw_native": 100})
+        assert plan.selected.action == "raw_native"
+        assert not plan.selected.within_resume_slo
+        assert plan.selected.expected_cost_ms > plan.alternatives[0].expected_cost_ms
+        store.commit(plan, b"x" * 100)
+        store.cancel(str(i), i * 2 + 1)
+    assert store.history.stats["tool"] == (0, 3, 3.0)
+    assert store.evicted_states == 0
+
+
+@pytest.mark.parametrize("profiles", [[], [CodecProfile("other", 1, 0, 0)],
+                                     [CodecProfile("raw_native", 1, 0, 0, False)]])
+def test_admit_if_fits_requires_an_explicit_lossless_native_profile(profiles):
+    with pytest.raises(ValueError, match="lossless raw_native profile"):
+        PausedStateStore("raw_admit_if_fits", profiles,
+                         CostModel(1000, 100, allow_unvalidated_lossy=True))
+
+
+def test_admit_if_fits_policy_name_cannot_shadow_a_codec():
+    with pytest.raises(ValueError, match="reserved local store policy"):
+        PausedStateStore("raw_admit_if_fits", [CodecProfile("raw_admit_if_fits", 1, 0, 0)],
+                         CostModel(1000, 100))
+
+
+def test_admit_if_fits_plans_are_read_only_and_preserve_commit_validation():
+    store = controller("raw_admit_if_fits", capacity=100)
+    pause(store, "a", 0, size=60)
+    before = snapshot(store)
+    fits = store.decide("b", MIB, 0, "tool", 1, {"raw_native": 40, "group_int4": 10})
+    blocked = store.decide("c", MIB, 0, "tool", 1, {"raw_native": 41, "group_int4": 10})
+    assert fits.selected.action == "raw_native" and blocked.selected.action == "recompute"
+    assert snapshot(store) == before
+    with pytest.raises(ValueError, match="immutable payload length"):
+        store.commit(fits, b"x" * 39)
+    assert snapshot(store) == before
+    store.commit(fits, b"b" * 40)
+    with pytest.raises(ValueError, match="stale pause plan"):
+        store.commit(blocked, None)
+    assert store.used_bytes == 100 and store.evicted_states == 0
+
+
 def test_candidate_size_uses_full_actual_envelope_not_profile_ratio():
     store = controller(capacity=1000)
     plan = store.decide("a", MIB, 100, "tool", 0,

@@ -1,5 +1,8 @@
 # Owned PyTorch experiment on a P100
 
+For the next admission comparison, use the [six-policy, two-mode P100 suite](p100-admission-experiment.md).
+The original single-mode commands below still work; current code adds `raw_admit_if_fits` as a sixth arm.
+
 This is the setup and execution protocol. The first completed P100 smoke and
 full runs are now preserved in the [28 October results record](p100-results-2026-10-28.md).
 That run shows a narrow admission-policy benefit under cancellation, with no
@@ -135,8 +138,8 @@ prompts plus reserved generation must fit. For a later longer-context test,
 use `--contexts 8000` rather than 8192 to leave room for generation and
 prompt framing. The prepared token count is checked before evaluation.
 
-The five arms are recompute, exact native state, fixed INT4, adaptive selection
-without eviction pricing, and adaptive selection with eviction pricing.
+The current six arms are recompute, exact native state, native admit-if-fits,
+fixed INT4, adaptive selection without eviction pricing, and adaptive selection with eviction pricing.
 Adaptive choices use measured calibration costs and resolved history. INT4
 stores approximate attention tensors; decode restores full active FP16
 tensors. Exact native state must round-trip bit-for-bit. `--allow-unvalidated-lossy`
