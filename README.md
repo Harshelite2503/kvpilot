@@ -2,7 +2,9 @@
 
 **We are building software that decides what to do with an AI agent's saved calculations while it waits.**
 
-**Today: a working local research prototype with a direct Qwen runner.** KVPilot can now save, compress, discard and restore real inference state, then continue generating. MLX performs tensor math; KVPilot owns the live state, codecs, paused storage and eviction decisions. The runner reads the existing local model files without calling Ollama or an external cache manager. See the [local runner and reproduction guide](docs/local-runner.md) and [measured results](docs/local-results.md).
+**Today: an owned-cache research prototype tested on a Mac and a Tesla P100.** KVPilot saves, compresses, discards and restores real inference state, then continues generating. MLX or PyTorch performs tensor math; KVPilot owns live state, codecs, paused storage and eviction decisions. The runners use local model files without calling Ollama or an external cache manager.
+
+**Latest evidence, 28 October 2026:** the P100 run contains 2,160 sessions and 24 distinct generated questions. Eviction-aware admission takes **6.4–7.9% less full-session time than always-store-native LRU in cancellation scenarios**, with identical observed outputs and approximately equal retained-cache memory. It selected only native storage or recomputation, never INT4/INT8. **No GPU-memory saving was measured**, and a simple no-eviction admission rule has the same modeled hit counts on these traces. See the [full P100 audit and raw records](docs/p100-results-2026-10-28.md) and [research-backed next experiments](docs/next-experiments.md). These are reference-runner observations, not production throughput or general quality guarantees.
 
 ## The problem, in plain English
 
@@ -60,7 +62,7 @@ flowchart TB
     end
     subgraph OWNED["Built: direct KVPilot + Qwen experiment"]
         direction TB
-        O["Own Qwen forward pass using MLX math"] --> P["Own live attention and recurrent tensors"]
+        O["Own Qwen forward pass using MLX or PyTorch math"] --> P["Own live attention and supported recurrent state"]
         P --> Q["KVPilot chooses a format or discards"]
         Q --> R["Store real bytes; enforce a memory budget"]
         R --> S["Restore or recompute; generate and score answers"]
@@ -71,7 +73,7 @@ The CPU experiments really execute compression code. The simulation moves descri
 
 The Ollama experiment runs real inference on the existing `qwen3.5:4b` model using the Mac's GPU. It measures native caching, not the simulated controller or our codecs. See the [backend capabilities and limits](docs/ollama-backend.md).
 
-The newer direct runner uses those model files independently. Its timings are actual local measurements of KVPilot's own cache path. It uses FP16 activations and FP32 recurrent state, so it does not claim numerical equivalence to Ollama's native runner. The attention and recurrent math follows attributed MIT reference implementations; no external cache classes are imported.
+The Mac direct runner uses those model files independently. Its timings are actual local measurements of KVPilot's own cache path. It uses FP16 activations and FP32 recurrent state, so it does not claim numerical equivalence to Ollama's native runner. The attention and recurrent math follows attributed MIT reference implementations; no external cache classes are imported. The separate PyTorch runner tests dense Qwen2.5 attention state on the P100 using the same owned snapshot/store lifecycle.
 
 | Built piece | What it means in everyday terms |
 |---|---|
@@ -230,8 +232,9 @@ An optional `--input your-capture.npy` argument to the codec benchmark accepts a
 The [owned PyTorch/P100 protocol](docs/p100-runner.md) provides a pinned CUDA
 12.6 environment, an FP16 arithmetic preflight, an explicit pinned-model
 download, and offline SHA256 handoff checks. The benchmark uses local weights
-and KVPilot's own cache management. **No P100 performance or quality results
-have been recorded yet.** vLLM 0.32.0 is not compatible with the P100; the
+and KVPilot's own cache management. The [first completed P100 results](docs/p100-results-2026-10-28.md)
+are now archived with the measured source revision and an independent audit.
+vLLM 0.32.0 is not compatible with the P100; the
 earlier RTX 3090 first/repeat ratio describes native vLLM requests, not a
 KVPilot gain. See the corrected [Phase 1 provenance and limits](docs/phase1-report.md).
 

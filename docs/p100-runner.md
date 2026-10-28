@@ -1,8 +1,9 @@
 # Owned PyTorch experiment on a P100
 
-This is a reproducible setup and execution protocol, **not a P100 result**.
-No P100 timing, memory saving or answer-quality improvement has been measured
-by preparing these files. The earlier RTX 3090 first/repeated-request ratio
+This is the setup and execution protocol. The first completed P100 smoke and
+full runs are now preserved in the [28 October results record](p100-results-2026-10-28.md).
+That run shows a narrow admission-policy benefit under cancellation, with no
+measured GPU-memory saving. The earlier RTX 3090 first/repeated-request ratio
 measured native vLLM behavior; it was not a KVPilot speedup.
 
 The exact new code completed a [real Qwen Mac GPU smoke run](../results/p100-readiness-mac-smoke-v1/report.md):
