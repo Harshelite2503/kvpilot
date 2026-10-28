@@ -42,11 +42,19 @@ git status --short
 
 The explicit fetch destination also works with the VM's original `--single-branch` clone. Each displayed line is a complete command. The branch-exists check makes the checkout safe to repeat without resetting an existing branch.
 
+The script refuses to start with `Missing interpreter or model config` unless both `.venv-p100/bin/python` is executable and `--model-dir` contains `config.json`. The first P100 run did **not** use the documented `data/qwen25-05b-pinned` name: its archived `protocol.json` records `data/qwen25-05b-20261028T134203Z`. Check what the VM actually has and pass that directory:
+
+```bash
+ls -d data/*/ && ls -l .venv-p100/bin/python
+```
+
 Run the complete suite. This is one command, on one line, to avoid the earlier pasted-newline problem:
 
 ```bash
-bash scripts/run_p100_admission_suite.sh --model-dir data/qwen25-05b-pinned
+bash scripts/run_p100_admission_suite.sh --model-dir data/qwen25-05b-20261028T134203Z
 ```
+
+Any directory name is accepted as long as it holds exactly the six model files plus `model-manifest.json`; the offline check verifies the hashes, not the name. If the interpreter lives elsewhere, add `--python PATH`.
 
 The script uses `.venv-p100/bin/python`, performs no downloads or package installs, and stops at the first failed command, even through `tee`. It checks the P100 environment and offline model hashes, runs tests, runs and audits both smoke modes, runs and audits both full modes, performs the analytical sweep on the full equal-work run, and creates a compressed result bundle. It refuses to overwrite results and requires clean tracked files.
 
@@ -55,7 +63,7 @@ The full configuration is 512/2048 context targets, 24 distinct questions, three
 If you only want readiness checks first, use a fresh output directory:
 
 ```bash
-bash scripts/run_p100_admission_suite.sh --model-dir data/qwen25-05b-pinned --smoke-only
+bash scripts/run_p100_admission_suite.sh --model-dir data/qwen25-05b-20261028T134203Z --smoke-only
 ```
 
 The smoke sweep is labeled by its actual source and does not replace the full experiment. A complete suite already includes smoke, so this separate command is optional.
