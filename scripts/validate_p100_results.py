@@ -33,6 +33,11 @@ def count(value, name):
     require(type(value) is int and value >= 0, f"invalid byte/count {name}")
 
 
+def tokens(value, name, vocab_size=2 ** 32):
+    require(isinstance(value, list) and all(type(token) is int and 0 <= token < vocab_size for token in value),
+            f"invalid token sequence: {name}")
+
+
 def equal(actual, expected, location):
     if isinstance(expected, dict):
         require(isinstance(actual, dict) and set(actual) == set(expected), f"keys differ: {location}")
@@ -63,7 +68,31 @@ def audit(folder):
     require(summary["complete"] is True and summary["valid_source_freeze"] is True, "invalid completion/source freeze")
     require(summary["quality_validated"] is False, "archive must not certify general answer quality")
     require(sha256((folder / "fixture.json").read_bytes()).hexdigest() == protocol["fixture_sha256"], "fixture not frozen")
-    require(protocol["policies"] == ["recompute", "raw_native", "group_int4", "adaptive_exact", "adaptive_eviction"], "incomplete comparison arms")
+    schema = protocol["schema_version"]
+    require(type(schema) is int and schema in (1, 2), "unsupported protocol schema")
+    arguments = protocol["args"]
+    mode = protocol.get("timing_mode", "free_generation")
+    require(mode in ("free_generation", "equal_work"), "unknown timing mode")
+    vocab_size = 2 ** 32
+    policies = ["recompute", "raw_native", "group_int4", "adaptive_exact", "adaptive_eviction"]
+    if schema == 2:
+        policies.insert(2, "raw_admit_if_fits")
+        require(protocol["timing_mode"] == arguments["timing_mode"] == summary["timing_mode"],
+                "protocol/args/summary timing mode mismatch")
+        require(fixture["timing_mode"] == mode, "fixture timing mode mismatch")
+        source = ("fresh native recompute greedy tokens, EOS ignored, frozen before calibration and policy measurements"
+                  if mode == "equal_work" else None)
+        require(protocol["continuation_source"] == fixture["continuation_source"] == source,
+                "fixed continuation provenance mismatch")
+        vocab_size = protocol["vocab_size"]
+        require(type(vocab_size) is int and 0 < vocab_size <= 2 ** 32, "invalid vocabulary size")
+        for record in protocol["jobs"] + rows + events + blocks:
+            require(record["timing_mode"] == mode, "record timing mode mismatch")
+    else:
+        require(mode == "free_generation", "legacy schema permits only free generation")
+        for record in [arguments, summary] + protocol["jobs"] + rows + events + blocks:
+            require(record.get("timing_mode", "free_generation") == mode, "legacy timing mode mismatch")
+    require(protocol["policies"] == policies, "incomplete comparison arms")
     require(set(calibration) == set(fixture["cases_by_context"]), "calibration context mismatch")
     for context, value in calibration.items():
         require(value["integrity_gate"] == {"raw_restore_logits_bit_exact": True, "max_abs_logit_difference": 0.0,
@@ -73,7 +102,6 @@ def audit(folder):
         for name, profile in profiles.items():
             require(profile["lossless"] is (name == "raw_native"), "invalid lossless claim")
     jobs = {j["block_id"]: j for j in protocol["jobs"]}
-    arguments = protocol["args"]
     expected_jobs = {(repeat, context, scenario, policy) for repeat in range(arguments["repeats"])
                      for context in arguments["contexts"] for scenario in arguments["scenarios"]
                      for policy in protocol["policies"]}
@@ -83,6 +111,18 @@ def audit(folder):
     require(set(fixture["cases_by_context"]) == {str(c) for c in arguments["contexts"]}, "fixture context mismatch")
     for case_list in fixture["cases_by_context"].values():
         require([c["id"] for c in case_list] == protocol["cases"], "fixture case IDs mismatch")
+        if schema == 2:
+            for case in case_list:
+                for key in ("prefix", "suffix", "tokens"):
+                    tokens(case[key], f"fixture.{key}", vocab_size)
+        if mode == "equal_work":
+            require(type(arguments["max_tokens"]) is int and arguments["max_tokens"] > 0,
+                    "invalid fixed continuation length")
+            for case in case_list:
+                tokens(case["fixed_continuation"], "fixed_continuation", vocab_size)
+                require(len(case["fixed_continuation"]) == arguments["max_tokens"],
+                        "fixed continuation length mismatch")
+                finite(case["continuation_preparation_ms"], "continuation_preparation_ms")
     require(len(jobs) == len(protocol["jobs"]) == len(blocks) == status["completed_blocks"], "block count mismatch")
     require(len({b["block_id"] for b in blocks}) == len(blocks), "duplicate blocks")
     row_map = {(r["block_id"], r["case_id"]): r for r in rows}
@@ -116,8 +156,15 @@ def audit(folder):
                 size = row["serialized_payload_bytes"]
                 count(size, "serialized_payload_bytes")
                 require(e["action"] == action and e["payload_bytes"] == size, "pause payload/action mismatch")
+                if row["policy"] == "raw_admit_if_fits":
+                    native_size = row["exact_candidate_bytes"]["raw_native"]
+                    count(native_size, "exact native candidate bytes")
+                    require(native_size > 0, "empty native candidate")
+                    expected_action = "raw_native" if native_size <= budget - sum(residents.values()) else "recompute"
+                    require(action == expected_action, "admit-if-fits did not follow currently unused capacity")
+                    require(e["victims"] == row["victims"] == [], "admit-if-fits evicted an owner")
                 if action == "recompute":
-                    require(size == 0 and e["victims"] == [], "recompute retained payload or evicted cache")
+                    require(size == 0 and e["victims"] == row["victims"] == [], "recompute retained payload or evicted cache")
                 else:
                     require(action in ("raw_native", "group_int8", "group_int4"), "unknown action")
                     require(0 < size <= budget and size == row["exact_candidate_bytes"][action], "incorrect actual encoded length")
@@ -173,13 +220,37 @@ def audit(folder):
             require(row["resume_ttft_ms"] <= row["resume_wall_ms"] + 1e-6, "TTFT exceeds resume duration")
             require(row["imported_tensor_bytes"] == (row["raw_tensor_bytes"] if row["hit"] else 0), "incorrect native import byte count")
             generation = row["generation"]
+            if schema == 2:
+                tokens(generation["tokens"], "generation.tokens", vocab_size)
             finite(generation["ttft_ms"], "generation.ttft_ms")
             finite(generation["wall_ms"], "generation.wall_ms")
             require(math.isclose(row["resume_ttft_ms"], row["restore_or_recompute_ms"] + generation["ttft_ms"], rel_tol=1e-9, abs_tol=1e-7), "TTFT omits restore/recompute time")
             require(row["restore_or_recompute_ms"] + generation["wall_ms"] <= row["resume_wall_ms"] + 1e-6, "resume omits generation time")
-            require(row["expected_answer"] == case["expected_answer"], "ground truth changed")
-            correct = not generation["truncated"] and " ".join(generation["answer"].split()) == " ".join(case["expected_answer"].split())
-            require(row["correct"] is correct, "incorrect answer scoring")
+            if mode == "equal_work":
+                require(generation["mode"] == mode, "generation timing mode mismatch")
+                tokens(generation["predicted_tokens"], "generation.predicted_tokens", vocab_size)
+                require(generation["tokens"] == case["fixed_continuation"], "fixed continuation changed during measurement")
+                require(len(generation["predicted_tokens"]) == len(case["fixed_continuation"]),
+                        "predicted token count differs from fixed work")
+                require(isinstance(generation["per_token_ms"], list) and
+                        len(generation["per_token_ms"]) == len(case["fixed_continuation"]),
+                        "per-token timing count differs from fixed work")
+                for elapsed in generation["per_token_ms"]:
+                    finite(elapsed, "per_token_ms")
+                finite(generation["first_token_ms"], "first_token_ms")
+                finite(generation["total_ms"], "total_ms")
+                equal(generation["first_token_ms"], float(generation["ttft_ms"]), "first-token timing alias")
+                equal(generation["total_ms"], float(generation["wall_ms"]), "total timing alias")
+                equal(generation["per_token_ms"][0], float(generation["first_token_ms"]), "first-token timing")
+                equal(sum(generation["per_token_ms"]), float(generation["total_ms"]), "per-token timing sum")
+                require(generation["truncated"] is False, "fixed work was truncated")
+                require(row["expected_answer"] is None and row["correct"] is None and "answer" not in generation,
+                        "equal-work timing fabricated an answer-quality observation")
+            else:
+                require(generation.get("mode", "free_generation") == mode, "generation timing mode mismatch")
+                require(row["expected_answer"] == case["expected_answer"], "ground truth changed")
+                correct = not generation["truncated"] and " ".join(generation["answer"].split()) == " ".join(case["expected_answer"].split())
+                require(row["correct"] is correct, "incorrect answer scoring")
         else:
             finite(row["cancel_ms"], "cancel_ms")
             require("correct" not in row and "generation" not in row, "cancellation fabricated an answer")
@@ -197,11 +268,13 @@ def audit(folder):
         allocated = [b["memory"]["after"].get("device_peak_allocated_bytes") for b in selected_blocks]
         expected.append({"context_target": context, "scenario": scenario, "policy": policy,
             "sessions": len(subset), "responses": len(answered), "cancellations": len(subset) - len(answered),
-            "distinct_answered_cases": len({r["case_id"] for r in answered}), "correct": sum(r["correct"] for r in answered),
-            "token_identical_to_recompute": sum(r["generation"]["tokens"] == c["generation"]["tokens"] for r, c in pairs),
-            "quality_regressions_vs_recompute": sum(c["correct"] and not r["correct"] for r, c in pairs),
-            "quality_improvements_vs_recompute": sum(r["correct"] and not c["correct"] for r, c in pairs),
-            "truncated": sum(r["generation"]["truncated"] for r in answered), "hits": sum(r["hit"] for r in answered),
+            "distinct_answered_cases": len({r["case_id"] for r in answered}),
+            "correct": sum(r["correct"] for r in answered) if mode == "free_generation" else None,
+            "token_identical_to_recompute": sum(r["generation"]["tokens"] == c["generation"]["tokens"] for r, c in pairs) if mode == "free_generation" else None,
+            "quality_regressions_vs_recompute": sum(c["correct"] and not r["correct"] for r, c in pairs) if mode == "free_generation" else None,
+            "quality_improvements_vs_recompute": sum(r["correct"] and not c["correct"] for r, c in pairs) if mode == "free_generation" else None,
+            "truncated": sum(r["generation"]["truncated"] for r in answered) if mode == "free_generation" else None,
+            "hits": sum(r["hit"] for r in answered),
             "actions": dict(Counter(r["selected_prediction"]["action"] for r in subset)),
             "total_service_ms_including_canceled_pauses": service,
             "total_ms_including_initial_prefill_and_cancellations": total, "mean_total_ms_per_started_session": total / len(subset),
@@ -212,7 +285,13 @@ def audit(folder):
             "peak_cuda_allocated_bytes": max(allocated) if all(a is not None for a in allocated) else None,
             "exported_tensor_bytes": sum(r["exported_tensor_bytes"] for r in subset),
             "imported_tensor_bytes": sum(r.get("imported_tensor_bytes", 0) for r in subset),
-            "output_tokens": sum(len(r["generation"]["tokens"]) for r in answered)})
+            "output_tokens": sum(len(r["generation"]["tokens"]) for r in answered) if mode == "free_generation" else None})
+        if mode == "equal_work":
+            expected[-1].update({
+                "forced_token_steps": sum(len(r["generation"]["tokens"]) for r in answered),
+                "predicted_tokens_identical_to_recompute": sum(
+                    r["generation"]["predicted_tokens"] == c["generation"]["predicted_tokens"] for r, c in pairs),
+            })
     require(len(summary["summaries"]) == len(expected), "summary count mismatch")
     for actual, wanted in zip(summary["summaries"], expected):
         equal(actual, wanted, f"summary {wanted['context_target']}/{wanted['scenario']}/{wanted['policy']}")

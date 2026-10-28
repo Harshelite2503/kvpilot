@@ -8,6 +8,10 @@
 
 ## The problem, in plain English
 
+**Next runnable experiment:** [admission baseline, equal-work timing and break-even sweep](docs/p100-admission-experiment.md).
+It compares six owned policies, including a native store-only-if-space rule; separates fixed-token speed tests from free-generation quality tests; and models how cheaper codecs would change the decision.
+The sweep is a counterfactual, not a new GPU speed measurement. The guide includes one offline P100 command and the exact result bundle to return.
+
 Imagine a coding assistant reads a repository, asks a tool to run tests, and waits for the answer. While processing the code and conversation, the language model builds a **KV cache**: numbers representing intermediate calculations for earlier tokens. Reusing those numbers can avoid doing the same work again.
 
 Now imagine hundreds of agents waiting at once. Their saved calculations compete for limited memory. Keeping everything takes space; compressing it takes work; deleting it may mean repeating work when an agent returns.
@@ -33,6 +37,21 @@ On return, use a complete saved copy or recompute from the input. Compressed cop
 The choice uses estimates of return likelihood, encoding/transfer work, memory pressure and the cost of recomputation. It does not know the future. Approximate compression can also change model outputs, so quality must be tested before live use.
 
 This manages **reusable calculations**, not lasting knowledge about a user. It does not train the model, change its weights, extend its context limit, or build a memristor chip. Restoring a compact cache back to full-size numbers also restores its full active memory footprint.
+
+### How this could reduce cost
+
+Saving a cache is useful when the future recomputation it avoids is worth the copy, storage and restoration work. Saving sessions that never return, or evicting useful state to save less useful state, can waste resources. The new admission baseline asks whether a very simple rule already avoids that waste.
+
+```mermaid
+flowchart LR
+    A["Reduce unnecessary copies<br/>and repeated prefill"] --> B["More useful work<br/>within the same resources"]
+    B --> C["If capacity can be reduced:<br/>fewer billed GPU-hours"]
+    B --> D["Otherwise:<br/>more capacity, same bill"]
+```
+
+We have not demonstrated lower customer bills. Sequential milliseconds are not billed GPU-seconds, and smaller saved payloads are not a measured reduction in GPU allocation. A production claim needs concurrent throughput, resource-allocation, quality and latency measurements.
+
+OpenRouter's [provider routing](https://openrouter.ai/docs/guides/routing/provider-selection) selects among inference providers. Our current experiment manages saved state inside a self-hosted inference runtime. This is an active research and engineering area: [InferCept](https://proceedings.mlr.press/v235/abhyankar24a.html), [MORI](https://arxiv.org/abs/2606.00866), [LMCache lazy offload](https://docs.lmcache.ai/mp/lazy_offload.html) and [Dynamo agent hints](https://docs.nvidia.com/dynamo/agents/agent-hints) address related problems. Our opportunity must come from verified customer improvements, not a claim that nobody else manages agent caches.
 
 ## What we have actually built
 

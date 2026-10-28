@@ -250,6 +250,50 @@ class QwenRunner:
                 "ttft_ms": first_ms, "wall_ms": (time.perf_counter() - started) * 1000,
                 "truncated": not stopped and len(emitted) == max_tokens}, state
 
+    def continue_fixed(self, suffix, state, continuation_tokens, *, chunk_size=128):
+        """Time teacher-forced continuation without treating it as an answer.
+
+        ``continuation_tokens`` must be frozen by the caller before comparison.
+        The suffix produces the first prediction; each of the first N-1 fixed
+        tokens is then forwarded to produce the next prediction. The final
+        target is recorded but not appended to the returned state. Predicted
+        tokens are diagnostic only: neither their values nor stop IDs change
+        the inputs or the amount of work. In particular, EOS never stops this
+        measurement. Compare this timing only with other equal-work runs.
+
+        ``per_token_ms[0]`` includes suffix prefill. The remaining entries time
+        the corresponding single-token forward and prediction. These are
+        reference-runner wall timings, not serving inter-token latency.
+        """
+        self._tokens(suffix)
+        self._tokens(continuation_tokens)
+        self._validate_state(state)
+        if type(chunk_size) is not int or chunk_size < 1:
+            raise ValueError("chunk_size must be a positive integer")
+        if state.offset + len(suffix) + len(continuation_tokens) - 1 > self.max_context:
+            raise ValueError("suffix plus fixed continuation exceeds the bounded context window")
+        # Copy caller-owned sequences before timing. No invalid request above
+        # can append even the suffix to the supplied live state.
+        targets = list(continuation_tokens)
+        suffix = list(suffix)
+        self.synchronize()
+        started = time.perf_counter()
+        previous = started
+        logits, state = self.prefill(suffix, state, chunk_size)
+        predicted, per_token_ms = [], []
+        for index, token in enumerate(targets):
+            predicted.append(int(logits.argmax().item()))
+            finished = time.perf_counter()
+            per_token_ms.append((finished - previous) * 1000)
+            previous = finished
+            if index + 1 < len(targets):
+                logits = self.forward([token], state)
+        total_ms = (finished - started) * 1000
+        return {"mode": "equal_work", "tokens": targets, "predicted_tokens": predicted,
+                "first_token_ms": per_token_ms[0], "total_ms": total_ms,
+                "per_token_ms": per_token_ms, "ttft_ms": per_token_ms[0],
+                "wall_ms": total_ms, "truncated": False}, state
+
     def prompt_tokens(self, text):
         if not isinstance(text, str):
             raise ValueError("prompt must be text")

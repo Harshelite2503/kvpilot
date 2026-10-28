@@ -29,8 +29,9 @@ from kvpilot.policy import CodecProfile, CostModel, MIB
 
 ROOT = Path(__file__).resolve().parents[2]
 CODECS = ("raw_native", "group_int8", "group_int4")
-POLICIES = ("recompute", "raw_native", "group_int4", "adaptive_exact", "adaptive_eviction")
+POLICIES = ("recompute", "raw_native", "raw_admit_if_fits", "group_int4", "adaptive_exact", "adaptive_eviction")
 SCENARIOS = ("roomy", "pressure", "cancellation")
+CONTINUATION_SOURCE = "fresh native recompute greedy tokens, EOS ignored, frozen before calibration and policy measurements"
 
 
 def now_ms():
@@ -125,6 +126,31 @@ def schedule(cases, group_size, scenario, seed):
 def size_candidates(runner, live):
     specs, roles, metadata = runner.state_specs(live)
     return {codec: encoded_size_from_specs(specs, roles, metadata, codec) for codec in CODECS}
+
+
+def freeze_continuation(runner, case, steps, chunk_size):
+    """Prepare fixed computational inputs; these are not scored model answers.
+
+    Ignoring EOS ensures every arm performs the requested number of predictions.
+    All reference execution is outside measured policy blocks, and its cost is
+    retained in the fixture. No cache from this preparation reaches a timed run.
+    """
+    before = now_ms()
+    logits, state = runner.prefill(case["prefix"], chunk_size=chunk_size)
+    try:
+        logits, state = runner.prefill(case["suffix"], state, chunk_size)
+        continuation = []
+        for i in range(steps):
+            token = int(logits.argmax().item())
+            continuation.append(token)
+            if i + 1 < steps:
+                logits = runner.forward([token], state)
+    finally:
+        state.release()
+        del logits, state
+        runner.synchronize()
+    return {**case, "fixed_continuation": continuation,
+            "continuation_preparation_ms": now_ms() - before}
 
 
 class MemoryMeter:
@@ -300,7 +326,7 @@ def pause(runner, store, case, chunk_size, meter):
             "memory_after_release": meter.sample()}
 
 
-def resume(runner, store, case, row, chunk_size, max_tokens, meter):
+def resume(runner, store, case, row, chunk_size, max_tokens, meter, timing_mode="free_generation"):
     started = now_ms()
     payload = store.popresume(case["id"], started)
     hit = payload is not None
@@ -327,7 +353,10 @@ def resume(runner, store, case, row, chunk_size, max_tokens, meter):
         if live.token_digest != row["prefix_hash"]:
             raise RuntimeError("recomputed prefix identity changed")
     restore_ms = now_ms() - started
-    generation, live = runner.generate(case["suffix"], state=live, max_tokens=max_tokens, chunk_size=chunk_size)
+    if timing_mode == "equal_work":
+        generation, live = runner.continue_fixed(case["suffix"], live, case["fixed_continuation"], chunk_size=chunk_size)
+    else:
+        generation, live = runner.generate(case["suffix"], state=live, max_tokens=max_tokens, chunk_size=chunk_size)
     runner.synchronize()
     resumed_memory = meter.sample()
     live.release()
@@ -337,8 +366,9 @@ def resume(runner, store, case, row, chunk_size, max_tokens, meter):
                 "decode_ms": decode_ms, "import_ms": import_ms, "recompute_ms": recompute_ms,
                 "imported_tensor_bytes": imported_bytes, "restore_or_recompute_ms": restore_ms,
                 "resume_ttft_ms": restore_ms + generation["ttft_ms"], "resume_wall_ms": now_ms() - started,
-                "generation": generation, "expected_answer": case["expected_answer"],
-                "correct": not generation["truncated"] and normalized(generation["answer"]) == normalized(case["expected_answer"]),
+                "generation": generation,
+                "expected_answer": case["expected_answer"] if timing_mode == "free_generation" else None,
+                "correct": (not generation["truncated"] and normalized(generation["answer"]) == normalized(case["expected_answer"])) if timing_mode == "free_generation" else None,
                 "payload_bytes_after_resolution": store.used_bytes, "memory_resumed": resumed_memory})
     return row
 
@@ -352,6 +382,10 @@ def percentile(values, probability):
 
 def summarize(rows, blocks):
     summaries = []
+    modes = {r.get("timing_mode", "free_generation") for r in rows}
+    if len(modes) != 1 or not modes <= {"free_generation", "equal_work"}:
+        raise ValueError("summarize one declared timing mode at a time")
+    equal_work = modes == {"equal_work"}
     groups = sorted({(r["context_target"], r["scenario"], r["policy"]) for r in rows})
     controls = {(r["context_target"], r["scenario"], r["repeat"], r["case_id"]): r
                 for r in rows if r["policy"] == "recompute" and r["resolution"] == "resume"}
@@ -366,11 +400,11 @@ def summarize(rows, blocks):
         summaries.append({"context_target": context, "scenario": scenario, "policy": policy,
             "sessions": len(subset), "responses": len(answered), "cancellations": len(subset) - len(answered),
             "distinct_answered_cases": len({r["case_id"] for r in answered}),
-            "correct": sum(r["correct"] for r in answered),
-            "token_identical_to_recompute": sum(r["generation"]["tokens"] == c["generation"]["tokens"] for r, c in paired),
-            "quality_regressions_vs_recompute": sum(c["correct"] and not r["correct"] for r, c in paired),
-            "quality_improvements_vs_recompute": sum(r["correct"] and not c["correct"] for r, c in paired),
-            "truncated": sum(r["generation"]["truncated"] for r in answered), "hits": sum(r["hit"] for r in answered),
+            "correct": None if equal_work else sum(r["correct"] for r in answered),
+            "token_identical_to_recompute": None if equal_work else sum(r["generation"]["tokens"] == c["generation"]["tokens"] for r, c in paired),
+            "quality_regressions_vs_recompute": None if equal_work else sum(c["correct"] and not r["correct"] for r, c in paired),
+            "quality_improvements_vs_recompute": None if equal_work else sum(r["correct"] and not c["correct"] for r, c in paired),
+            "truncated": None if equal_work else sum(r["generation"]["truncated"] for r in answered), "hits": sum(r["hit"] for r in answered),
             "actions": dict(Counter(r["selected_prediction"]["action"] for r in subset)),
             "total_service_ms_including_canceled_pauses": service,
             "total_ms_including_initial_prefill_and_cancellations": total,
@@ -382,26 +416,38 @@ def summarize(rows, blocks):
             "peak_cuda_allocated_bytes": max(allocated) if all(x is not None for x in allocated) else None,
             "exported_tensor_bytes": sum(r["exported_tensor_bytes"] for r in subset),
             "imported_tensor_bytes": sum(r.get("imported_tensor_bytes", 0) for r in subset),
-            "output_tokens": sum(len(r["generation"]["tokens"]) for r in answered)})
+            "output_tokens": None if equal_work else sum(len(r["generation"]["tokens"]) for r in answered)})
+        if equal_work:
+            summaries[-1].update(
+                forced_token_steps=sum(len(r["generation"]["tokens"]) for r in answered),
+                predicted_tokens_identical_to_recompute=sum(r["generation"]["predicted_tokens"] == c["generation"]["predicted_tokens"] for r, c in paired))
     return summaries
 
 
 def render_report(summary):
     """Human-readable measured comparisons with explicit quality/sample limits."""
+    equal_work = summary.get("timing_mode") == "equal_work"
     lines = ["# Owned-cache Torch experiment", "",
         f"Device: `{summary['device']}`. This is a sequential reference-runner experiment, not a serving-throughput benchmark.", "",
+        ("Mode: **equal_work**. Every policy consumes the same frozen continuation IDs for the same number of prediction steps, including EOS. "
+         "These are teacher-forced computational controls, not generated answers; no quality score is assigned. Compare timings within this mode only."
+         if equal_work else "Mode: **free_generation**. Answers and their lengths may differ; this run tests quality and observed session behavior, not equal computational work."), "",
         "Full-session time includes original prefill, pause/compression, restore or recomputation, generation and canceled-session work. "
         "A speed ratio above 1 means less full-session time than fixed INT4 in this run. Memory is peak retained serialized cache, not total GPU or process memory.", "",
-        "| Context target | Scenario | Policy | Mean full session (ms) | Speed ratio vs INT4 | Peak stored MiB | Correct / responses | Tokens identical to recompute |",
-        "| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: |"]
+        "| Context target | Scenario | Policy | Mean full session (ms) | Speed ratio vs INT4 | Ratio vs admit-if-fits | Peak stored MiB | Correct / responses | Answer tokens identical to recompute |",
+        "| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
     fixed = {(r["context_target"], r["scenario"]): r for r in summary["summaries"] if r["policy"] == "group_int4"}
+    simple = {(r["context_target"], r["scenario"]): r for r in summary["summaries"] if r["policy"] == "raw_admit_if_fits"}
     for row in summary["summaries"]:
         baseline = fixed[row["context_target"], row["scenario"]]
         ratio = baseline["mean_total_ms_per_started_session"] / row["mean_total_ms_per_started_session"]
+        simple_baseline = simple.get((row["context_target"], row["scenario"]))
+        simple_ratio = f"{simple_baseline['mean_total_ms_per_started_session'] / row['mean_total_ms_per_started_session']:.3f}×" if simple_baseline else "n/a"
+        quality = "n/a" if equal_work else f"{row['correct']}/{row['responses']}"
+        agreement = "n/a" if equal_work else f"{row['token_identical_to_recompute']}/{row['responses']}"
         lines.append(f"| {row['context_target']} | {row['scenario']} | {row['policy']} | "
-                     f"{row['mean_total_ms_per_started_session']:.2f} | {ratio:.3f}× | "
-                     f"{row['peak_paused_payload_bytes'] / MIB:.3f} | {row['correct']}/{row['responses']} | "
-                     f"{row['token_identical_to_recompute']}/{row['responses']} |")
+                     f"{row['mean_total_ms_per_started_session']:.2f} | {ratio:.3f}× | {simple_ratio} | "
+                     f"{row['peak_paused_payload_bytes'] / MIB:.3f} | {quality} | {agreement} |")
     lines += ["", "These are descriptive results on generated lookup, two-hop and arithmetic tasks. Repeated questions are not independent quality observations. "
               "Unchanged accuracy does not imply unchanged answers. No quality-preservation or general performance claim is certified.", "",
               "`summary.json` also reports p95 resume time, truncations, baseline-relative quality regressions, sampled process RSS and CUDA allocator peaks. "
@@ -415,6 +461,8 @@ def parse_args(argv=None):
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", choices=("cuda", "cpu", "mps"), default="cuda")
+    parser.add_argument("--timing-mode", choices=("free_generation", "equal_work"), default="free_generation",
+                        help="equal_work freezes native reference tokens before timing; run free_generation separately for answers")
     parser.add_argument("--contexts", nargs="+", type=int, default=[512, 2048])
     parser.add_argument("--cases", type=int, default=24)
     parser.add_argument("--repeats", type=int, default=3)
@@ -461,7 +509,13 @@ def run(args):
         if any(len(c["tokens"]) + args.max_tokens > runner.max_context
                for context_cases in prepared.values() for c in context_cases):
             raise ValueError("prompt plus max-tokens exceeds runner context; reduce --contexts (e.g. 8000 rather than 8192)")
-        fixture = {"seed": args.seed, "cases_by_context": prepared}
+        if args.timing_mode == "equal_work":
+            for target, context_cases in prepared.items():
+                print(f"FREEZE continuation context={target} steps={args.max_tokens}", flush=True)
+                prepared[target] = [freeze_continuation(runner, c, args.max_tokens, args.chunk_size) for c in context_cases]
+        fixture = {"seed": args.seed, "timing_mode": args.timing_mode,
+                   "continuation_source": CONTINUATION_SOURCE if args.timing_mode == "equal_work" else None,
+                   "cases_by_context": prepared}
         write_json(args.output / "fixture.json", fixture)
         calibration, profiles_by_context, budgets = {}, {}, {}
         for target in args.contexts:
@@ -479,13 +533,14 @@ def run(args):
                                "cancellation": max(1, args.group_size // 4) * largest + 1024}
         write_json(args.output / "calibration.json", calibration)
         schedules = {scenario: schedule(cases, args.group_size, scenario, args.seed + 1) for scenario in args.scenarios}
-        jobs = [{"repeat": repeat, "context_target": target, "scenario": scenario, "policy": policy}
+        jobs = [{"repeat": repeat, "context_target": target, "scenario": scenario, "policy": policy, "timing_mode": args.timing_mode}
                 for repeat in range(args.repeats) for target in args.contexts
                 for scenario in args.scenarios for policy in POLICIES]
         random.Random(args.seed + 2).shuffle(jobs)
         for i, job in enumerate(jobs):
             job["block_id"] = f"block-{i:04d}"
-        protocol = {"schema_version": 1, "evidence_type": "measured_owned_cache_torch",
+        protocol = {"schema_version": 2, "evidence_type": "measured_owned_cache_torch", "timing_mode": args.timing_mode,
+            "continuation_source": fixture["continuation_source"], "vocab_size": runner.config["vocab_size"],
             "created_utc": datetime.now(timezone.utc).isoformat(), "source_sha256": hashes,
             "fixture_sha256": sha256((args.output / "fixture.json").read_bytes()).hexdigest(),
             "platform": platform.platform(), "device": str(runner.device),
@@ -498,7 +553,8 @@ def run(args):
             "memory": "owned payload lengths; CUDA allocator high-water mark separately; process RSS sampled every 10ms (lower bound on peak); MPS current counters only",
             "transfers": "native arrays exported before CPU compression and imported after CPU decoding; bytes are tensor-copy payloads, not measured PCIe bus traffic; CPU/MPS copies are not PCIe claims",
             "policy_costs": "export+encode and decode+import calibrated per context; bandwidth term effectively zero to avoid charging transfers twice; estimates never reported as measured time",
-            "quality": "strict numeric answer exact match and paired greedy-token agreement; controlled generated tasks, not production quality certification; repeated cases are not independent samples",
+            "quality": ("not evaluated in equal_work; frozen inputs are not answers, predicted-token agreement is diagnostic only; run free_generation separately"
+                        if args.timing_mode == "equal_work" else "strict numeric answer exact match and paired greedy-token agreement; controlled generated tasks, not production quality certification; repeated cases are not independent samples"),
             "cache_ownership": "own K/V tensors, codecs and PausedStateStore; no Transformers/vLLM/Ollama/cache library; CPU-side compression"}
         if source_hashes() != hashes:
             raise RuntimeError("source changed during preparation; run from a stable checkout")
@@ -509,7 +565,7 @@ def run(args):
                 status.update(stage="measuring", current_block=job["block_id"], completed_blocks=len(blocks))
                 write_json(args.output / "status.json", status)
                 target, scenario, policy = job["context_target"], job["scenario"], job["policy"]
-                print(f"RUN {job['block_id']} context={target} {scenario} {policy} repeat={job['repeat']}", flush=True)
+                print(f"RUN {job['block_id']} mode={args.timing_mode} context={target} {scenario} {policy} repeat={job['repeat']}", flush=True)
                 store = PausedStateStore(policy, profiles_by_context[target], CostModel(
                     1e30, budgets[target][scenario], resume_slo_ms=1e9, allow_unvalidated_lossy=True), default_pause_ms=30000)
                 case_map = {c["id"]: c for c in prepared[target]}
@@ -527,7 +583,7 @@ def run(args):
                         else:
                             row = paused.pop(name)
                             if event == "resume":
-                                resume(runner, store, case, row, args.chunk_size, args.max_tokens, meter)
+                                resume(runner, store, case, row, args.chunk_size, args.max_tokens, meter, args.timing_mode)
                                 entry = {"hit": row["hit"], "payload_bytes": row["restored_payload_bytes"]}
                             else:
                                 before = now_ms()
@@ -551,7 +607,8 @@ def run(args):
                 sha256((args.output / "fixture.json").read_bytes()).hexdigest() != protocol["fixture_sha256"]):
             raise RuntimeError("source or fixture changed during measurements; archive is incomplete")
         summary = {"evidence_type": protocol["evidence_type"], "complete": True, "quality_validated": False,
-                   "device": protocol["device"], "valid_source_freeze": True, "summaries": summarize(rows, blocks)}
+                   "device": protocol["device"], "timing_mode": args.timing_mode,
+                   "valid_source_freeze": True, "summaries": summarize(rows, blocks)}
         write_json(args.output / "summary.json", summary)
         (args.output / "report.md").write_text(render_report(summary))
         status.update(completed=True, stage="complete", completed_blocks=len(blocks))

@@ -43,13 +43,13 @@ def tiny_runner():
     return qwen_runner.QwenRunner.from_components(config, weights, Tokenizer())
 
 
-@pytest.fixture(scope="module")
-def archive(tmp_path_factory):
+@pytest.fixture(scope="module", params=["free_generation", "equal_work"])
+def archive(tmp_path_factory, request):
     directory = tmp_path_factory.mktemp("torch-records") / "run"
     runner = tiny_runner()
     args = benchmark.parse_args(["--model-dir", "unused", "--output", str(directory), "--device", "cpu",
         "--contexts", "128", "--cases", "4", "--repeats", "1", "--group-size", "4", "--max-tokens", "2",
-        "--chunk-size", "32", "--allow-unvalidated-lossy"])
+        "--chunk-size", "32", "--timing-mode", request.param, "--allow-unvalidated-lossy"])
     previous_threads = torch.get_num_threads()
     torch.set_num_threads(1)
     with pytest.MonkeyPatch.context() as patch:
@@ -63,9 +63,9 @@ def archive(tmp_path_factory):
 
 def test_tiny_real_runner_completes_all_arms_and_independent_audit(archive):
     result = validator.audit(archive)
-    assert result["valid"] and result["sessions_checked"] == 60 and result["blocks_checked"] == 15
+    assert result["valid"] and result["sessions_checked"] == 72 and result["blocks_checked"] == 18
     rows = [json.loads(line) for line in (archive / "rows.jsonl").read_text().splitlines()]
-    assert sum(r["resolution"] == "cancel" for r in rows) == 5
+    assert sum(r["resolution"] == "cancel" for r in rows) == 6
     assert all(r["original_live_cache_released"] for r in rows)
     calibration = json.loads((archive / "calibration.json").read_text())["128"]
     assert calibration["integrity_gate"]["raw_restore_logits_bit_exact"]
@@ -188,8 +188,85 @@ def test_source_freeze_includes_nested_live_and_integration_modules():
 def test_changed_answer_is_not_hidden_by_unchanged_accuracy(archive):
     rows = [json.loads(line) for line in (archive / "rows.jsonl").read_text().splitlines()]
     blocks = json.loads((archive / "blocks.json").read_text())
+    if rows[0]["timing_mode"] == "equal_work":
+        pytest.skip("equal-work inputs are not generated answers")
     altered = deepcopy(rows)
     target = next(r for r in altered if r["policy"] == "group_int4" and r["scenario"] == "roomy")
     target["generation"]["tokens"] = [99999]
     summary = next(s for s in benchmark.summarize(altered, blocks) if s["policy"] == "group_int4" and s["scenario"] == "roomy")
     assert summary["token_identical_to_recompute"] < summary["responses"]
+
+
+def test_equal_work_never_scores_forced_inputs_as_answers(archive):
+    protocol = json.loads((archive / "protocol.json").read_text())
+    if protocol["timing_mode"] != "equal_work":
+        pytest.skip("fixed-work mode only")
+    fixture = json.loads((archive / "fixture.json").read_text())
+    cases = {c["id"]: c for c in fixture["cases_by_context"]["128"]}
+    rows = [json.loads(line) for line in (archive / "rows.jsonl").read_text().splitlines()]
+    for row in rows:
+        if row["resolution"] != "resume":
+            continue
+        generation = row["generation"]
+        assert generation["tokens"] == cases[row["case_id"]]["fixed_continuation"]
+        assert len(generation["predicted_tokens"]) == len(generation["tokens"]) == 2
+        assert row["correct"] is None and row["expected_answer"] is None
+        assert "answer" not in generation
+    for summary in json.loads((archive / "summary.json").read_text())["summaries"]:
+        assert summary["correct"] is summary["output_tokens"] is summary["token_identical_to_recompute"] is None
+        assert summary["forced_token_steps"] == summary["responses"] * 2
+
+
+@pytest.mark.parametrize("tamper", ["forced_token", "prediction_length", "fake_answer", "timing_alias", "fake_quality", "mode"])
+def test_equal_work_auditor_rejects_relabeling_and_work_changes(archive, tmp_path, tamper):
+    import shutil
+    if json.loads((archive / "protocol.json").read_text())["timing_mode"] != "equal_work":
+        pytest.skip("fixed-work mode only")
+    run = tmp_path / "mutated-fixed"
+    shutil.copytree(archive, run)
+    name = "rows.jsonl"
+    rows = [json.loads(line) for line in (run / name).read_text().splitlines()]
+    row = next(r for r in rows if r["resolution"] == "resume")
+    if tamper == "forced_token":
+        row["generation"]["tokens"][0] = (row["generation"]["tokens"][0] + 1) % 32
+    elif tamper == "prediction_length":
+        row["generation"]["predicted_tokens"].pop()
+    elif tamper == "fake_answer":
+        row["generation"]["answer"] = "42"
+    elif tamper == "timing_alias":
+        row["generation"]["total_ms"] += 1
+    elif tamper == "fake_quality":
+        row["correct"] = True
+    else:
+        row["timing_mode"] = "free_generation"
+    (run / name).write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    rewrite_hash(run, name)
+    with pytest.raises(ValueError):
+        validator.audit(run)
+
+
+def test_legacy_five_arm_archive_still_audits():
+    folder = Path(__file__).resolve().parents[1] / "results/p100-readiness-mac-smoke-v1"
+    result = validator.audit(folder)
+    assert result["valid"] and result["sessions_checked"] == 40
+
+
+def test_continuation_freeze_keeps_exact_step_count_and_releases_cache():
+    runner = tiny_runner()
+    case = benchmark.prepare_case(runner, benchmark.make_cases(4, 20261030)[0], 128)
+    first = benchmark.freeze_continuation(runner, case, 3, 32)
+    second = benchmark.freeze_continuation(runner, case, 3, 32)
+    assert first["fixed_continuation"] == second["fixed_continuation"]
+    assert len(first["fixed_continuation"]) == 3
+    assert "fixed_continuation" not in case
+    assert first["continuation_preparation_ms"] >= 0
+
+
+def test_sweep_consumes_schema_two_without_borrowed_baseline_costs(archive, tmp_path):
+    from experiments.torch import break_even
+    result = break_even.run(archive, tmp_path / "sweep", [0, 1])
+    protocol = json.loads((archive / "protocol.json").read_text())
+    assert result["input_timing_mode"] == protocol["timing_mode"]
+    assert result["overhead_fallbacks"] == []
+    assert not result["measured_performance"] and not result["quality_certified"]
+    assert len(result["blocks"]) == 3 * 6 * 2

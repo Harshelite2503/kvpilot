@@ -8,7 +8,10 @@ This tracks the vLLM integration path. Phase 1 measured native vLLM request
 timings and CPU codec costs on a captured pool slice; it did not apply
 KVPilot decisions to a live vLLM cache. The separate [owned MLX experiment](local-results.md)
 already tested KVPilot's own local state path. The [P100 preparation](p100-runner.md)
-uses an owned PyTorch runner and has no P100 results yet.
+uses an owned PyTorch runner. Its completed real-cache results are in the
+[P100 record](p100-results-2026-10-28.md), including lossy INT4 restoration and
+answer checks. The new [admission/equal-work suite](p100-admission-experiment.md)
+continues that owned-runner path. Neither is a working vLLM integration.
 
 ## What exists now (built, zero GPU cost, runs on any machine)
 
@@ -110,9 +113,9 @@ nothing.
 
 ## Next steps
 
-1. Run the [owned PyTorch protocol](p100-runner.md) on the available P100,
-   including exact-state controls and lossy answer checks. No P100 results
-   exist until that experiment is executed and validated.
+1. Run the new [admission/equal-work protocol](p100-admission-experiment.md)
+   on the available P100. The earlier owned P100 run is already completed and
+   preserved; this next run adds a simple baseline and controls answer length.
 2. For a later RTX 3090 serving test, implement the real `KVConnectorBase_V1` lifecycle methods against the
    actual installed vLLM 0.32.0 API (now confirmed reachable, see above),
    driven by the existing synthetic workload generator
