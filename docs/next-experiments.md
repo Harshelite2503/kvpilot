@@ -4,7 +4,7 @@ Research checked **28 October 2026**. This is a proposed engineering and custome
 
 ## Decision: test admission value before inventing another compressor
 
-The current adaptive policy never compressed. Its strongest measured benefit is avoiding wasted native snapshots under cancellation. A simple admit-only-if-space rule has the same modeled hit counts on these traces. Before making the controller more complicated, measure that baseline and expose workloads where each policy fails.
+The current adaptive policy never compressed. Its strongest measured benefit is avoiding wasted native snapshots under cancellation. The analytical holdout agrees once fed measured codec costs: no policy beats recomputation by more than 2.6% on p95 and eviction pricing changes no decision ([measured-cost rerun](eviction-results-measured-costs.md)). A simple admit-only-if-space rule has the same modeled hit counts on these traces. Before making the controller more complicated, measure that baseline and expose workloads where each policy fails.
 
 The candidate product is **cost control for self-hosted agent sessions while they wait for tools or people**: decide whether retaining state is worth its bytes, copy work and eventual restore cost. The customer must control the inference runtime. A developer using only a closed model API cannot install our cache manager behind it.
 
