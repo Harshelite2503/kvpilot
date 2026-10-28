@@ -182,7 +182,7 @@ The frozen evaluation ran **140 previously unseen synthetic traces containing 33
 
 The new policy reduced modeled tail resume delay versus fixed INT4 in five of seven workload families. Cancellation-heavy traffic regressed, and branching was inconclusive. The two largest wins exactly matched simply keeping raw data, while using **3.76 times** the stored-byte time and transfer volume of INT4. No family met our original combined latency-and-memory target.
 
-So we have built a working experiment and improved its decision rule. We have not yet proved that adding KVPilot makes a real model-serving system faster or cheaper. See the [full results, including regressions](docs/eviction-results.md). Rerunning that frozen holdout with the codec costs measured on a real KV tensor removes the result entirely: the two large wins become ties, no policy beats plain recomputation by more than 2.6% on p95, and eviction pricing changes no decision. See the [measured-cost rerun](docs/eviction-results-measured-costs.md).
+So we have built a working experiment and improved its decision rule. We have not yet proved that adding KVPilot makes a real model-serving system faster or cheaper. See the [full results, including regressions](docs/eviction-results.md). Rerunning that frozen holdout with the codec costs measured on a real KV tensor removes the two large wins: they become ties, no policy beats plain recomputation by more than 2.6% on p95, and eviction pricing gives no p95 benefit. It does change a decision in one seed, increasing modeled work and peak reservation. See the [measured-cost rerun](docs/eviction-results-measured-costs.md).
 
 ## Real local model: what we measured
 
@@ -237,6 +237,11 @@ python scripts/benchmark_codecs.py --fixture correlated --repeats 30 --output re
 ```
 
 The [dependency snapshot](requirements-dev.lock.txt) records the local versions. To recreate it on a compatible interpreter, install that file before `pip install -e . --no-build-isolation`. Compatibility on other operating systems is untested.
+
+For portable, pinned test dependencies, use the [regression testing guide](docs/testing.md).
+GitHub CI runs Python 3.11/3.13 core tests, the owned tensor runner on CPU, and audits the
+committed P100 and measured-cost evidence. The aggregate **Regression gate** must be made
+a required branch check to block merges on failure. CI does not certify GPU speed or model quality.
 
 Run one policy with the CLI:
 
