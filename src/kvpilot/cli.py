@@ -5,15 +5,20 @@ from pathlib import Path
 from .replay import load_config, load_trace, replay
 
 
-def main():
-    parser = argparse.ArgumentParser(description="KV cache research harness; modeled results are not GPU measurements")
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Local agent context-cost tools and owned KV-cache research")
     sub = parser.add_subparsers(dest="command", required=True)
     rp = sub.add_parser("replay", help="causal analytical paused-store replay")
     rp.add_argument("--trace", required=True)
     rp.add_argument("--config", required=True)
     rp.add_argument("--policy", default="adaptive")
     rp.add_argument("--output")
-    args = parser.parse_args()
+    # Keep the existing replay command and its numerical behavior unchanged.
+    from .context.cli import add_parser, run as run_context
+    add_parser(sub)
+    args = parser.parse_args(argv)
+    if args.command == "context":
+        return run_context(args)
     model, profiles, config = load_config(args.config)
     result = replay(load_trace(args.trace), model, profiles, policy=args.policy,
                     default_pause_ms=config.get("default_pause_ms", 1000.0))
