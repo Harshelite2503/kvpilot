@@ -1,5 +1,7 @@
 # Regression testing
 
+The evidence job now also runs `python scripts/verify_policy_replication_record.py` against the [paired P100/RTX record](../results/policy-replication-2026-10-29/README.md). It validates bounded archives, source anchors, eight completed runs and recomputed descriptive results without a GPU. It does not enforce historical speed ratios as noisy performance-test thresholds. Corruption, path traversal, unsafe archive entries and refreshed-hash source forgery are covered by `tests/test_policy_replication_record.py`.
+
 Every pull request and push runs `.github/workflows/ci.yml` on GitHub-hosted
 Ubuntu CPUs. No model download, GPU rental, CUDA installation or repository secret
 is required. Dependency installation does access the package indexes.

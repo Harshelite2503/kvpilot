@@ -1,0 +1,348 @@
+{
+  "evidence_type": "descriptive_within_system_policy_replication",
+  "created_utc": "2026-10-29T05:33:25.870720+00:00",
+  "inputs": {
+    "P100": {
+      "path": "<original-analysis-workspace>/outputs/p100-vs-rtx-20261029/p100-analysis.json",
+      "sha256": "a613dbb4fe25c52fbadf6b4e81d455f542b06ca3ea6355702be6eb76bcb29ed6"
+    },
+    "RTX 5060 Ti": {
+      "path": "<original-analysis-workspace>/outputs/rtx5060ti-20261029/analysis.json",
+      "sha256": "89a7002e78d28fbdf944792c96fb1b1f8eeb5046aa3a6f4c41b0cf34e1957cdd"
+    }
+  },
+  "scope": "Within-system policy effects. Not a pure GPU-only comparison, production throughput claim, or significance test.",
+  "systems": {
+    "P100": {
+      "source_commit": "b91ebb37ead55d21dabe23ef0311ae2a9d2dc697",
+      "mean_session_ms_balanced_mix": {
+        "adaptive_eviction": 1139.3162143503798,
+        "raw_admit_if_fits": 1099.105289160274,
+        "group_int4": 1358.1119990697027,
+        "raw_native": 1129.4305834161394,
+        "recompute": 1235.404344707762,
+        "adaptive_exact": 1120.7451528656745
+      },
+      "adaptive_time_reduction_percent": {
+        "adaptive_eviction": 0.0,
+        "raw_admit_if_fits": -3.658514392267853,
+        "group_int4": 16.110290231527035,
+        "raw_native": -0.8752756547763862,
+        "recompute": 7.777868903327523,
+        "adaptive_exact": -1.6570280439955676
+      },
+      "free_generation_totals": {
+        "adaptive_eviction": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "raw_admit_if_fits": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "group_int4": {
+          "correct": 105,
+          "responses": 396,
+          "token_identical_to_recompute": 159,
+          "quality_regressions_vs_recompute": 138,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "raw_native": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "recompute": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "adaptive_exact": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        }
+      },
+      "adaptive_actions": {
+        "equal_work": {
+          "recompute": 199,
+          "raw_native": 233
+        },
+        "free_generation": {
+          "recompute": 204,
+          "raw_native": 228
+        }
+      },
+      "modeled_sweep": [
+        {
+          "context": 512,
+          "scenario": "cancellation",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 512,
+          "scenario": "pressure",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1,
+            0.25,
+            0.5,
+            0.75
+          ],
+          "wins_including_int4": [
+            0.0,
+            0.5,
+            0.75
+          ]
+        },
+        {
+          "context": 512,
+          "scenario": "roomy",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ]
+        },
+        {
+          "context": 2048,
+          "scenario": "cancellation",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 2048,
+          "scenario": "pressure",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 2048,
+          "scenario": "roomy",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": [
+            0.01,
+            0.03,
+            0.1
+          ]
+        }
+      ]
+    },
+    "RTX 5060 Ti": {
+      "source_commit": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a",
+      "mean_session_ms_balanced_mix": {
+        "adaptive_eviction": 1067.9203390821262,
+        "raw_admit_if_fits": 1064.8656730856057,
+        "group_int4": 1283.809180110693,
+        "raw_native": 1076.096079207129,
+        "recompute": 1172.8552057025609,
+        "adaptive_exact": 1075.8693276312615
+      },
+      "adaptive_time_reduction_percent": {
+        "adaptive_eviction": 0.0,
+        "raw_admit_if_fits": -0.28685927941212164,
+        "group_int4": 16.816271792818327,
+        "raw_native": 0.7597593080189036,
+        "recompute": 8.946958338099098,
+        "adaptive_exact": 0.7388433097759717
+      },
+      "free_generation_totals": {
+        "adaptive_eviction": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "raw_admit_if_fits": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "group_int4": {
+          "correct": 132,
+          "responses": 396,
+          "token_identical_to_recompute": 177,
+          "quality_regressions_vs_recompute": 111,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "raw_native": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "recompute": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        },
+        "adaptive_exact": {
+          "correct": 243,
+          "responses": 396,
+          "token_identical_to_recompute": 396,
+          "quality_regressions_vs_recompute": 0,
+          "quality_improvements_vs_recompute": 0,
+          "truncated": 0
+        }
+      },
+      "adaptive_actions": {
+        "equal_work": {
+          "recompute": 204,
+          "raw_native": 228
+        },
+        "free_generation": {
+          "recompute": 204,
+          "raw_native": 228
+        }
+      },
+      "modeled_sweep": [
+        {
+          "context": 512,
+          "scenario": "cancellation",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 512,
+          "scenario": "pressure",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 512,
+          "scenario": "roomy",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1,
+            0.25,
+            0.5,
+            0.75
+          ],
+          "wins_including_int4": [
+            0.0,
+            0.01,
+            0.03,
+            0.1,
+            0.25,
+            0.5,
+            0.75
+          ]
+        },
+        {
+          "context": 2048,
+          "scenario": "cancellation",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": []
+        },
+        {
+          "context": 2048,
+          "scenario": "pressure",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1,
+            0.25,
+            0.5,
+            0.75
+          ],
+          "wins_including_int4": [
+            0.0,
+            0.01,
+            0.75
+          ]
+        },
+        {
+          "context": 2048,
+          "scenario": "roomy",
+          "wins_native_recompute": [
+            0.0,
+            0.01,
+            0.03,
+            0.1
+          ],
+          "wins_including_int4": [
+            0.03,
+            0.1
+          ]
+        }
+      ]
+    }
+  }
+}

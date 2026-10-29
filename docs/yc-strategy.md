@@ -1,5 +1,7 @@
 # KVPilot: how to make this big (YC strategy memo)
 
+> **Historical memo.** The [29 October product plan](product-plan-2026-10-29.md) and [P100/RTX comparison](policy-replication-2026-10-29.md) supersede this memo's implementation status and near-term recommendations. Both completed systems show no adaptive advantage over simple admission in the balanced workload. Claims about current vendor capabilities or pricing below are historical and should be rechecked before reuse; the new plan uses freshly checked primary sources.
+
 Written 28 October 2026 from the current `main`, the open PR
 [Harshelite2503/kvpilot#1](https://github.com/Harshelite2503/kvpilot/pull/1), Astra's
 recommendation list, and a fresh scan of papers, vendor docs and funding news. Sources are

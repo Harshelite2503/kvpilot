@@ -2,13 +2,13 @@
 
 **We are building software that decides what to do with an AI agent's saved calculations while it waits.**
 
-**Today: an owned-cache research prototype tested on a Mac and a Tesla P100.** KVPilot saves, compresses, discards and restores real inference state, then continues generating. MLX or PyTorch performs tensor math; KVPilot owns live state, codecs, paused storage and eviction decisions. The runners use local model files without calling Ollama or an external cache manager.
+**Today: an owned-cache research prototype tested on a Mac, Tesla P100 and RTX 5060 Ti.** KVPilot saves, compresses, discards and restores real inference state, then continues generating. MLX or PyTorch performs tensor math; KVPilot owns live state, codecs, paused storage and eviction decisions. The runners use local model files without calling Ollama or an external cache manager.
 
-**Latest evidence, 28 October 2026:** the P100 run contains 2,160 sessions and 24 distinct generated questions. Eviction-aware admission takes **6.4–7.9% less full-session time than always-store-native LRU in cancellation scenarios**, with identical observed outputs and approximately equal retained-cache memory. It selected only native storage or recomputation, never INT4/INT8. **No GPU-memory saving was measured**, and a simple no-eviction admission rule has the same modeled hit counts on these traces. See the [full P100 audit and raw records](docs/p100-results-2026-10-28.md) and [research-backed next experiments](docs/next-experiments.md). These are reference-runner observations, not production throughput or general quality guarantees.
+**Latest evidence, 29 October 2026:** adaptive takes **16.11% less full-session time than our CPU INT4 reference on P100** and **16.82% less on RTX 5060 Ti**, but **3.66% more time than simple admission on P100** and **0.29% more on RTX** in the balanced six-cell workload. Simple admission stores native state only when it fits. Both systems show identical peak GPU allocation across policies. Adaptive selected no lossy compression and matched recomputation on 396/396 repeated response observations per system, drawn from only 24 underlying questions. **An adaptive cost-saving advantage is not established.** See the [measured comparison and limits](docs/policy-replication-2026-10-29.md), [raw evidence and offline verification](results/policy-replication-2026-10-29/README.md), and [updated product plan](docs/product-plan-2026-10-29.md). These are sequential reference-runner results, not serving-throughput or customer-bill savings.
 
 ## The problem, in plain English
 
-**Next runnable experiment:** [admission baseline, equal-work timing and break-even sweep](docs/p100-admission-experiment.md).
+**Completed experiment and reproduction guide:** [admission baseline, equal-work timing and break-even sweep](docs/p100-admission-experiment.md).
 It compares six owned policies, including a native store-only-if-space rule; separates fixed-token speed tests from free-generation quality tests; and models how cheaper codecs would change the decision.
 The sweep is a counterfactual, not a new GPU speed measurement. The guide includes one offline P100 command and the exact result bundle to return.
 

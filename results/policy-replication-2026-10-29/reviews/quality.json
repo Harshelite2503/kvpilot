@@ -1,0 +1,4432 @@
+{
+  "audit": {
+    "p100/equal_work": {
+      "artifact_manifest_sha256": "2ffe9992676a95cb4f2947edfdc8c3ddadcbb9ff4edc1463296af214cc430381",
+      "blocks_checked": 108,
+      "events_checked": 5184,
+      "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization",
+      "sessions_checked": 2592,
+      "valid": true
+    },
+    "p100/free_generation": {
+      "artifact_manifest_sha256": "f6840fd3fbbad0ddc46102fa2c506c4c3661664638d1e6b303b6a921f77e7198",
+      "blocks_checked": 108,
+      "events_checked": 5184,
+      "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization",
+      "sessions_checked": 2592,
+      "valid": true
+    },
+    "rtx_attempt_3/equal_work": {
+      "artifact_manifest_sha256": "d9d8bcc0d6339cd4485e9d57f085d0d11ca0fc007e91018bb3721ce9f806934c",
+      "blocks_checked": 108,
+      "events_checked": 5184,
+      "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization",
+      "sessions_checked": 2592,
+      "valid": true
+    },
+    "rtx_attempt_3/free_generation": {
+      "artifact_manifest_sha256": "4a8d3f81f3b4d7d41620d702709402da1a1d93268fb40b50e2ba3cbc4b2728e5",
+      "blocks_checked": 108,
+      "events_checked": 5184,
+      "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization",
+      "sessions_checked": 2592,
+      "valid": true
+    }
+  },
+  "computation_source": "work/p100-comparison/review_quality.py",
+  "computation_source_sha256": "8bd8c78a19adf43ed47059d8f5e7f40296dae11172554070ce19f84c3cbf0be3",
+  "created_utc": "2026-10-29T05:33:18.135832+00:00",
+  "cross_device_controls": {
+    "equal_work": {
+      "argument_differences": {
+        "model_dir": {
+          "p100": "data/qwen25-05b-20261028T134203Z",
+          "rtx": "/workspace/kvpilot/data/qwen25-05b-pinned"
+        },
+        "output": {
+          "p100": "/home/nutanix/kvpilot-p100/results/local-p100-admission-20261028T180805Z/full-equal_work",
+          "rtx": "/workspace/kvpilot/results/local-rtx5060ti-replication/full-equal_work"
+        }
+      },
+      "benchmark_arguments_identical_except_paths": true,
+      "fixture_content_comparison_excluding_continuation_preparation_ms": {
+        "differences": [
+          {
+            "case_id": "case-0002",
+            "context_target": 512,
+            "different_fields": [
+              "fixed_continuation"
+            ]
+          }
+        ],
+        "fully_matching_context_cases": 47,
+        "paired_context_cases": 48
+      },
+      "host_payload_budgets_identical": true,
+      "jobs_identical": true,
+      "recorded_model_digests_identical": true,
+      "recorded_model_file_hashes_identical": true,
+      "recorded_source_files": 25,
+      "schedules_identical": true,
+      "source_hash_maps_identical": true
+    },
+    "free_generation": {
+      "argument_differences": {
+        "model_dir": {
+          "p100": "data/qwen25-05b-20261028T134203Z",
+          "rtx": "/workspace/kvpilot/data/qwen25-05b-pinned"
+        },
+        "output": {
+          "p100": "/home/nutanix/kvpilot-p100/results/local-p100-admission-20261028T180805Z/full-free_generation",
+          "rtx": "/workspace/kvpilot/results/local-rtx5060ti-replication/full-free_generation"
+        }
+      },
+      "benchmark_arguments_identical_except_paths": true,
+      "fixture_content_comparison_excluding_continuation_preparation_ms": {
+        "differences": [],
+        "fully_matching_context_cases": 48,
+        "paired_context_cases": 48
+      },
+      "host_payload_budgets_identical": true,
+      "jobs_identical": true,
+      "recorded_model_digests_identical": true,
+      "recorded_model_file_hashes_identical": true,
+      "recorded_source_files": 25,
+      "schedules_identical": true,
+      "source_hash_maps_identical": true
+    }
+  },
+  "cross_device_quality_same_policy": {
+    "adaptive_eviction": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [],
+      "distinct_context_case_pairs_with_regressions": [],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 0,
+      "normalized_answer_identical": 396,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 0,
+      "regressions_without_expected_standalone_numeric_value_present": 0,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 396
+    },
+    "adaptive_exact": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [],
+      "distinct_context_case_pairs_with_regressions": [],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 0,
+      "normalized_answer_identical": 396,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 0,
+      "regressions_without_expected_standalone_numeric_value_present": 0,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 396
+    },
+    "group_int4": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [
+        {
+          "baseline_answer_variants": [
+            "1007"
+          ],
+          "candidate_answer_variants": [
+            "1008"
+          ],
+          "case_id": "case-0009",
+          "context_target": 512,
+          "expected_answer": "3571",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "cancellation"
+        },
+        {
+          "baseline_answer_variants": [
+            "8432"
+          ],
+          "candidate_answer_variants": [
+            "team_75843"
+          ],
+          "case_id": "case-0010",
+          "context_target": 512,
+          "expected_answer": "8432",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "cancellation"
+        },
+        {
+          "baseline_answer_variants": [
+            "1007"
+          ],
+          "candidate_answer_variants": [
+            "1008"
+          ],
+          "case_id": "case-0009",
+          "context_target": 512,
+          "expected_answer": "3571",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "8432"
+          ],
+          "candidate_answer_variants": [
+            "team_75843"
+          ],
+          "case_id": "case-0010",
+          "context_target": 512,
+          "expected_answer": "8432",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "12"
+          ],
+          "candidate_answer_variants": [
+            "9"
+          ],
+          "case_id": "case-0014",
+          "context_target": 512,
+          "expected_answer": "22",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "10"
+          ],
+          "candidate_answer_variants": [
+            "12"
+          ],
+          "case_id": "case-0020",
+          "context_target": 512,
+          "expected_answer": "19",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "1056"
+          ],
+          "candidate_answer_variants": [
+            "1060"
+          ],
+          "case_id": "case-0008",
+          "context_target": 512,
+          "expected_answer": "16",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "1007"
+          ],
+          "candidate_answer_variants": [
+            "1008"
+          ],
+          "case_id": "case-0009",
+          "context_target": 512,
+          "expected_answer": "3571",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "8432"
+          ],
+          "candidate_answer_variants": [
+            "team_75843"
+          ],
+          "case_id": "case-0010",
+          "context_target": 512,
+          "expected_answer": "8432",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "12"
+          ],
+          "candidate_answer_variants": [
+            "9"
+          ],
+          "case_id": "case-0014",
+          "context_target": 512,
+          "expected_answer": "22",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "10"
+          ],
+          "candidate_answer_variants": [
+            "12"
+          ],
+          "case_id": "case-0020",
+          "context_target": 512,
+          "expected_answer": "19",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "7311"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_19659 is 7311."
+          ],
+          "case_id": "case-0007",
+          "context_target": 2048,
+          "expected_answer": "7311",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "cancellation"
+        },
+        {
+          "baseline_answer_variants": [
+            "7311"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_19659 is 7311."
+          ],
+          "case_id": "case-0007",
+          "context_target": 2048,
+          "expected_answer": "7311",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "8207"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_94491 is 8207."
+          ],
+          "case_id": "case-0013",
+          "context_target": 2048,
+          "expected_answer": "8207",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "pressure"
+        },
+        {
+          "baseline_answer_variants": [
+            "7311"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_19659 is 7311."
+          ],
+          "case_id": "case-0007",
+          "context_target": 2048,
+          "expected_answer": "7311",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "8207"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_94491 is 8207."
+          ],
+          "case_id": "case-0013",
+          "context_target": 2048,
+          "expected_answer": "8207",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        },
+        {
+          "baseline_answer_variants": [
+            "7324"
+          ],
+          "candidate_answer_variants": [
+            "The pager_code of the team that owns service_54939 is 63063."
+          ],
+          "case_id": "case-0016",
+          "context_target": 2048,
+          "expected_answer": "7324",
+          "repeats": [
+            0,
+            1,
+            2
+          ],
+          "scenario": "roomy"
+        }
+      ],
+      "distinct_context_case_pairs_with_regressions": [
+        [
+          512,
+          "case-0010"
+        ],
+        [
+          2048,
+          "case-0007"
+        ],
+        [
+          2048,
+          "case-0013"
+        ],
+        [
+          2048,
+          "case-0016"
+        ]
+      ],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 27,
+      "normalized_answer_identical": 345,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 15,
+      "regressions_without_expected_standalone_numeric_value_present": 12,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 345
+    },
+    "raw_admit_if_fits": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [],
+      "distinct_context_case_pairs_with_regressions": [],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 0,
+      "normalized_answer_identical": 396,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 0,
+      "regressions_without_expected_standalone_numeric_value_present": 0,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 396
+    },
+    "raw_native": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [],
+      "distinct_context_case_pairs_with_regressions": [],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 0,
+      "normalized_answer_identical": 396,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 0,
+      "regressions_without_expected_standalone_numeric_value_present": 0,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 396
+    },
+    "recompute": {
+      "baseline": "rtx_attempt_3",
+      "candidate": "p100",
+      "differences": [],
+      "distinct_context_case_pairs_with_regressions": [],
+      "exact_match_improvements": 0,
+      "exact_match_regressions": 0,
+      "normalized_answer_identical": 396,
+      "paired_responses": 396,
+      "paired_started_sessions": 432,
+      "regressions_with_expected_standalone_numeric_value_present": 0,
+      "regressions_without_expected_standalone_numeric_value_present": 0,
+      "same_cache_hit_outcomes": 396,
+      "same_selected_action": 432,
+      "same_victims": 432,
+      "timing_mode": "free_generation",
+      "token_identical": 396
+    }
+  },
+  "devices": {
+    "p100": {
+      "cases": 48,
+      "cells": [
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 6,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 30,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 12,
+            "token_identical": 30
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 54,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 45,
+            "token_identical": 54
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 42,
+              "token_identical": 54
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0010"
+                ],
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 6,
+              "normalized_answer_identical": 30,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 6,
+              "same_cache_hit_outcomes": 6,
+              "token_identical": 30
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 54
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 24,
+                "recompute": 48
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 6,
+              "exact_match_correct": 18,
+              "hits": 12,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 9,
+              "exact_match_correct": 12,
+              "hits": 48,
+              "output_tokens": 201,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 18,
+              "hits": 0,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "cancellation",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 12,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 36,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 9,
+            "token_identical": 36
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0010"
+                ],
+                [
+                  512,
+                  "case-0013"
+                ],
+                [
+                  512,
+                  "case-0020"
+                ],
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 12,
+              "normalized_answer_identical": 36,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 12,
+              "same_cache_hit_outcomes": 9,
+              "token_identical": 36
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 9,
+              "exact_match_correct": 15,
+              "hits": 63,
+              "output_tokens": 261,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "pressure",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 15,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 27,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 27
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0010"
+                ],
+                [
+                  512,
+                  "case-0013"
+                ],
+                [
+                  512,
+                  "case-0016"
+                ],
+                [
+                  512,
+                  "case-0020"
+                ],
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 15,
+              "normalized_answer_identical": 27,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 27
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 12,
+              "hits": 72,
+              "output_tokens": 270,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "roomy",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 30,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 21,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 12,
+            "token_identical": 21
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 54,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 45,
+            "token_identical": 54
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 42,
+              "token_identical": 54
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0007"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 30,
+              "normalized_answer_identical": 21,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 15,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 6,
+              "token_identical": 21
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 54
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 24,
+                "recompute": 48
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 6,
+              "exact_match_correct": 51,
+              "hits": 12,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 9,
+              "exact_match_correct": 21,
+              "hits": 48,
+              "output_tokens": 621,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 51,
+              "hits": 0,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "cancellation",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 33,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 27,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 9,
+            "token_identical": 27
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0007"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0013"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 33,
+              "normalized_answer_identical": 27,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 18,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 9,
+              "token_identical": 27
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 9,
+              "exact_match_correct": 27,
+              "hits": 63,
+              "output_tokens": 843,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "pressure",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 42,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 18,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 18
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0000"
+                ],
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0007"
+                ],
+                [
+                  2048,
+                  "case-0008"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0013"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0016"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 42,
+              "normalized_answer_identical": 18,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 24,
+              "regressions_without_expected_standalone_numeric_value_present": 18,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 18
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 18,
+              "hits": 72,
+              "output_tokens": 993,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "roomy",
+          "timing_mode": "free_generation"
+        }
+      ],
+      "declared_source_commit": "b91ebb37ead55d21dabe23ef0311ae2a9d2dc697",
+      "distinct_underlying_questions": 24,
+      "git_status_record": "?? kvpilot-p100-results-20261028T141453Z.tar.gz\n?? results/p100-vm-20261028-145822/\n?? results/p100-vm-20261028-150011/\n",
+      "input_directory": "p100/run.tar.gz::local-p100-admission-20261028T180805Z",
+      "model_identity": {
+        "activation_dtype": "float16",
+        "device_type": "cuda",
+        "execution": "kvpilot_qwen25_torch_eager_v1",
+        "layout": "kvpilot_qwen25_single_sequence_bhtd_v1",
+        "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+        "prompt_format": "explicit_user_only_qwen_chatml_v1",
+        "torch_version": "2.7.1+cu126"
+      },
+      "observed_mix": {
+        "adaptive_vs_int4": {
+          "distinct_context_case_pairs_with_regressions": [],
+          "exact_match_improvements": 138,
+          "exact_match_regressions": 0,
+          "normalized_answer_identical": 159,
+          "paired_responses": 396,
+          "regressions_with_expected_standalone_numeric_value_present": 0,
+          "regressions_without_expected_standalone_numeric_value_present": 0,
+          "same_cache_hit_outcomes": 186,
+          "token_identical": 159
+        },
+        "adaptive_vs_simple_admission": {
+          "distinct_context_case_pairs_with_regressions": [],
+          "exact_match_improvements": 0,
+          "exact_match_regressions": 0,
+          "normalized_answer_identical": 396,
+          "paired_responses": 396,
+          "regressions_with_expected_standalone_numeric_value_present": 0,
+          "regressions_without_expected_standalone_numeric_value_present": 0,
+          "same_cache_hit_outcomes": 378,
+          "token_identical": 396
+        },
+        "each_policy_vs_recompute": {
+          "adaptive_eviction": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 192,
+            "token_identical": 396
+          },
+          "adaptive_exact": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "group_int4": {
+            "distinct_context_case_pairs_with_regressions": [
+              [
+                512,
+                "case-0010"
+              ],
+              [
+                512,
+                "case-0013"
+              ],
+              [
+                512,
+                "case-0016"
+              ],
+              [
+                512,
+                "case-0020"
+              ],
+              [
+                512,
+                "case-0022"
+              ],
+              [
+                2048,
+                "case-0000"
+              ],
+              [
+                2048,
+                "case-0006"
+              ],
+              [
+                2048,
+                "case-0007"
+              ],
+              [
+                2048,
+                "case-0008"
+              ],
+              [
+                2048,
+                "case-0009"
+              ],
+              [
+                2048,
+                "case-0011"
+              ],
+              [
+                2048,
+                "case-0012"
+              ],
+              [
+                2048,
+                "case-0013"
+              ],
+              [
+                2048,
+                "case-0015"
+              ],
+              [
+                2048,
+                "case-0016"
+              ],
+              [
+                2048,
+                "case-0017"
+              ],
+              [
+                2048,
+                "case-0018"
+              ],
+              [
+                2048,
+                "case-0021"
+              ],
+              [
+                2048,
+                "case-0023"
+              ]
+            ],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 138,
+            "normalized_answer_identical": 159,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 57,
+            "regressions_without_expected_standalone_numeric_value_present": 81,
+            "same_cache_hit_outcomes": 30,
+            "token_identical": 159
+          },
+          "raw_admit_if_fits": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "raw_native": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "recompute": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 396,
+            "token_identical": 396
+          }
+        },
+        "policies": {
+          "adaptive_eviction": {
+            "actions": {
+              "raw_native": 228,
+              "recompute": 204
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 12,
+            "exact_match_correct": 243,
+            "hits": 204,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "adaptive_exact": {
+            "actions": {
+              "raw_native": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 216,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "group_int4": {
+            "actions": {
+              "group_int4": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 36,
+            "exact_match_correct": 105,
+            "hits": 366,
+            "output_tokens": 3189,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "raw_admit_if_fits": {
+            "actions": {
+              "raw_native": 216,
+              "recompute": 216
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 0,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "raw_native": {
+            "actions": {
+              "raw_native": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 216,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "recompute": {
+            "actions": {
+              "recompute": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 0,
+            "exact_match_correct": 243,
+            "hits": 0,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          }
+        },
+        "timing_mode": "free_generation"
+      },
+      "outer_suite_manifest_present": false,
+      "preflight": {
+        "attention_backend": "MATH",
+        "compiled_arches": [
+          "sm_50",
+          "sm_60",
+          "sm_70",
+          "sm_75",
+          "sm_80",
+          "sm_86",
+          "sm_90"
+        ],
+        "compute_capability": [
+          6,
+          0
+        ],
+        "cuda_runtime": "12.6",
+        "device": "cuda",
+        "device_name": "Tesla P100-PCIE-16GB",
+        "evidence_type": "environment_preflight",
+        "fp16_causal_math_sdpa": "passed",
+        "fp16_matmul": "passed",
+        "model_loaded": false,
+        "ok": true,
+        "p100_ready": true,
+        "platform": "Linux-5.14.0-687.60.1.el9_8.x86_64-x86_64-with-glibc2.34",
+        "python": "3.11.18",
+        "stage": "complete",
+        "torch_version": "2.7.1+cu126",
+        "total_device_bytes": 17059545088
+      },
+      "protocol_versions": {
+        "numpy": "2.2.6",
+        "psutil": "7.0.0",
+        "safetensors": "0.5.3",
+        "tokenizers": "0.21.2",
+        "torch": "2.7.1+cu126"
+      },
+      "recorded_source_hashes_match_git": {
+        "b91ebb37ead55d21dabe23ef0311ae2a9d2dc697": {
+          "experiments/__init__.py": true,
+          "experiments/local/__init__.py": true,
+          "experiments/local/gated_delta.py": true,
+          "experiments/local/qwen_runner.py": true,
+          "experiments/local/state_codec.py": true,
+          "experiments/local/store.py": true,
+          "experiments/local/weights.py": true,
+          "experiments/torch/__init__.py": true,
+          "experiments/torch/benchmark.py": true,
+          "experiments/torch/break_even.py": true,
+          "experiments/torch/qwen_runner.py": true,
+          "experiments/torch/weights.py": true,
+          "scripts/benchmark_p100_kvpilot.py": true,
+          "scripts/validate_p100_results.py": true,
+          "src/kvpilot/__init__.py": true,
+          "src/kvpilot/cli.py": true,
+          "src/kvpilot/codecs.py": true,
+          "src/kvpilot/integrations/__init__.py": true,
+          "src/kvpilot/integrations/vllm_connector.py": true,
+          "src/kvpilot/live/__init__.py": true,
+          "src/kvpilot/live/calibration.py": true,
+          "src/kvpilot/live/recorder.py": true,
+          "src/kvpilot/policy.py": true,
+          "src/kvpilot/replay.py": true,
+          "src/kvpilot/workloads.py": true
+        },
+        "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a": {
+          "experiments/__init__.py": true,
+          "experiments/local/__init__.py": true,
+          "experiments/local/gated_delta.py": true,
+          "experiments/local/qwen_runner.py": true,
+          "experiments/local/state_codec.py": true,
+          "experiments/local/store.py": true,
+          "experiments/local/weights.py": true,
+          "experiments/torch/__init__.py": true,
+          "experiments/torch/benchmark.py": true,
+          "experiments/torch/break_even.py": true,
+          "experiments/torch/qwen_runner.py": true,
+          "experiments/torch/weights.py": true,
+          "scripts/benchmark_p100_kvpilot.py": true,
+          "scripts/validate_p100_results.py": true,
+          "src/kvpilot/__init__.py": true,
+          "src/kvpilot/cli.py": true,
+          "src/kvpilot/codecs.py": true,
+          "src/kvpilot/integrations/__init__.py": true,
+          "src/kvpilot/integrations/vllm_connector.py": true,
+          "src/kvpilot/live/__init__.py": true,
+          "src/kvpilot/live/calibration.py": true,
+          "src/kvpilot/live/recorder.py": true,
+          "src/kvpilot/policy.py": true,
+          "src/kvpilot/replay.py": true,
+          "src/kvpilot/workloads.py": true
+        }
+      },
+      "runtime_capture_present": false
+    },
+    "rtx_attempt_3": {
+      "cases": 48,
+      "cells": [
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 3,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 30,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 12,
+            "token_identical": 30
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 54,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 45,
+            "token_identical": 54
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 42,
+              "token_identical": 54
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 3,
+              "normalized_answer_identical": 30,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 3,
+              "same_cache_hit_outcomes": 6,
+              "token_identical": 30
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 54
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 24,
+                "recompute": 48
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 6,
+              "exact_match_correct": 18,
+              "hits": 12,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 9,
+              "exact_match_correct": 15,
+              "hits": 48,
+              "output_tokens": 192,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 18,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 18,
+              "hits": 0,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "cancellation",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 9,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 36,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 9,
+            "token_identical": 36
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0013"
+                ],
+                [
+                  512,
+                  "case-0020"
+                ],
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 9,
+              "normalized_answer_identical": 36,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 9,
+              "same_cache_hit_outcomes": 9,
+              "token_identical": 36
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 9,
+              "exact_match_correct": 18,
+              "hits": 63,
+              "output_tokens": 255,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 27,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "pressure",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 12,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 27,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 27
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 512,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  512,
+                  "case-0013"
+                ],
+                [
+                  512,
+                  "case-0016"
+                ],
+                [
+                  512,
+                  "case-0020"
+                ],
+                [
+                  512,
+                  "case-0022"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 12,
+              "normalized_answer_identical": 27,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 12,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 27
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 15,
+              "hits": 72,
+              "output_tokens": 264,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "roomy",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 27,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 24,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 12,
+            "token_identical": 24
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 54,
+            "paired_responses": 54,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 45,
+            "token_identical": 54
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 42,
+              "token_identical": 54
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 27,
+              "normalized_answer_identical": 24,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 12,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 6,
+              "token_identical": 24
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 39,
+              "token_identical": 54
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 54,
+              "paired_responses": 54,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 54
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 24,
+                "recompute": 48
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 6,
+              "exact_match_correct": 51,
+              "hits": 12,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 9,
+              "exact_match_correct": 24,
+              "hits": 48,
+              "output_tokens": 567,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 54,
+              "exact_match_correct": 51,
+              "hits": 15,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 18,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 18,
+              "distinct_context_case_pairs_answered": 18,
+              "eviction_events": 0,
+              "exact_match_correct": 51,
+              "hits": 0,
+              "output_tokens": 186,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 54,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "cancellation",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 27,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 33,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 9,
+            "token_identical": 33
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 27,
+              "normalized_answer_identical": 33,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 12,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 9,
+              "token_identical": 33
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 54,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 9,
+              "exact_match_correct": 33,
+              "hits": 63,
+              "output_tokens": 735,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 18,
+                "recompute": 54
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 54,
+              "exact_match_correct": 60,
+              "hits": 18,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "pressure",
+          "timing_mode": "free_generation"
+        },
+        {
+          "adaptive_vs_int4": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 33,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 27,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 27
+          },
+          "adaptive_vs_simple_admission": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 72,
+            "paired_responses": 72,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 72,
+            "token_identical": 72
+          },
+          "context_target": 2048,
+          "each_policy_vs_recompute": {
+            "adaptive_eviction": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "adaptive_exact": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "group_int4": {
+              "distinct_context_case_pairs_with_regressions": [
+                [
+                  2048,
+                  "case-0000"
+                ],
+                [
+                  2048,
+                  "case-0006"
+                ],
+                [
+                  2048,
+                  "case-0008"
+                ],
+                [
+                  2048,
+                  "case-0009"
+                ],
+                [
+                  2048,
+                  "case-0011"
+                ],
+                [
+                  2048,
+                  "case-0012"
+                ],
+                [
+                  2048,
+                  "case-0015"
+                ],
+                [
+                  2048,
+                  "case-0017"
+                ],
+                [
+                  2048,
+                  "case-0018"
+                ],
+                [
+                  2048,
+                  "case-0021"
+                ],
+                [
+                  2048,
+                  "case-0023"
+                ]
+              ],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 33,
+              "normalized_answer_identical": 27,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 18,
+              "regressions_without_expected_standalone_numeric_value_present": 15,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 27
+            },
+            "raw_admit_if_fits": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "raw_native": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 0,
+              "token_identical": 72
+            },
+            "recompute": {
+              "distinct_context_case_pairs_with_regressions": [],
+              "exact_match_improvements": 0,
+              "exact_match_regressions": 0,
+              "normalized_answer_identical": 72,
+              "paired_responses": 72,
+              "regressions_with_expected_standalone_numeric_value_present": 0,
+              "regressions_without_expected_standalone_numeric_value_present": 0,
+              "same_cache_hit_outcomes": 72,
+              "token_identical": 72
+            }
+          },
+          "policies": {
+            "adaptive_eviction": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "adaptive_exact": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "group_int4": {
+              "actions": {
+                "group_int4": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 27,
+              "hits": 72,
+              "output_tokens": 828,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_admit_if_fits": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "raw_native": {
+              "actions": {
+                "raw_native": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 72,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            },
+            "recompute": {
+              "actions": {
+                "recompute": 72
+              },
+              "cancellations": 0,
+              "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+              "distinct_base_cases_answered": 24,
+              "distinct_context_case_pairs_answered": 24,
+              "eviction_events": 0,
+              "exact_match_correct": 60,
+              "hits": 0,
+              "output_tokens": 240,
+              "repeats": [
+                0,
+                1,
+                2
+              ],
+              "responses": 72,
+              "sessions": 72,
+              "truncated": 0
+            }
+          },
+          "scenario": "roomy",
+          "timing_mode": "free_generation"
+        }
+      ],
+      "declared_source_commit": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a",
+      "distinct_underlying_questions": 24,
+      "git_status_record": "",
+      "input_directory": "rtx5060ti/run.tar.gz::local-rtx5060ti-replication",
+      "model_identity": {
+        "activation_dtype": "float16",
+        "device_type": "cuda",
+        "execution": "kvpilot_qwen25_torch_eager_v1",
+        "layout": "kvpilot_qwen25_single_sequence_bhtd_v1",
+        "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+        "prompt_format": "explicit_user_only_qwen_chatml_v1",
+        "torch_version": "2.7.1+cu128"
+      },
+      "observed_mix": {
+        "adaptive_vs_int4": {
+          "distinct_context_case_pairs_with_regressions": [],
+          "exact_match_improvements": 111,
+          "exact_match_regressions": 0,
+          "normalized_answer_identical": 177,
+          "paired_responses": 396,
+          "regressions_with_expected_standalone_numeric_value_present": 0,
+          "regressions_without_expected_standalone_numeric_value_present": 0,
+          "same_cache_hit_outcomes": 186,
+          "token_identical": 177
+        },
+        "adaptive_vs_simple_admission": {
+          "distinct_context_case_pairs_with_regressions": [],
+          "exact_match_improvements": 0,
+          "exact_match_regressions": 0,
+          "normalized_answer_identical": 396,
+          "paired_responses": 396,
+          "regressions_with_expected_standalone_numeric_value_present": 0,
+          "regressions_without_expected_standalone_numeric_value_present": 0,
+          "same_cache_hit_outcomes": 378,
+          "token_identical": 396
+        },
+        "each_policy_vs_recompute": {
+          "adaptive_eviction": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 192,
+            "token_identical": 396
+          },
+          "adaptive_exact": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "group_int4": {
+            "distinct_context_case_pairs_with_regressions": [
+              [
+                512,
+                "case-0013"
+              ],
+              [
+                512,
+                "case-0016"
+              ],
+              [
+                512,
+                "case-0020"
+              ],
+              [
+                512,
+                "case-0022"
+              ],
+              [
+                2048,
+                "case-0000"
+              ],
+              [
+                2048,
+                "case-0006"
+              ],
+              [
+                2048,
+                "case-0008"
+              ],
+              [
+                2048,
+                "case-0009"
+              ],
+              [
+                2048,
+                "case-0011"
+              ],
+              [
+                2048,
+                "case-0012"
+              ],
+              [
+                2048,
+                "case-0015"
+              ],
+              [
+                2048,
+                "case-0017"
+              ],
+              [
+                2048,
+                "case-0018"
+              ],
+              [
+                2048,
+                "case-0021"
+              ],
+              [
+                2048,
+                "case-0023"
+              ]
+            ],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 111,
+            "normalized_answer_identical": 177,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 42,
+            "regressions_without_expected_standalone_numeric_value_present": 69,
+            "same_cache_hit_outcomes": 30,
+            "token_identical": 177
+          },
+          "raw_admit_if_fits": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "raw_native": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 186,
+            "token_identical": 396
+          },
+          "recompute": {
+            "distinct_context_case_pairs_with_regressions": [],
+            "exact_match_improvements": 0,
+            "exact_match_regressions": 0,
+            "normalized_answer_identical": 396,
+            "paired_responses": 396,
+            "regressions_with_expected_standalone_numeric_value_present": 0,
+            "regressions_without_expected_standalone_numeric_value_present": 0,
+            "same_cache_hit_outcomes": 396,
+            "token_identical": 396
+          }
+        },
+        "policies": {
+          "adaptive_eviction": {
+            "actions": {
+              "raw_native": 228,
+              "recompute": 204
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 12,
+            "exact_match_correct": 243,
+            "hits": 204,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "adaptive_exact": {
+            "actions": {
+              "raw_native": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 216,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "group_int4": {
+            "actions": {
+              "group_int4": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 36,
+            "exact_match_correct": 132,
+            "hits": 366,
+            "output_tokens": 2841,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "raw_admit_if_fits": {
+            "actions": {
+              "raw_native": 216,
+              "recompute": 216
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 0,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "raw_native": {
+            "actions": {
+              "raw_native": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 216,
+            "exact_match_correct": 243,
+            "hits": 210,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          },
+          "recompute": {
+            "actions": {
+              "recompute": 432
+            },
+            "cancellations": 36,
+            "context_scenario_cases_with_tokens_changing_across_repeats": 0,
+            "distinct_base_cases_answered": 24,
+            "distinct_context_case_pairs_answered": 48,
+            "eviction_events": 0,
+            "exact_match_correct": 243,
+            "hits": 0,
+            "output_tokens": 1332,
+            "repeats": [
+              0,
+              1,
+              2
+            ],
+            "responses": 396,
+            "sessions": 432,
+            "truncated": 0
+          }
+        },
+        "timing_mode": "free_generation"
+      },
+      "outer_suite_manifest_present": true,
+      "preflight": {
+        "attention_backend": "MATH",
+        "compiled_arches": [
+          "sm_75",
+          "sm_80",
+          "sm_86",
+          "sm_90",
+          "sm_100",
+          "sm_120",
+          "compute_120"
+        ],
+        "compute_capability": [
+          12,
+          0
+        ],
+        "cuda_runtime": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 5060 Ti",
+        "evidence_type": "environment_preflight",
+        "fp16_causal_math_sdpa": "passed",
+        "fp16_matmul": "passed",
+        "model_loaded": false,
+        "ok": true,
+        "p100_ready": false,
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+        "python": "3.11.18",
+        "stage": "complete",
+        "torch_version": "2.7.1+cu128",
+        "total_device_bytes": 16619667456
+      },
+      "protocol_versions": {
+        "numpy": "2.2.6",
+        "psutil": "7.0.0",
+        "safetensors": "0.5.3",
+        "tokenizers": "0.21.2",
+        "torch": "2.7.1+cu128"
+      },
+      "recorded_source_hashes_match_git": {
+        "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a": {
+          "experiments/__init__.py": true,
+          "experiments/local/__init__.py": true,
+          "experiments/local/gated_delta.py": true,
+          "experiments/local/qwen_runner.py": true,
+          "experiments/local/state_codec.py": true,
+          "experiments/local/store.py": true,
+          "experiments/local/weights.py": true,
+          "experiments/torch/__init__.py": true,
+          "experiments/torch/benchmark.py": true,
+          "experiments/torch/break_even.py": true,
+          "experiments/torch/qwen_runner.py": true,
+          "experiments/torch/weights.py": true,
+          "scripts/benchmark_p100_kvpilot.py": true,
+          "scripts/validate_p100_results.py": true,
+          "src/kvpilot/__init__.py": true,
+          "src/kvpilot/cli.py": true,
+          "src/kvpilot/codecs.py": true,
+          "src/kvpilot/integrations/__init__.py": true,
+          "src/kvpilot/integrations/vllm_connector.py": true,
+          "src/kvpilot/live/__init__.py": true,
+          "src/kvpilot/live/calibration.py": true,
+          "src/kvpilot/live/recorder.py": true,
+          "src/kvpilot/policy.py": true,
+          "src/kvpilot/replay.py": true,
+          "src/kvpilot/workloads.py": true
+        }
+      },
+      "runtime_capture_present": true
+    }
+  },
+  "equal_work_adaptive_actions_for_scope_contrast": {
+    "p100": {
+      "raw_native": 233,
+      "recompute": 199
+    },
+    "rtx_attempt_3": {
+      "raw_native": 228,
+      "recompute": 204
+    }
+  },
+  "equal_work_continuations": {
+    "all_have_24_steps_on_both_devices": true,
+    "differences": [
+      {
+        "case_id": "case-0002",
+        "context_target": 512,
+        "first_differing_zero_based_index": 7,
+        "p100_token_ids": [
+          16,
+          17,
+          151645,
+          198,
+          151643,
+          33975,
+          25,
+          16246,
+          279,
+          2701,
+          2266,
+          25,
+          330,
+          785,
+          220,
+          16,
+          24,
+          24,
+          15,
+          82,
+          5485,
+          264,
+          5089,
+          5263
+        ],
+        "rtx_token_ids": [
+          16,
+          17,
+          151645,
+          198,
+          151643,
+          33975,
+          25,
+          3555,
+          374,
+          279,
+          2629,
+          315,
+          279,
+          1378,
+          3783,
+          3039,
+          369,
+          2473,
+          62,
+          18,
+          21,
+          21,
+          15,
+          16
+        ]
+      }
+    ],
+    "identical": 47,
+    "paired_context_cases": 48,
+    "scope": "Each device freezes its own native continuation. Equal step count and tensor shapes do not establish identical token inputs across devices."
+  },
+  "evidence_type": "independent_p100_vs_rtx_attempt_3_quality_and_input_review",
+  "pinned_validator_commit": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a",
+  "pinned_validator_source_sha256": "fe6ad7045a276f9424f28c7d2f1ee2723e5db5e4c0720cce11a4d744cf6fc2d2",
+  "schema_version": 1,
+  "scope": {
+    "action_identity_scope": "Cross-device action, victim and hit identity counts in this quality review refer only to free_generation. Equal_work choices differ; their separately computed adaptive action counts are supplied only to make this scope distinction explicit.",
+    "device_caveat": "P100 CUDA 12.6 / Torch cu126 and RTX CUDA 12.8 / Torch cu128 run on different host systems. P100 lacks the matching runtime CPU/thread/TF32/cgroup snapshot; these controls cannot be asserted identical.",
+    "first_rtx_attempt_pooled": false,
+    "format_diagnostic": "Expected numeric occurrence is a literal diagnostic only. Some exact-match failures contain the correct value with added text; no semantic rescoring is applied.",
+    "free_generation_timing": "Free-generation lengths differ under INT4; they must not be used as equal-work speedup evidence.",
+    "general_quality_certification": false,
+    "gpu_only_causal_timing_claim": false,
+    "input_or_repository_modified": false,
+    "integrity_caveat": "Per-run hashes/accounting/scores are independently audited. This is not hardware attestation. P100 has no supplied outer suite manifest.",
+    "new_inference": false,
+    "remote_actions": false,
+    "repeat_caveat": "24 underlying generated questions, 48 context variants, three repeats and repeated scenarios; response totals are not independent quality samples.",
+    "scoring": "Predefined whitespace-normalized exact answer, with truncation scored incorrect, independently recomputed from stored answers and fixture truth.",
+    "source_caveat": "Declared Git commits differ, but all 25 recorded execution source files match both commits and each other. This does not assert identical entire repositories or environments."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "evidence_type": "experiment_attempt_history",
+  "primary_comparison": "p100 complete suite versus RTX attempt 3 complete suite",
+  "attempts": [
+    {
+      "attempt": 1,
+      "full_timing_available": true,
+      "full_quality_available": false,
+      "pooled_with_primary": false,
+      "outcome": "Full quality bundle not retrieved before watchdog destruction; completed timing preserved. Later modeled sweep is separate sensitivity analysis.",
+      "timing_archive": "rtx-attempt-1-timing.tar.gz",
+      "modeled_sweep_archive": "rtx-attempt-1-modeled-sweep.tar.gz",
+      "provider_reported_usd": 0.433
+    },
+    {
+      "attempt": 2,
+      "useful_benchmark_evidence": false,
+      "pooled_with_primary": false,
+      "outcome": "Startup was interrupted; instance subsequently absent. Disappearance cause not established.",
+      "provider_reported_usd": 0.0
+    },
+    {
+      "attempt": 3,
+      "full_timing_available": true,
+      "full_quality_available": true,
+      "pooled_with_primary": true,
+      "outcome": "Complete suite downloaded and verified, then rental destroyed.",
+      "elapsed_rental_seconds": 5293.963318109512,
+      "provider_reported_usd": 0.224
+    }
+  ],
+  "billing_snapshot_utc": "2026-10-29T05:21:55.526973+00:00",
+  "provider_reported_total_usd": 0.657,
+  "remaining_instances_at_snapshot": 0,
+  "billing_scope": "Provider displayed precision; later adjustments possible. Parent totals only, without double-counting components. These are experiment expenditures, not customer savings.",
+  "credential_cleanup": "Temporary account API-key copies and experiment SSH private keys removed after provider absence verification; account key itself was not revoked."
+}

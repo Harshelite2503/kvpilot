@@ -1,5 +1,7 @@
 # From the first P100 run to a useful product
 
+> **Historical plan, superseded on 29 October 2026.** The proposed admission/equal-work experiment is now complete on P100 and RTX 5060 Ti. Adaptive loses to simple admission in the balanced workload on both systems. Follow the [new measured findings](policy-replication-2026-10-29.md) and [current product plan](product-plan-2026-10-29.md). In particular, the stronger-codec/GPU-compression sequence below is deferred until a measured deployment bottleneck justifies it. This document is retained to show what was proposed before seeing the results.
+
 Research checked **28 October 2026**. This is a proposed engineering and customer-validation plan, not a list of implemented features or a promise of YC acceptance. The [existing review](research.md) covers CacheGen, KVTC, Attention Matching, current storage frameworks and other close prior art. The [P100 record](p100-results-2026-10-28.md) is the empirical starting point.
 
 ## Decision: test admission value before inventing another compressor
