@@ -1,0 +1,966 @@
+{
+  "evidence_type": "independent_cross_hardware_recorded_controls_review",
+  "reviewed_utc": "2026-10-29T05:32:23.695734+00:00",
+  "inputs": {
+    "p100": "p100/run.tar.gz::local-p100-admission-20261028T180805Z",
+    "rtx": "rtx5060ti/run.tar.gz::local-rtx5060ti-replication"
+  },
+  "all_eight_pinned_artifact_audits_passed": true,
+  "source": {
+    "pinned_reference_commit": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a",
+    "recorded_commits": {
+      "p100": "b91ebb37ead55d21dabe23ef0311ae2a9d2dc697",
+      "rtx": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a"
+    },
+    "commit_labels_identical": false,
+    "recorded_source_file_count": 25,
+    "changed_paths_between_commits": [
+      ".github/workflows/ci.yml",
+      ".gitignore",
+      "README.md",
+      "docs/eviction-results-measured-costs.md",
+      "docs/eviction-results.md",
+      "docs/next-experiments.md",
+      "docs/p100-admission-experiment.md",
+      "docs/testing.md",
+      "docs/yc-strategy.md",
+      "examples/holdout-protocol-measured-costs.json",
+      "requirements-ci.txt",
+      "results/admission-readiness-mac-checks/README.md",
+      "results/admission-readiness-mac-checks/artifact-sha256.json",
+      "results/admission-readiness-mac-checks/model-check.log",
+      "results/admission-readiness-mac-checks/preflight.json",
+      "results/admission-readiness-mac-checks/source-commit.txt",
+      "results/admission-readiness-mac-checks/sweep.tar.gz",
+      "results/admission-readiness-mac-checks/tests.xml",
+      "results/admission-readiness-mac-equal-work/record-sha256.json",
+      "results/admission-readiness-mac-equal-work/record.json",
+      "results/admission-readiness-mac-equal-work/report.md",
+      "results/admission-readiness-mac-equal-work/run.tar.gz",
+      "results/admission-readiness-mac-equal-work/validation.json",
+      "results/admission-readiness-mac-free-generation/record-sha256.json",
+      "results/admission-readiness-mac-free-generation/record.json",
+      "results/admission-readiness-mac-free-generation/report.md",
+      "results/admission-readiness-mac-free-generation/run.tar.gz",
+      "results/admission-readiness-mac-free-generation/validation.json",
+      "results/eviction-freeze-measured-costs-v1.json",
+      "results/eviction-holdout-measured-costs-v1/manifest.json",
+      "results/eviction-holdout-measured-costs-v1/runs.jsonl",
+      "results/eviction-holdout-measured-costs-v1/summary.json",
+      "scripts/check_regression_evidence.py",
+      "tests/test_regression_evidence.py"
+    ],
+    "changed_recorded_runner_sources": [],
+    "pinned_source_sha256": {
+      "experiments/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiments/local/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiments/local/gated_delta.py": "11fb79db1490d3927e9ca07085b83e614768dd2d1c30961fcfa171b5d60332c3",
+      "experiments/local/qwen_runner.py": "97f378447ee0bc4b0c595a3cbc33901927d9a323e98169999f62146e0c99ad39",
+      "experiments/local/state_codec.py": "58b2162da0c99d7cbf0c45181003a245d162dd48c851e4ad736cc3e10b638256",
+      "experiments/local/store.py": "b7849cb9d8042e8fba410a5da5b2a661009c7ac399b8ed85ab0b9b191b1e8be2",
+      "experiments/local/weights.py": "3323b9c578e1f8335f9a14da5731e13580bf857ea51db00dd3b8b89fcb5fa504",
+      "experiments/torch/__init__.py": "f45e1f33e4803cca8dd105441bf28b46fd225c39c02abb96b9f5379fd9c8cceb",
+      "experiments/torch/benchmark.py": "eddbc26e12028fc06de446baf7226b38a5dcaf37e61463bbdf9e25d563b1aeea",
+      "experiments/torch/break_even.py": "76c0bb10f093e6f22d92aa7c2c1887073af4151a5bc66ba39cb6855fef8f23ee",
+      "experiments/torch/qwen_runner.py": "ec9c6e894284034c5757f8775d69d63fb8acf07b0853a6e30eea9294a9fe3ffa",
+      "experiments/torch/weights.py": "a846bc71f2f077b83c52c49a043f73e3b9041e6def7cba98cd2f4658e28c837b",
+      "scripts/benchmark_p100_kvpilot.py": "42aafad53ab84d00fc5b835883323d1285785102e72b3671f294c80b2ffa69cc",
+      "scripts/validate_p100_results.py": "fe6ad7045a276f9424f28c7d2f1ee2723e5db5e4c0720cce11a4d744cf6fc2d2",
+      "src/kvpilot/__init__.py": "0e22df96df5280fae83b84aa933fd2fb1684dd7419f7f62b87aa4fa99e39ddd4",
+      "src/kvpilot/cli.py": "64e3c6e3e107d704396e7ae9017dfa8afe0fb51191fdc1f1ad47913d24f74365",
+      "src/kvpilot/codecs.py": "ab14c4d0e1999b1d7864880dc2c1d3ada13a3f4bcaf35e7e57702a64189dbc12",
+      "src/kvpilot/integrations/__init__.py": "aa585271e54798d3e825a74aaeeb501fa7529be41a9f8a257f398db8650937ab",
+      "src/kvpilot/integrations/vllm_connector.py": "c699ea26b165b41a3559a8297d8fb59dc63bca37bb3822de106f01f2141ec28b",
+      "src/kvpilot/live/__init__.py": "cda03eeac4b73987fce669fde34b4a11c5b60c40513f7e7e69e6fd9a654e4ea5",
+      "src/kvpilot/live/calibration.py": "433f544e61f2b04ed9ab9e61806abaede19c1c4f7496b94f26f52bf76de7125f",
+      "src/kvpilot/live/recorder.py": "8ec2179863a240a1e53e16037e79830cb263ac7cc982ebc6d994628d5fd01e24",
+      "src/kvpilot/policy.py": "4c1f12a7171d8d1a32ce95caf258a8fb7981e4e6b12172bf5c356396071fe71a",
+      "src/kvpilot/replay.py": "1aee59ac611fa8cfea5877b311c93b0108b7edec7495e63a28bd9afef1dfa10b",
+      "src/kvpilot/workloads.py": "685e17c9c947e8a7f1aa43452f6596badc78f4cd8cdf49ff7afa0f7b8eeebb50"
+    },
+    "unrecorded_but_relevant_git_files": {
+      "scripts/run_p100_admission_suite.sh": {
+        "p100_sha256": "a19c8a84d382db61c1bf90735f6fe818efc2b249fd895e9454db4205585364a9",
+        "rtx_sha256": "a19c8a84d382db61c1bf90735f6fe818efc2b249fd895e9454db4205585364a9",
+        "identical_git_blobs": true
+      },
+      "scripts/sweep_p100_break_even.py": {
+        "p100_sha256": "d8074e7a20317c0378508b239be8e6d0a936332ed2a270bd9ce9408564bccb9b",
+        "rtx_sha256": "d8074e7a20317c0378508b239be8e6d0a936332ed2a270bd9ce9408564bccb9b",
+        "identical_git_blobs": true
+      },
+      "experiments/torch/requirements.txt": {
+        "p100_sha256": "92a3723d29ad505a65fa9eb0456ee7390b8ca025047f380daf6f3fc6e184ab55",
+        "rtx_sha256": "92a3723d29ad505a65fa9eb0456ee7390b8ca025047f380daf6f3fc6e184ab55",
+        "identical_git_blobs": true
+      },
+      "experiments/torch/requirements-p100.txt": {
+        "p100_sha256": "b6ac31ec7072fe05edbecac8545100dec48711a044e52c133dd512369b776e6d",
+        "rtx_sha256": "b6ac31ec7072fe05edbecac8545100dec48711a044e52c133dd512369b776e6d",
+        "identical_git_blobs": true
+      }
+    },
+    "git_status": {
+      "p100": [
+        "?? kvpilot-p100-results-20261028T141453Z.tar.gz",
+        "?? results/p100-vm-20261028-145822/",
+        "?? results/p100-vm-20261028-150011/"
+      ],
+      "rtx": []
+    },
+    "all_eight_runs_match_pinned_source_hashes": true,
+    "p100_commit_runner_blobs_match_reference": true
+  },
+  "outer_integrity": {
+    "p100": {
+      "present": false,
+      "valid": null,
+      "limitation": "Per-run artifacts validate; suite-level logs, test XML and source-commit label lack an enclosing supplied SHA256 manifest."
+    },
+    "rtx": {
+      "present": true,
+      "valid": true,
+      "files_checked": 95
+    }
+  },
+  "runs": {
+    "smoke-equal_work": {
+      "sides": {
+        "p100": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 48,
+            "events_checked": 96,
+            "blocks_checked": 12,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "eb6001e05098de2bbbc7586df58e057be3dd55207387abbabf88dd78a043b786",
+          "protocol_sha256": "069f82f476e4da0319bfc589b4fda0a6ef1fccd21431d1b54ce7fd59e041fe23",
+          "fixture_sha256": "3c211dd057860d1b87797ec9386ebc180e849eaaba20f8aa8150b2305e7bba0f",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        },
+        "rtx": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 48,
+            "events_checked": 96,
+            "blocks_checked": 12,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "96e7230ac0070f4c10c2dc2ce3f2c67d2850f60d889487ce5166cbfee76b1e95",
+          "protocol_sha256": "1696b89bcd197ce0f9240db3a62de29dd6c46681a4d27231f6e3f1809ff5cb54",
+          "fixture_sha256": "1d3bac14222a75e7d1c2418723b4fad51bbbaed72b4d7503ea998ab9db5f381a",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        }
+      },
+      "canonical_arguments": {
+        "device": "cuda",
+        "timing_mode": "equal_work",
+        "contexts": [
+          256
+        ],
+        "cases": 4,
+        "repeats": 1,
+        "group_size": 4,
+        "scenarios": [
+          "roomy",
+          "pressure"
+        ],
+        "max_tokens": 24,
+        "chunk_size": 128,
+        "seed": 20261102,
+        "smoke": true,
+        "allow_unvalidated_lossy": true
+      },
+      "args_identical_except_model_and_output_paths": true,
+      "model_file_hashes_and_sizes_identical": true,
+      "model_identity_identical_except_torch_cuda_build": true,
+      "budgets_identical": true,
+      "job_order_and_event_schedules_identical": true,
+      "protocol_fields_differing": [
+        "created_utc",
+        "fixture_sha256",
+        "platform",
+        "device_name",
+        "cuda_version",
+        "versions",
+        "model_identity",
+        "args",
+        "warmup"
+      ],
+      "fixture_comparison_by_context": {
+        "256": {
+          "case_count": 4,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": true,
+          "identical_fixed_continuations": 4,
+          "fixed_continuation_differences": []
+        }
+      }
+    },
+    "smoke-free_generation": {
+      "sides": {
+        "p100": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 48,
+            "events_checked": 96,
+            "blocks_checked": 12,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "aa9736c362e72520b70c45ddded67a3bd4dd30d6d5d4c1044cd1ce1cbe669b6f",
+          "protocol_sha256": "aa4f3592c92ba1e3410ba0d338a00d729f2aae8e6a26e7094130995a4cedd4bd",
+          "fixture_sha256": "f1403313278fbcb1e322beb29b4b5a6cb292b9008e124c746c35a35ae26b5bb2",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        },
+        "rtx": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 48,
+            "events_checked": 96,
+            "blocks_checked": 12,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "475b398549e5d4c94b2157cd1ab13157a4264716fe2b13017bae92c8d5de9101",
+          "protocol_sha256": "d3183b3b5a22a3e0dc1192f6171e7e2b703a9785a590b775250c4cb662478edd",
+          "fixture_sha256": "f1403313278fbcb1e322beb29b4b5a6cb292b9008e124c746c35a35ae26b5bb2",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        }
+      },
+      "canonical_arguments": {
+        "device": "cuda",
+        "timing_mode": "free_generation",
+        "contexts": [
+          256
+        ],
+        "cases": 4,
+        "repeats": 1,
+        "group_size": 4,
+        "scenarios": [
+          "roomy",
+          "pressure"
+        ],
+        "max_tokens": 24,
+        "chunk_size": 128,
+        "seed": 20261102,
+        "smoke": true,
+        "allow_unvalidated_lossy": true
+      },
+      "args_identical_except_model_and_output_paths": true,
+      "model_file_hashes_and_sizes_identical": true,
+      "model_identity_identical_except_torch_cuda_build": true,
+      "budgets_identical": true,
+      "job_order_and_event_schedules_identical": true,
+      "protocol_fields_differing": [
+        "created_utc",
+        "platform",
+        "device_name",
+        "cuda_version",
+        "versions",
+        "model_identity",
+        "args",
+        "warmup"
+      ],
+      "fixture_comparison_by_context": {
+        "256": {
+          "case_count": 4,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": false,
+          "identical_fixed_continuations": null,
+          "fixed_continuation_differences": []
+        }
+      }
+    },
+    "full-equal_work": {
+      "sides": {
+        "p100": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 2592,
+            "events_checked": 5184,
+            "blocks_checked": 108,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "2ffe9992676a95cb4f2947edfdc8c3ddadcbb9ff4edc1463296af214cc430381",
+          "protocol_sha256": "0cabcb2d1f3a40c02896bd78c7b189d935529c79b547bb0ca0ea77cf76ae77b3",
+          "fixture_sha256": "3d37fef7c6de009a4787d3b4f1e28e6198adb37f12157c1101ecff853a226fa9",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        },
+        "rtx": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 2592,
+            "events_checked": 5184,
+            "blocks_checked": 108,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "d9d8bcc0d6339cd4485e9d57f085d0d11ca0fc007e91018bb3721ce9f806934c",
+          "protocol_sha256": "33a8fee672dc5ebd11545fc1768ac9372a968e56d08b1edd63d03f87454aec8e",
+          "fixture_sha256": "97a2b56d4613a613d63600c8b3949a05a2ee7cdccb83cf127ced896cf0a24544",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        }
+      },
+      "canonical_arguments": {
+        "device": "cuda",
+        "timing_mode": "equal_work",
+        "contexts": [
+          512,
+          2048
+        ],
+        "cases": 24,
+        "repeats": 3,
+        "group_size": 8,
+        "scenarios": [
+          "roomy",
+          "pressure",
+          "cancellation"
+        ],
+        "max_tokens": 24,
+        "chunk_size": 128,
+        "seed": 20261102,
+        "smoke": false,
+        "allow_unvalidated_lossy": true
+      },
+      "args_identical_except_model_and_output_paths": true,
+      "model_file_hashes_and_sizes_identical": true,
+      "model_identity_identical_except_torch_cuda_build": true,
+      "budgets_identical": true,
+      "job_order_and_event_schedules_identical": true,
+      "protocol_fields_differing": [
+        "created_utc",
+        "fixture_sha256",
+        "platform",
+        "device_name",
+        "cuda_version",
+        "versions",
+        "model_identity",
+        "args",
+        "warmup"
+      ],
+      "fixture_comparison_by_context": {
+        "512": {
+          "case_count": 24,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": true,
+          "identical_fixed_continuations": 23,
+          "fixed_continuation_differences": [
+            {
+              "case_id": "case-0002",
+              "p100_tokens": [
+                16,
+                17,
+                151645,
+                198,
+                151643,
+                33975,
+                25,
+                16246,
+                279,
+                2701,
+                2266,
+                25,
+                330,
+                785,
+                220,
+                16,
+                24,
+                24,
+                15,
+                82,
+                5485,
+                264,
+                5089,
+                5263
+              ],
+              "rtx_tokens": [
+                16,
+                17,
+                151645,
+                198,
+                151643,
+                33975,
+                25,
+                3555,
+                374,
+                279,
+                2629,
+                315,
+                279,
+                1378,
+                3783,
+                3039,
+                369,
+                2473,
+                62,
+                18,
+                21,
+                21,
+                15,
+                16
+              ],
+              "p100_length": 24,
+              "rtx_length": 24,
+              "different_zero_based_positions": [
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23
+              ]
+            }
+          ]
+        },
+        "2048": {
+          "case_count": 24,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": true,
+          "identical_fixed_continuations": 24,
+          "fixed_continuation_differences": []
+        }
+      }
+    },
+    "full-free_generation": {
+      "sides": {
+        "p100": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 2592,
+            "events_checked": 5184,
+            "blocks_checked": 108,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "f6840fd3fbbad0ddc46102fa2c506c4c3661664638d1e6b303b6a921f77e7198",
+          "protocol_sha256": "0134b46f65e6c02e2688a880f4dc9b84638087ae736060c40a725605785cd511",
+          "fixture_sha256": "9f3afa78ccb5ea1bac9ea4c53ba00b176b6d9eb339965651abc603f487da2f72",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        },
+        "rtx": {
+          "validator": {
+            "valid": true,
+            "sessions_checked": 2592,
+            "events_checked": 5184,
+            "blocks_checked": 108,
+            "scope": "independent artifact/accounting/score audit; does not rerun inference or prove performance/quality generalization"
+          },
+          "artifact_manifest_sha256": "4a8d3f81f3b4d7d41620d702709402da1a1d93268fb40b50e2ba3cbc4b2728e5",
+          "protocol_sha256": "85164b59fa1e6269227c14f82c14b22635ee68b5933015cd3c25e61916a40e69",
+          "fixture_sha256": "9f3afa78ccb5ea1bac9ea4c53ba00b176b6d9eb339965651abc603f487da2f72",
+          "source_matches_pinned_commit": true,
+          "arguments_match_expected": true,
+          "jobs_and_schedules_match_expected": true
+        }
+      },
+      "canonical_arguments": {
+        "device": "cuda",
+        "timing_mode": "free_generation",
+        "contexts": [
+          512,
+          2048
+        ],
+        "cases": 24,
+        "repeats": 3,
+        "group_size": 8,
+        "scenarios": [
+          "roomy",
+          "pressure",
+          "cancellation"
+        ],
+        "max_tokens": 24,
+        "chunk_size": 128,
+        "seed": 20261102,
+        "smoke": false,
+        "allow_unvalidated_lossy": true
+      },
+      "args_identical_except_model_and_output_paths": true,
+      "model_file_hashes_and_sizes_identical": true,
+      "model_identity_identical_except_torch_cuda_build": true,
+      "budgets_identical": true,
+      "job_order_and_event_schedules_identical": true,
+      "protocol_fields_differing": [
+        "created_utc",
+        "platform",
+        "device_name",
+        "cuda_version",
+        "versions",
+        "model_identity",
+        "args",
+        "warmup"
+      ],
+      "fixture_comparison_by_context": {
+        "512": {
+          "case_count": 24,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": false,
+          "identical_fixed_continuations": null,
+          "fixed_continuation_differences": []
+        },
+        "2048": {
+          "case_count": 24,
+          "all_prompt_text_and_token_inputs_identical": true,
+          "case_order_identical": true,
+          "fixed_continuations_applicable": false,
+          "identical_fixed_continuations": null,
+          "fixed_continuation_differences": []
+        }
+      }
+    }
+  },
+  "model": {
+    "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+    "loaded_file_sha256": {
+      "config.json": "18e18afcaccafade98daf13a54092927904649e1dd4eba8299ab717d5d94ff45",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "model.safetensors": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+      "generation_config.json": "e558847a8b4402616f1273797b015104dc266fe4b520056fca88823ba8f8ebe6"
+    },
+    "loaded_file_bytes": {
+      "config.json": 659,
+      "tokenizer.json": 7031645,
+      "model.safetensors": 988097824,
+      "tokenizer_config.json": 7305,
+      "generation_config.json": 242
+    },
+    "loaded_model_files_identical_on_both_systems": true,
+    "loaded_file_hashes_and_sizes_match_pinned_repository_manifest": true,
+    "pinned_model_repo": "Qwen/Qwen2.5-0.5B-Instruct",
+    "pinned_model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "expected_hashes_verified_field": {
+      "p100": false,
+      "rtx": false
+    },
+    "note": "Loader reports expected_hashes_verified=false; separate offline model-check logs report manifest verification. The recorded five actually loaded file hashes match across systems."
+  },
+  "runtime": {
+    "preflight": {
+      "p100": {
+        "evidence_type": "environment_preflight",
+        "device": "cuda",
+        "python": "3.11.18",
+        "platform": "Linux-5.14.0-687.60.1.el9_8.x86_64-x86_64-with-glibc2.34",
+        "ok": true,
+        "p100_ready": true,
+        "stage": "complete",
+        "torch_version": "2.7.1+cu126",
+        "cuda_runtime": "12.6",
+        "device_name": "Tesla P100-PCIE-16GB",
+        "compute_capability": [
+          6,
+          0
+        ],
+        "compiled_arches": [
+          "sm_50",
+          "sm_60",
+          "sm_70",
+          "sm_75",
+          "sm_80",
+          "sm_86",
+          "sm_90"
+        ],
+        "total_device_bytes": 17059545088,
+        "fp16_matmul": "passed",
+        "fp16_causal_math_sdpa": "passed",
+        "attention_backend": "MATH",
+        "model_loaded": false
+      },
+      "rtx": {
+        "evidence_type": "environment_preflight",
+        "device": "cuda",
+        "python": "3.11.18",
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+        "ok": true,
+        "p100_ready": false,
+        "stage": "complete",
+        "torch_version": "2.7.1+cu128",
+        "cuda_runtime": "12.8",
+        "device_name": "NVIDIA GeForce RTX 5060 Ti",
+        "compute_capability": [
+          12,
+          0
+        ],
+        "compiled_arches": [
+          "sm_75",
+          "sm_80",
+          "sm_86",
+          "sm_90",
+          "sm_100",
+          "sm_120",
+          "compute_120"
+        ],
+        "total_device_bytes": 16619667456,
+        "fp16_matmul": "passed",
+        "fp16_causal_math_sdpa": "passed",
+        "attention_backend": "MATH",
+        "model_loaded": false
+      }
+    },
+    "recorded_direct_package_versions": {
+      "p100": {
+        "numpy": "2.2.6",
+        "tokenizers": "0.21.2",
+        "safetensors": "0.5.3",
+        "psutil": "7.0.0",
+        "torch": "2.7.1+cu126"
+      },
+      "rtx": {
+        "numpy": "2.2.6",
+        "tokenizers": "0.21.2",
+        "safetensors": "0.5.3",
+        "psutil": "7.0.0",
+        "torch": "2.7.1+cu128"
+      }
+    },
+    "python_3_11_18_on_both": true,
+    "p100_runtime_sidecar_supplied": false,
+    "p100_missing_comparability_metadata": [
+      "CPU model and effective allocation",
+      "Torch intra/inter-op thread counts",
+      "CPU affinity",
+      "cgroup CPU quota",
+      "TF32 and deterministic/precision defaults",
+      "allocator environment",
+      "GPU driver version",
+      "measured PCIe copy bandwidth",
+      "pytest version and complete transitive dependency snapshot"
+    ],
+    "rtx_observed_runtime": {
+      "evidence_type": "runtime_configuration_snapshot",
+      "captured_utc": "2026-10-29T04:00:03.332327+00:00",
+      "settings_changed_by_capture": false,
+      "python": "3.11.18",
+      "python_executable": "/workspace/kvpilot-env/bin/python",
+      "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+      "machine": "x86_64",
+      "processor": "x86_64",
+      "logical_cpu_count": 192,
+      "cpu_affinity": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191
+      ],
+      "cgroup_cpu_max": null,
+      "cgroup_cpuset_effective": null,
+      "environment_allowlist": {
+        "OMP_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "VECLIB_MAXIMUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null,
+        "OMP_PROC_BIND": null,
+        "OMP_PLACES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "NVIDIA_VISIBLE_DEVICES": "all",
+        "CUBLAS_WORKSPACE_CONFIG": null,
+        "NVIDIA_TF32_OVERRIDE": null,
+        "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null,
+        "PYTORCH_ALLOC_CONF": null,
+        "TOKENIZERS_PARALLELISM": null
+      },
+      "packages": {
+        "torch": "2.7.1+cu128",
+        "numpy": "2.2.6",
+        "tokenizers": "0.21.2",
+        "safetensors": "0.5.3",
+        "psutil": "7.0.0",
+        "pytest": "8.4.2"
+      },
+      "torch": {
+        "version": "2.7.1+cu128",
+        "cuda_runtime": "12.8",
+        "num_threads": 96,
+        "num_interop_threads": 192,
+        "default_dtype": "torch.float32",
+        "float32_matmul_precision": "highest",
+        "matmul_allow_tf32": false,
+        "matmul_allow_fp16_reduced_precision_reduction": true,
+        "matmul_allow_bf16_reduced_precision_reduction": true,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "deterministic_algorithms": false,
+        "deterministic_warn_only": false,
+        "cuda_available": true,
+        "compiled_architectures": [
+          "sm_75",
+          "sm_80",
+          "sm_86",
+          "sm_90",
+          "sm_100",
+          "sm_120",
+          "compute_120"
+        ],
+        "devices": [
+          {
+            "index": 0,
+            "name": "NVIDIA GeForce RTX 5060 Ti",
+            "compute_capability": [
+              12,
+              0
+            ],
+            "total_memory_bytes": 16619667456,
+            "multiprocessor_count": 36
+          }
+        ]
+      },
+      "comparability": {
+        "source_attention": "owned eager Qwen attention: explicit FP32 scores, softmax and value multiplication",
+        "requested_activation_dtype": "float16",
+        "controls": "No CPU thread, TF32, precision, determinism or allocator setting is changed by this script.",
+        "limits": "Different host CPU, PCIe, driver and CUDA wheel prevent a pure GPU-only causal comparison. Equal-work continuations are frozen independently per run; compare token arrays across hardware before claiming identical inputs."
+      }
+    },
+    "rtx_observed_legacy_cgroup": {
+      "evidence_type": "legacy_cpu_quota_snapshot",
+      "captured_utc": "2026-10-29T04:00:08.946894+00:00",
+      "settings_changed": false,
+      "values": {
+        "/sys/fs/cgroup/cpu/cpu.cfs_quota_us": "2304000",
+        "/sys/fs/cgroup/cpu/cpu.cfs_period_us": "100000",
+        "/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_quota_us": "2304000",
+        "/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_period_us": "100000"
+      }
+    },
+    "test_log_summaries": {
+      "p100": "512 passed, 11 skipped, 89 subtests passed in 6.51s",
+      "rtx": "548 passed, 11 skipped in 22.00s"
+    }
+  },
+  "conclusions": {
+    "benchmark_implementation_matches": true,
+    "prompt_inputs_policies_schedules_and_requested_work_match": true,
+    "all_frozen_token_sequences_identical": false,
+    "full_equal_work_identical_context_case_sequences": 47,
+    "full_equal_work_total_context_case_sequences": 48,
+    "cross_system_descriptive_comparison_supported_with_caveats": true,
+    "pure_gpu_causal_speedup_supported": false,
+    "within_machine_policy_comparisons_remain_controlled": true,
+    "recommended_claim": "Same recorded benchmark implementation and inputs, with one frozen continuation difference; observed performance compares complete P100 and RTX host/runtime setups, not GPU hardware alone.",
+    "limits": [
+      "One context-512 case has different frozen continuation token IDs, although step counts match.",
+      "Python/direct dependency bases match; CUDA wheels and host platforms differ.",
+      "P100 thread, CPU allocation, precision-default and driver metadata were not captured in the supplied folder.",
+      "Artifact audits verify accounting and consistency, not independent physical execution, quality generalization, statistical significance or serving economics."
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "valid": true,
+  "evidence_type": "strict_recorded_replication_controls_audit",
+  "audited_utc": "2026-10-29T05:21:50.979718+00:00",
+  "source_commit": "ca6f6feaaf7faef4b942bd37d78ee29ded99a27a",
+  "outer_integrity": {
+    "valid": true,
+    "files_checked": 95,
+    "manifest_sha256": "c8d86a49045b7a13cb116223b006f532ab95a25efb6059d08f7493d4544cf2ef"
+  },
+  "runtime": {
+    "python": "3.11.18",
+    "packages": {
+      "torch": "2.7.1+cu128",
+      "numpy": "2.2.6",
+      "tokenizers": "0.21.2",
+      "safetensors": "0.5.3",
+      "psutil": "7.0.0"
+    },
+    "device_name": "NVIDIA GeForce RTX 5060 Ti",
+    "total_device_bytes": 16619667456,
+    "compute_capability": [
+      12,
+      0
+    ]
+  },
+  "historical_p100_model_manifest_files_match": true,
+  "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "model_digest": "c3b57e4a3bcb257287b2b3d5b368115727de1174bcdd4314c548104815769ff0",
+  "runs": {
+    "smoke-equal_work": {
+      "valid": true,
+      "sessions": 48,
+      "blocks": 12,
+      "events": 96,
+      "source_files_matched_to_git": 25,
+      "mode": "equal_work",
+      "quality_certified": false,
+      "fixture_sha256": "1d3bac14222a75e7d1c2418723b4fad51bbbaed72b4d7503ea998ab9db5f381a"
+    },
+    "smoke-free_generation": {
+      "valid": true,
+      "sessions": 48,
+      "blocks": 12,
+      "events": 96,
+      "source_files_matched_to_git": 25,
+      "mode": "free_generation",
+      "quality_certified": false,
+      "fixture_sha256": "f1403313278fbcb1e322beb29b4b5a6cb292b9008e124c746c35a35ae26b5bb2"
+    },
+    "full-equal_work": {
+      "valid": true,
+      "sessions": 2592,
+      "blocks": 108,
+      "events": 5184,
+      "source_files_matched_to_git": 25,
+      "mode": "equal_work",
+      "quality_certified": false,
+      "fixture_sha256": "97a2b56d4613a613d63600c8b3949a05a2ee7cdccb83cf127ced896cf0a24544"
+    },
+    "full-free_generation": {
+      "valid": true,
+      "sessions": 2592,
+      "blocks": 108,
+      "events": 5184,
+      "source_files_matched_to_git": 25,
+      "mode": "free_generation",
+      "quality_certified": false,
+      "fixture_sha256": "9f3afa78ccb5ea1bac9ea4c53ba00b176b6d9eb339965651abc603f487da2f72"
+    }
+  },
+  "regression_tests": {
+    "tests": 559,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 11
+  },
+  "phase_count": 21,
+  "sweep_labeled_counterfactual": true,
+  "cross_hardware_controls": {
+    "verified": false,
+    "reason": "The new P100 run has not been supplied. Equal-work continuation IDs are frozen separately per device; cross-hardware identity is unverified. Host CPU, PCIe, driver, CUDA wheel and runtime defaults differ or remain unmeasured on P100.",
+    "historical_comparison_scope": "Model input-file SHA256/size pairs only; no old-protocol speed or quality comparison."
+  },
+  "scope": "Validates recorded artifacts, settings, source hashes and accounting; does not independently attest physical execution, guarantee answer preservation, establish statistical significance, or prove serving-throughput/dollar savings."
+}

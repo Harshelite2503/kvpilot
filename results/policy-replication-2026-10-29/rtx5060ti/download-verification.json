@@ -1,0 +1,9 @@
+{
+  "instance_id": 58191251,
+  "archive_name": "local-rtx5060ti-replication.tar.gz",
+  "archive_sha256": "225d559971a790b01f9dea6f85c1162dc7a50bf2066d95ea6afbd23b88673c53",
+  "archive_matches_remote_digest": true,
+  "artifacts_verified": 95,
+  "verified_epoch": 1793251287.67456,
+  "suite_completed": true
+}

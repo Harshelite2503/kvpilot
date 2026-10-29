@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "record_scope": "Completed P100 and RTX attempt-3 owned-cache policy replication; timing-only attempt1 and modeled sweeps preserved separately, never pooled. Descriptive results, not customer savings or hardware attestation.",
+  "files": {
+    "README.md": "2ea7be52aabbb5ef6551ec30dd72f32a487a819b054534aa70f50f50fb564aa9",
+    "analysis/comparison.json": "579fbce08fb243e92114108e417d70e1104227a4503b8d9cb56da8d6c7958011",
+    "analysis/p100.json": "1a4f1323fe2f583e4b60ef9de5fad64ed4f4060d8ee3bf3b059025837f835ada",
+    "analysis/rtx5060ti.json": "2262d8cb73256f9dcefbf0d67940e86c5ed924f50ca143fb7b092f7ec71af30c",
+    "analysis-source/analyze_results.py": "bcf7a2ed6d28ee14d514ea7a026af6fad56715c583b872c56871cbbc876fc5ee",
+    "analysis-source/audit_cross_hardware_controls.py": "318382ee3765428421b03727fccdf87960353684d963d26236303d7a7eb6579a",
+    "analysis-source/build_report.py": "0923fab0e88ce850ecbf5e4631baaea11a7ee7dad6cbd226882c78a11f966cc4",
+    "analysis-source/review_quality.py": "8bd8c78a19adf43ed47059d8f5e7f40296dae11172554070ce19f84c3cbf0be3",
+    "analysis-source/review_timing.py": "df1f4dd347d12f40cca1436b2f301a8b5598750224f71dd197e4caed52b4f423",
+    "history/attempts.json": "237c19ec71d57f695f6e3e6ab496c9f6141abf29c4bc895217a6dff3104bef3d",
+    "history/rtx-attempt-1-modeled-sweep.tar.gz": "2a9a5e406e48b31abda89651ba3f506ba2c0dab3baee528ddfaaf3b58edfd1d4",
+    "history/rtx-attempt-1-timing.tar.gz": "76da47bd481740a449c8ef962c3f1c5bde92b6998d238b775f1e36b3571f9e79",
+    "p100/import-receipt.json": "8f311fdca78205a24bb67cf194c39288c9d726179747a7d7170689175c16ef98",
+    "p100/run.tar.gz": "d7c8f421bd69497ac349447aa82308c9c43988a18b63557c88d1311837218b74",
+    "report.html": "ed1a4ff4088fa41bc0a4a997cfb5492d1a3524930ec74798bc536ded0b8ad8f0",
+    "reviews/comparability.json": "03c924fd595d70133dd59c5b549c9ae1684cab1c4ee47724834bc65318fcd297",
+    "reviews/quality.json": "a6fdb4a8e95c7dcbcf3cd4556d828213be428e0461eb6d70ae28c8d1b724f80d",
+    "reviews/rtx-controls.json": "5787a369054762b40d40cfd079a5f77b3c532b2d5d955c98961fee5f80e07e62",
+    "reviews/timing.json": "50f0bc08840c63b0d8308f4efbb3d0ef0563d32373daa2d858055ed8be75e723",
+    "rtx5060ti/download-verification.json": "da2a1928da766084855872d9e71f909a483b180307ef6cdbac397ac9dbbc610c",
+    "rtx5060ti/run.tar.gz": "225d559971a790b01f9dea6f85c1162dc7a50bf2066d95ea6afbd23b88673c53"
+  }
+}

@@ -1,5 +1,7 @@
 # Record a completed VM experiment without changing the experiment
 
+The later **P100 admission and RTX 5060 Ti comparison** is preserved in [the 29 October evidence record](../results/policy-replication-2026-10-29/README.md), including both full suites, independent reviews and offline CI verification. Neither VM needs to upload those results again. The instructions below describe the earlier single-run recorder, not the new paired suite format.
+
 The 28 October P100 full and successful smoke runs are already preserved from the archive supplied to the Mac. **The VM does not need to push those results again.** Their record directories and analysis are listed in the [results audit](p100-results-2026-10-28.md).
 
 `scripts/record_p100_results.sh` is for future completed runs or an optional separate VM-origin record. It needs only Git and Python 3.11+, defaults to `.venv-p100/bin/python`, and does not load model weights, install packages or run inference.
