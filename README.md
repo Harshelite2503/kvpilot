@@ -1,302 +1,150 @@
 # KVPilot
 
-**We are building software that decides what to do with an AI agent's saved calculations while it waits.**
+**Find out whether a change to an AI agent's context actually lowers the cost of completing its work.**
 
-**Today: an owned-cache research prototype tested on a Mac, Tesla P100 and RTX 5060 Ti.** KVPilot saves, compresses, discards and restores real inference state, then continues generating. MLX or PyTorch performs tensor math; KVPilot owns live state, codecs, paused storage and eviction decisions. The runners use local model files without calling Ollama or an external cache manager.
+KVPilot's first context-cost MVP is a local command-line tool. Give it exported request usage, task outcomes and your prices. It calculates the cost of a baseline and a changed version, checks whether the same tasks still pass, and flags worse tail latency or incomplete evidence. Tail latency means how long the slow end of the task set takes.
 
-**Latest evidence, 29 October 2026:** adaptive takes **16.11% less full-session time than our CPU INT4 reference on P100** and **16.82% less on RTX 5060 Ti**, but **3.66% more time than simple admission on P100** and **0.29% more on RTX** in the balanced six-cell workload. Simple admission stores native state only when it fits. Both systems show identical peak GPU allocation across policies. Adaptive selected no lossy compression and matched recomputation on 396/396 repeated response observations per system, drawn from only 24 underlying questions. **An adaptive cost-saving advantage is not established.** See the [measured comparison and limits](docs/policy-replication-2026-10-29.md), [raw evidence and offline verification](results/policy-replication-2026-10-29/README.md), and [updated product plan](docs/product-plan-2026-10-29.md). These are sequential reference-runner results, not serving-throughput or customer-bill savings.
+**This is an experiment, not a proven cost-saving product.** The included examples are synthetic, their prices are illustrative, and no customer savings have been measured. Prompt caching, context compaction and cost diagnostics already exist. Our product hypothesis is that teams will pay for a specific, tested improvement to their agent workflow.
 
-## The problem, in plain English
+## The problem in everyday terms
 
-**Completed experiment and reproduction guide:** [admission baseline, equal-work timing and break-even sweep](docs/p100-admission-experiment.md).
-It compares six owned policies, including a native store-only-if-space rule; separates fixed-token speed tests from free-generation quality tests; and models how cheaper codecs would change the decision.
-The sweep is a counterfactual, not a new GPU speed measurement. The guide includes one offline P100 command and the exact result bundle to return.
+A coding agent might send a repository, its conversation and a large test log to a model repeatedly. Cached input can make repeated material cheaper to read. Removing or summarizing an old log can reduce later input, but creating the summary costs money, changes can break cache reuse, and losing a useful detail can make the task fail.
 
-Imagine a coding assistant reads a repository, asks a tool to run tests, and waits for the answer. While processing the code and conversation, the language model builds a **KV cache**: numbers representing intermediate calculations for earlier tokens. Reusing those numbers can avoid doing the same work again.
-
-Now imagine hundreds of agents waiting at once. Their saved calculations compete for limited memory. Keeping everything takes space; compressing it takes work; deleting it may mean repeating work when an agent returns.
-
-**KVPilot's job would be to choose which saved calculations deserve space, and in which format.** The goal is to make agents cheaper to run and quicker to resume within a memory budget. Those benefits still need to be demonstrated on a real serving system.
-
-The simulator and the local Qwen experiment exercise this decision flow. Integration into a production serving system remains future work.
-
-```mermaid
-flowchart TD
-    A["Agent pauses with a KV cache"] --> D["KVPilot compares the costs"]
-    D --> R["Keep raw<br/>More space"]
-    D --> Q["Compress<br/>Less space, extra work"]
-    D --> X["Discard<br/>Rebuild if needed"]
-    R --> S["On return: restore or recompute"]
-    Q --> S
-    X --> S
-    S --> W["Continue generating"]
-```
-
-On return, use a complete saved copy or recompute from the input. Compressed copies need decoding first. The simulator supports shared pages; the direct local runner currently stores a separate complete snapshot for each session.
-
-The choice uses estimates of return likelihood, encoding/transfer work, memory pressure and the cost of recomputation. It does not know the future. Approximate compression can also change model outputs, so quality must be tested before live use.
-
-This manages **reusable calculations**, not lasting knowledge about a user. It does not train the model, change its weights, extend its context limit, or build a memristor chip. Restoring a compact cache back to full-size numbers also restores its full active memory footprint.
-
-### How this could reduce cost
-
-Saving a cache is useful when the future recomputation it avoids is worth the copy, storage and restoration work. Saving sessions that never return, or evicting useful state to save less useful state, can waste resources. The new admission baseline asks whether a very simple rule already avoids that waste.
+The right question is **“Did the whole task become cheaper while still succeeding?”** Counting fewer input tokens alone cannot answer it.
 
 ```mermaid
 flowchart LR
-    A["Reduce unnecessary copies<br/>and repeated prefill"] --> B["More useful work<br/>within the same resources"]
-    B --> C["If capacity can be reduced:<br/>fewer billed GPU-hours"]
-    B --> D["Otherwise:<br/>more capacity, same bill"]
+    A["Your existing agent runs"] --> B["Export usage and task outcomes"]
+    B --> C["KVPilot checks the records"]
+    P["Your model-specific prices"] --> C
+    C --> D["Cost per successful task"]
+    C --> E["Task failures and slow tasks"]
+    D --> F["Review a proposed context change"]
+    E --> F
 ```
 
-We have not demonstrated lower customer bills. Sequential milliseconds are not billed GPU-seconds, and smaller saved payloads are not a measured reduction in GPU allocation. A production claim needs concurrent throughput, resource-allocation, quality and latency measurements.
+No GPU, model download, provider API call, mandatory proxy or raw prompt capture is needed for these commands. The tool reads local files. The first customer integration would import the customer's existing API usage records.
 
-OpenRouter's [provider routing](https://openrouter.ai/docs/guides/routing/provider-selection) selects among inference providers. Our current experiment manages saved state inside a self-hosted inference runtime. This is an active research and engineering area: [InferCept](https://proceedings.mlr.press/v235/abhyankar24a.html), [MORI](https://arxiv.org/abs/2606.00866), [LMCache lazy offload](https://docs.lmcache.ai/mp/lazy_offload.html) and [Dynamo agent hints](https://docs.nvidia.com/dynamo/agents/agent-hints) address related problems. Our opportunity must come from verified customer improvements, not a claim that nobody else manages agent caches.
+## Try the synthetic example
 
-## What we have actually built
-
-There are four separate experiments:
-
-```mermaid
-flowchart TB
-    subgraph CPU["Built: actual CPU compression experiments"]
-        direction TB
-        A["Small arrays of numbers"] --> B["Four storage formats"]
-        B --> C["Encode and decode on the CPU"]
-        C --> D["Measure bytes, time and numerical error"]
-    end
-    subgraph SIM["Built: analytical policy simulation"]
-        direction TB
-        E["Generated pause, resume and cancel events"] --> G["Replay with a fixed memory budget"]
-        F["Assumed compression and transfer costs"] --> G
-        G --> H["Compare six decision policies"]
-        H --> I["Calculate delay, memory use and transfers"]
-    end
-    subgraph LOCAL["Built: local Ollama model benchmark"]
-        direction TB
-        J["Synthetic repository and questions"] --> K["Real Qwen model on the Mac"]
-        K --> L["Compare fresh and reused native caches"]
-        L --> M["Measure response time and check answers"]
-        L --> N["Record aggregate memory, not KV-only bytes"]
-    end
-    subgraph OWNED["Built: direct KVPilot + Qwen experiment"]
-        direction TB
-        O["Own Qwen forward pass using MLX or PyTorch math"] --> P["Own live attention and supported recurrent state"]
-        P --> Q["KVPilot chooses a format or discards"]
-        Q --> R["Store real bytes; enforce a memory budget"]
-        R --> S["Restore or recompute; generate and score answers"]
-    end
-```
-
-The CPU experiments really execute compression code. The simulation moves descriptions of cache pages through a model of storage; it does not run a language model or transfer real KV tensors. Its cost assumptions are supplied separately, so the CPU timings are not presented as GPU performance.
-
-The Ollama experiment runs real inference on the existing `qwen3.5:4b` model using the Mac's GPU. It measures native caching, not the simulated controller or our codecs. See the [backend capabilities and limits](docs/ollama-backend.md).
-
-The Mac direct runner uses those model files independently. Its timings are actual local measurements of KVPilot's own cache path. It uses FP16 activations and FP32 recurrent state, so it does not claim numerical equivalence to Ollama's native runner. The attention and recurrent math follows attributed MIT reference implementations; no external cache classes are imported. The separate PyTorch runner tests dense Qwen2.5 attention state on the P100 using the same owned snapshot/store lifecycle.
-
-| Built piece | What it means in everyday terms |
-|---|---|
-| Four reference codecs | Four ways to store the numbers: unchanged FP16, exact zlib compression, approximate INT8 and approximate INT4. A codec is an encoder/decoder. |
-| Trace replay | A repeatable sequence of agents pausing, returning or being canceled, so policies face the same events. |
-| Shared-page accounting | Two agent branches can use the same prefix. That shared data consumes physical space once. |
-| Decision policies | Simple rules such as always using INT4, plus an adaptive rule that compares estimated costs. |
-| Eviction-cost calculation | Before accepting a new cache, estimate the harm caused by removing existing caches to make room. |
-| Evaluation harness | Freeze the code, test previously unexecuted synthetic sequences, and retain wins and losses. |
-| Local real-model benchmark | Send synthetic repository questions to Ollama, time the first answer text, verify cache-hit counters and score exact answers. |
-| Direct local state hooks | Export real Qwen state, encode attention tensors with our codecs, retain recurrent state exactly, delete live tensors, and restore a validated complete snapshot. |
-| Owned paused-state store | Retain actual byte payloads within a capacity limit, choose formats using measured codec costs, and evict complete sessions. |
-
-The current controller does not learn an expiry timer. Stored data leaves this replay through resume, cancellation or eviction when space is needed.
-
-## How the real local test works
-
-```mermaid
-flowchart TD
-    A["Read repository prefix with Qwen"] --> B["Live state owned by KVPilot"]
-    B --> C["Policy sees sizes, measured costs and resolved history"]
-    C --> D["Exact snapshot, INT8, INT4 or discard"]
-    D --> E["Release live state and temporary raw copies"]
-    E --> F["Only selected bytes remain in paused storage"]
-    F --> G{"Session returns"}
-    G -->|"Snapshot present"| H["Our decoder restores tensors and token position"]
-    G -->|"Discarded or evicted"| I["Recompute the prefix"]
-    H --> J["Process remaining tokens and generate answer"]
-    I --> J
-    J --> K["Measure time, exact stored bytes and answer quality"]
-```
-
-Qwen3.5 is a hybrid: eight layers have growing attention K/V tensors; 24 have recurrent and convolution state. **Fixed INT4 here means INT4 attention plus exact native recurrent state.** Both count toward stored bytes. Restored tensors return to their full active size; this prototype compresses paused state, not the attention computation itself.
-
-We compare recomputation, serialized exact state, fixed INT4, adaptive selection without eviction pricing, and adaptive selection with eviction pricing. The two adaptive policies can select exact state, INT8, INT4 or recomputation. The [protocol](results/qwen-kvpilot-v1/protocol.json) fixes the code, calibrated costs, cases, arm order and two capacity limits before evaluating the cases. These are controlled synthetic checks on one Mac, not an unseen production workload or a GPU-server throughput claim.
-
-**Measured verdict: the real integration works; adaptive does not win on both time and memory.** The full run contains 160 responses from eight distinct questions. Mean pause-and-resume time includes compression, restoration/recomputation and answer generation, but excludes the original prefix computation:
-
-| Condition | Policy | Mean pause + resume | Peak paused payload |
-| --- | --- | ---: | ---: |
-| Roomy store | Fixed INT4 | 0.934 s | 245.14 MiB |
-| Roomy store | Adaptive with eviction pricing | 0.388 s | 379.50 MiB |
-| Tight store | Fixed INT4 | 1.908 s | 183.94 MiB |
-| Tight store | Adaptive with eviction pricing | 2.419 s | 167.39 MiB |
-
-All five arms got the same **7/8 unique questions correct**. INT4 changed the already-wrong arithmetic answer, so unchanged accuracy does not mean unchanged output. Full snapshots shrank about **35%** with INT4; MLX peak active allocation stayed unchanged. Exact save/restore produced byte-identical continuation logits. **351 tests plus 89 subtests pass**, and a separate validator checked all recorded rows and accounting. See [all controls, full-session timings, failures and limitations](docs/local-results.md).
-
-## The eviction problem we fixed
-
-**Eviction means removing cached data to make room.** The first adaptive rule asked whether storing the new cache looked cheap, but missed some of the extra work imposed on agents whose caches it displaced.
-
-Here is a hypothetical example, not a measured benchmark. Agents A and B share 4 MB of prefix data and each has a private 2 MB tail. Total physical storage is **4 + 2 + 2 = 8 MB**, even though each agent uses 6 MB logically.
-
-```mermaid
-flowchart TD
-    P["One shared prefix: 4 MB, stored once"] --> A["Agent A also has a private 2 MB tail"]
-    P --> B["Agent B also has a private 2 MB tail"]
-    N["A new cache needs space"] --> E["Candidate action: evict the shared prefix"]
-    P -.-> E
-    E --> L["Free 4 MB, but both A and B lose a complete cache"]
-    L --> C["New policy: price the expected extra work for A and B"]
-    C --> D["Compare raw storage, compression and declining storage"]
-```
-
-The new rule counts the shared storage once, but considers the lost benefit for both affected agents. If several pages from the same agent are removed, it charges that agent once. It then chooses among the available options; it does not guarantee that every expensive eviction will be avoided.
-
-Our replay simplifies any incomplete cache to full recomputation. A real inference engine may reuse surviving prefixes, so this part still needs live validation. The new rule also retains the existing oldest-first victim order; it does not search for an optimal set of pages to remove.
-
-## Where this would fit in a real product
-
-The first intended user is a team running its own coding-agent models. KVPilot would supply decisions and explanations through existing inference/cache infrastructure. **This integration is planned, not implemented.**
-
-```mermaid
-flowchart TD
-    A["Coding agents"] --> B["Model server, such as vLLM"]
-    B -->|Pause and cache events| C["KVPilot: decide what to retain"]
-    C -->|Storage decisions| D["Cache engine, such as LMCache"]
-    D <--> E["Host memory and optional SSD storage"]
-    D -->|Restore cached state| B
-```
-
-We would first need to measure integration costs, connect actual lifecycle events, check cache compatibility, and test generated answers after restoring our own compressed state. Native Ollama reuse is now measured locally; a live KVPilot speedup or compression-quality result has not been demonstrated.
-
-## What we have learned so far
-
-The frozen evaluation ran **140 previously unseen synthetic traces containing 33,600 sessions**, through six policies. **130 tests and 89 subtests passed** before evaluation.
-
-The new policy reduced modeled tail resume delay versus fixed INT4 in five of seven workload families. Cancellation-heavy traffic regressed, and branching was inconclusive. The two largest wins exactly matched simply keeping raw data, while using **3.76 times** the stored-byte time and transfer volume of INT4. No family met our original combined latency-and-memory target.
-
-So we have built a working experiment and improved its decision rule. We have not yet proved that adding KVPilot makes a real model-serving system faster or cheaper. See the [full results, including regressions](docs/eviction-results.md). Rerunning that frozen holdout with the codec costs measured on a real KV tensor removes the two large wins: they become ties, no policy beats plain recomputation by more than 2.6% on p95, and eviction pricing gives no p95 benefit. It does change a decision in one seed, increasing modeled work and peak reservation. See the [measured-cost rerun](docs/eviction-results-measured-costs.md).
-
-## Real local model: what we measured
-
-We ran the already installed **Ollama `qwen3.5:4b` on an M1 Pro Mac with 16 GB memory**, using its MLX GPU backend. No GPU rental or model download was needed. The main experiment used twelve synthetic repository questions, each tested twice:
-
-| Native Ollama condition | Median time to first answer text | Correct answers |
-|---|---:|---:|
-| Fresh document prefix | 6.582 s | 18/24 |
-| Exact repeated prompt | 0.079 s | 18/24 |
-| First changed question after the document was primed | 6.567 s | 18/24 |
-
-Exact repeats reused 99.80% of the input and gave identical answers in all 24 comparisons, including the same mistakes. The model passed nine of twelve distinct questions; this is not general coding-quality validation. Order and kernel warmup can contribute to the observed timing ratio.
-
-A separate A/B/C diagnostic found that, after the first changed question established a checkpoint, a further new question reused a median 98.26% of the input and started answering in **0.269 s**. All twelve trios showed this pattern; nine of twelve target answers were correct. Both preceding setup requests are real work and remain in the archive.
-
-**This measures Ollama's existing cache, not a KVPilot improvement.** Main-run aggregate allocation was 3.99–4.41 GiB; it does not isolate KV bytes or demonstrate memory savings. The installed MLX API cannot inject our codecs or policy. Read the [complete results, failures, setup costs and reproduction commands](docs/ollama-results.md), and the [backend source review](docs/ollama-backend.md).
-
-## How this relates to existing work
-
-CacheGen already does bandwidth-adaptive KV compression. LMCache already provides tiered storage, compression, policy extension points and lazy offload. TensorRT-LLM already compresses cold pages, and recent research already studies retention during human approval. **Neither compression nor session awareness is our claimed invention.** See the [prior-art review](docs/research.md) and [18-group source register](docs/sources.json).
-
-The candidate product is a measurable policy and diagnostics layer on an existing engine. The [product hypothesis](docs/product-hypothesis.md) defines the first user and validation sequence. It must earn a benefit over simpler policies and existing settings; it may turn out to be an upstream contribution rather than a standalone company.
-
-## Implementation reference
-
-| Component | Implemented | Boundary |
-|---|---|---|
-| Reference codecs | FP16 framing, zlib FP16, grouped INT8, packed grouped INT4; decode, metadata and error measurement | NumPy CPU implementations; not CacheGen or TurboQuant |
-| Replay | Ordered pause/resume/cancel events; finite paused-store budget; physical shared-prefix accounting; LRU eviction | Analytical, no actual tensors transferred and no concurrent resource queues |
-| Policy | Raw/compressed/recompute choices; exact planned LRU victims; expected lost-cache benefit per affected owner; historical resume forecast; decision log | Greedy heuristic, no survival model, future-arrival planning or global SLO guarantee |
-| Baselines | Recompute, raw retention, fixed codecs, original `adaptive`, exact-sizing zero-penalty `adaptive_exact` | `adaptive_eviction` is the candidate; these are not actual vLLM/LMCache/TensorRT benchmark arms |
-| Experiments | Codec benchmark, sensitivity sweep, seven-family seeded holdout protocol, source freeze and paired whole-run bootstrap | Synthetic assumptions; new event sequences do not establish production generalization |
-| Local model reference | Ollama streaming timings, cached-token counts, exact-answer checks and aggregate allocation snapshots | Native backend behavior; no KVPilot cache control, tensor capture or isolated KV-memory saving |
-| Verification | Codec round trips, malformed input, isolation, shared prefixes, cancellation, capacity, early return and causal decisions | Does not establish LLM task quality or production correctness |
-
-The policy rejects lossy profiles by default. The example explicitly enables **unvalidated lossy exploration** so we can study assumed cost tradeoffs. This flag is not quality approval.
-
-## Run locally
-
-Python 3.11+; Python 3.13 was used for the checked-in results. No CUDA dependency or model download is required.
+Run these commands from the repository root with Python 3.11 or later:
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-python -m pytest -q
-python scripts/make_demo_trace.py
-python scripts/compare_policies.py
-python scripts/sweep_policies.py
-python scripts/benchmark_codecs.py --fixture gaussian --repeats 30 --output results/codecs-gaussian.json
-python scripts/benchmark_codecs.py --fixture correlated --repeats 30 --output results/codecs-correlated.json
+.venv/bin/python -m pip install -e '.[dev]'
+
+.venv/bin/kvpilot context audit \
+  --trace examples/context-cost/baseline.jsonl \
+  --pricing examples/context-cost/pricing.json \
+  --output artifacts/context-baseline
+
+.venv/bin/kvpilot context audit \
+  --trace examples/context-cost/candidate.jsonl \
+  --pricing examples/context-cost/pricing.json \
+  --output artifacts/context-candidate
+
+.venv/bin/kvpilot context compare \
+  --baseline examples/context-cost/baseline.jsonl \
+  --candidate examples/context-cost/candidate.jsonl \
+  --pricing examples/context-cost/pricing.json \
+  --min-savings-pct 10 \
+  --max-p95-regression-pct 5 \
+  --output artifacts/context-comparison
 ```
 
-The [dependency snapshot](requirements-dev.lock.txt) records the local versions. To recreate it on a compatible interpreter, install that file before `pip install -e . --no-build-isolation`. Compatibility on other operating systems is untested.
+The candidate is the version you want to evaluate. The comparison checks the same task set, model, workload, evaluator and cache protocol. Its decision here requires at least 10% lower cost per successful task, no previously passing task becoming a failure, and no more than 5% worse p95 task duration. These are configurable acceptance thresholds, not promised gains.
 
-For portable, pinned test dependencies, use the [regression testing guide](docs/testing.md).
-GitHub CI runs Python 3.11/3.13 core tests, the owned tensor runner on CPU, and audits the
-committed P100 and measured-cost evidence. The aggregate **Regression gate** must be made
-a required branch check to block merges on failure. CI does not certify GPU speed or model quality.
+The synthetic fixture includes a useful counterexample: `inspect-logs` becomes slightly **more expensive**, from $0.324 to $0.325, after paying for compaction. The full fixture goes from $0.7185 to $0.57 because another change saves more. These are calculations on invented usage records at illustrative rates, not measured savings. Compaction only pays for itself when enough later work becomes cheaper.
 
-Run one policy with the CLI:
+For a CI job that should fail when the comparison does not meet its gates, add `--fail-on-regression` to the comparison command. An arithmetic pass on synthetic data only tests the example; it is not evidence of a customer benefit.
+
+You can also examine a hypothetical compaction decision:
 
 ```bash
-kvpilot replay --trace examples/synthetic-sessions.jsonl --config examples/assumed-costs.json --policy adaptive --output results/local-adaptive.json
+.venv/bin/kvpilot context plan \
+  --current-tokens 15000 \
+  --retained-tokens 1000 \
+  --future-turns 12 \
+  --cache-read-usd-per-million 1 \
+  --rewrite-cost-usd 0.12 \
+  --summary-cost-usd 0.04 \
+  --output artifacts/context-plan
 ```
 
-An optional `--input your-capture.npy` argument to the codec benchmark accepts a single numeric array. Record the model/layer/token/dtype provenance yourself; the program labels external input as unverified. `.npy` and `.npz` captures are excluded from Git by default.
+Here `$1 per million` is an illustrative cache-read rate, **not a provider quote**. This estimate weighs future cached reads avoided against the supplied summary and rewrite costs. It cannot establish that the summary preserves useful information or that future turns will happen.
 
-### P100 setup and offline weights
+Read the [context-cost guide](docs/context-cost-guide.md) for the file format, billing assumptions, report interpretation and customer validation procedure.
 
-The [owned PyTorch/P100 protocol](docs/p100-runner.md) provides a pinned CUDA
-12.6 environment, an FP16 arithmetic preflight, an explicit pinned-model
-download, and offline SHA256 handoff checks. The benchmark uses local weights
-and KVPilot's own cache management. The [first completed P100 results](docs/p100-results-2026-10-28.md)
-are now archived with the measured source revision and an independent audit.
-vLLM 0.32.0 is not compatible with the P100; the
-earlier RTX 3090 first/repeat ratio describes native vLLM requests, not a
-KVPilot gain. See the corrected [Phase 1 provenance and limits](docs/phase1-report.md).
+## How to read a comparison
 
-The new runner passed a [40-session real-model Mac smoke test](results/p100-readiness-mac-smoke-v1/report.md)
-and exact restoration checks. It exposed an INT4 answer regression on one of
-four questions; adaptive results still trade speed against memory. These are
-Mac readiness observations, not P100 performance or quality guarantees.
+```mermaid
+flowchart TD
+    A["Baseline and candidate records"] --> B{"Complete and comparable?"}
+    B -->|"No"| C["Fix the evidence before deciding"]
+    B -->|"Yes"| D["Count every recorded request cost"]
+    D --> E["Include failed tasks and compaction work"]
+    E --> F["Compare cost, paired outcomes and p95 duration"]
+    F --> G["Pass, fail or inconclusive"]
+    G --> H["Validate any useful change on real tasks"]
+```
 
-## Initial evidence
+`Cost per successful task = cost of all recorded requests / number of successful tasks`.
 
-The [initial findings](docs/initial-findings.md) explain the original measurements and the failed first adaptive-policy hypothesis. The CPU INT4 codec produces about **3.76×** smaller serialized data than unframed FP16 for the included 512 KiB fixtures. It is lossy; this is a byte ratio, not an inference speedup or quality result. Pre-eviction-freeze verification passed **130 tests plus 89 subtests**; the earlier native Ollama harness version passed **174 tests plus 89 subtests**. Current direct-runner validation is reported above. The [original run manifest](results/manifest.json) describes files at initial commit `d103494`, not the changed current source. The [eviction freeze](results/eviction-freeze-v1.json) binds that experiment. Cloud CI has not run.
+Both failed attempts and summary-generation requests belong in the cost. A cheaper run that loses a previously passing task fails the outcome gate. p95 describes the slow end of **whole-task durations**, not the sum of API request times. A task with several parallel calls can take less time than the sum of those calls.
 
-The analytical replay's policy timings are **modeled from assumptions** in [assumed-costs.json](examples/assumed-costs.json). They do not use CPU benchmark timings as invented GPU timings. `measured_gpu_itl_ms` and `measured_llm_task_success` remain null in those replay results. The separate Ollama and direct KVPilot archives contain measured model timings and answer checks. Fully restoring a compressed cache to FP16 does not reduce its active attention footprint.
+The supplied success labels are not independently judged by KVPilot. A complete-looking export also cannot prove its exporter included every request. Keep the original provider records, evaluator and export procedure for review.
 
-## Eviction-aware experiment
+## A small glossary
 
-Read the [design and limits](docs/eviction-design.md), [predeclared workload protocol](examples/holdout-protocol.json), and [results](docs/eviction-results.md). `adaptive_eviction` charges the expected lost restoration benefit to each complete owner harmed by an admission, once per owner. `adaptive_exact` provides a matched sizing control with that charge disabled.
+| Term | Meaning here |
+| --- | --- |
+| Token | A piece of text the model processes; it is not necessarily a whole word. |
+| Context | The material sent to the model, such as instructions, messages, files and tool outputs. |
+| Prefix | The beginning of that material. Matching prefixes can qualify for provider cache reuse. |
+| Cache read | Input the provider reports serving from its prompt cache, billed using the applicable read rate. |
+| Cache write | Input the provider reports creating in its prompt cache. Some providers price writes by retention period. |
+| Compaction | Replacing a long history or tool output with less material, often a summary. It can cost money and lose information. |
+| Successful task | A complete unit of work that passes the supplied evaluator, not merely a request that returns HTTP 200. |
+| p95 task duration | A duration at or above about 95% of recorded task durations; useful for checking slow experiences. |
+| KV cache | A model's saved intermediate calculations. Hosted API usage counters do not expose those tensors to this tool. |
 
-Frozen evaluation: 140 unseen synthetic traces, 33,600 sessions and six policies. Mean run-level p95 improves versus fixed INT4 in five of seven families, but cancellation-heavy traffic regresses and branching is inconclusive. Fast-return/low-pressure wins use 3.76× the stored-byte time and transfer volume and exactly match fixed raw FP16; the matched ablation attributes none of those two wins to eviction pricing. No family meets the original joint latency/memory target. Raw results, intervals and adverse secondary metrics are retained. Under measured codec costs that headline does not survive; see the [measured-cost rerun](docs/eviction-results-measured-costs.md).
+## Built now, planned next
 
-Run a new development archive, or reproduce the already evaluated frozen holdout:
+| Available in this MVP | Still a proposal |
+| --- | --- |
+| Strict local trace validation and model-specific usage pricing | Importers for customers' existing exports |
+| Baseline/candidate cost, outcome and duration comparison | Identifying a customer's useful context change |
+| A compaction break-even calculator | Applying a change with customer-controlled validation |
+| Synthetic examples and automated regression tests | Proven customer savings and a repeatable paid offering |
+
+This version does not rewrite prompts, summarize content, capture remote traffic or change a running agent automatically. It supports the documented Anthropic text-usage format; it does not claim to price every provider feature. Inference, tool execution and evaluation happen outside this CLI.
+
+Provider usage multiplied by a supplied rate card is an **estimated API charge**, not an audited invoice or a measurement of GPU cost. Include retries, failures and compaction calls in the export. Other operational charges need separate accounting.
+
+## Existing features and the product hypothesis
+
+[Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) and [OpenAI prompt caching](https://platform.openai.com/docs/guides/prompt-caching) already reduce the price of eligible repeated input. [LMCache CacheBlend](https://docs.lmcache.ai/kv_cache_optimizations/cacheblend.html) addresses reuse beyond a shared prefix, and [NVIDIA Dynamo](https://docs.nvidia.com/dynamo/agents/agent-simulation) already provides agent trace replay. None of these mechanisms is our claimed invention.
+
+The proposed offer is narrower: find one costly behavior in a real workflow, test a concrete change against strong existing options, and retain the evidence when it helps or fails. A generic cost dashboard is insufficient differentiation. Willingness to pay and improvement beyond native features remain unvalidated.
+
+## The earlier cache research remains available
+
+KVPilot also contains a separate owned-cache research runner. Tensor engines perform model math; KVPilot owns that runner's serialization, compression, storage, admission, eviction and restoration. Adding this cost-audit CLI does not replace those implementations with a cache library.
+
+The latest P100/RTX result was negative for the adaptive policy: it took **3.66% more time than simple admission on P100** and **0.29% more on RTX 5060 Ti** on the balanced fixture. There was no measured reduction in peak GPU allocation, and adaptive selected no lossy compression. These sequential tests establish neither customer bill savings nor serving-throughput gains.
+
+- [Measured comparison and limitations](docs/policy-replication-2026-10-29.md)
+- [Raw records and independent verification](results/policy-replication-2026-10-29/README.md)
+- [P100 experiment and reproduction commands](docs/p100-admission-experiment.md)
+- [Preserved earlier README and owned-cache research guide](docs/owned-cache-research.md)
+- [Earlier self-hosted deployment audit proposal](docs/product-plan-2026-10-29.md), retained as a historical plan
+
+The earlier measurements help set the standard for this MVP: keep simple baselines, count the complete work, check outcomes, and publish negative results.
+
+## Development
 
 ```bash
-python scripts/evaluate_eviction.py --split development --output-dir results/local-eviction-dev
-python scripts/evaluate_eviction.py --split holdout --freeze-manifest results/eviction-freeze-v1.json --output-dir results/local-eviction-reproduction
+.venv/bin/python -m pytest -q
 ```
 
-Output directories must not already exist. The holdout command refuses source/config changes; it never silently refreshes a freeze. Rerunning the frozen experiment is reproduction, not a new unseen test. After algorithm changes, declare a new holdout and retain these results.
-
-## Next two weeks
-
-Follow the [14-day prototype plan](docs/prototype-plan.md), [evaluation contract](docs/evaluation.md), and [implemented trace contract](docs/implementation.md). The plan separates local preparation from later GPU validation.
-
-1. Extend the real-state checks to longer contexts, more models and independent task suites, and measure transient process memory as well as stored payload bytes.
-2. Add bounded movement/codec queues, refine eviction forecasts and compare simple TTL/static-threshold policies. Any new algorithm needs a new declared holdout after tuning on the revealed results.
-3. Inspect and pin one compatible vLLM/LMCache integration, then prepare the live measurement and coding-quality protocol.
-4. Publish negative cases and decide whether a GPU experiment is justified.
-
-Later live target: at least 20% lower p95 resume first-token latency and 15% lower time-weighted stored bytes versus a strong compatible baseline, with ITL and task-quality guardrails. These are decision thresholds, not forecasts or achieved results. If a simple static policy wins, the controller has not earned its complexity.
-
-The local numerical runner adapts MIT-licensed Apple MLX-LM mathematics; see [third-party notices](experiments/local/THIRD_PARTY_NOTICES.md). Model weights and tokenizer remain in the user's existing local installation and are not included here. This private prototype has no project-wide open-source license selected yet.
+Tests check the implementation and its fixtures. They do not establish production savings or independently verify task quality. This prototype has no project-wide open-source license selected yet; third-party notices remain with the research implementations.

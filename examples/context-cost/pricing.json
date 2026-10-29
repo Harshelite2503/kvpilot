@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "pricing_id": "illustrative-usd-v1",
+  "currency": "USD",
+  "source": "ILLUSTRATIVE ONLY: invented prices for local tests; not a provider quote",
+  "effective_date": "2026-10-29",
+  "provider": "anthropic",
+  "model": "demo-model",
+  "rates_usd_per_million": {
+    "input": "10",
+    "cache_read": "1",
+    "cache_write_5m": "12.5",
+    "cache_write_1h": "20",
+    "output": "30"
+  }
+}

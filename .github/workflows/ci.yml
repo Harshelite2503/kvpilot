@@ -52,6 +52,11 @@ jobs:
           python -c 'import kvpilot, numpy, pytest; print("NumPy", numpy.__version__, "pytest", pytest.__version__)'
       - name: Run all available tests
         run: python -m pytest -q -ra --junitxml=artifacts/tests.xml
+      - name: Exercise local context-cost commands with synthetic records
+        run: |
+          kvpilot context audit --trace examples/context-cost/baseline.jsonl --pricing examples/context-cost/pricing.json --output artifacts/context-baseline
+          kvpilot context compare --baseline examples/context-cost/baseline.jsonl --candidate examples/context-cost/candidate.jsonl --pricing examples/context-cost/pricing.json --min-savings-pct 10 --max-p95-regression-pct 5 --fail-on-regression --output artifacts/context-comparison
+          kvpilot context plan --current-tokens 15000 --retained-tokens 1000 --future-turns 12 --cache-read-usd-per-million 1 --rewrite-cost-usd 0.12 --summary-cost-usd 0.04 --output artifacts/context-plan
       - name: Record installed dependencies
         if: always()
         run: |
